@@ -1,0 +1,90 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Telegram.Bot;
+using Telegram.Bot.Exceptions;
+using Telegram.Bot.Polling;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using Vanilla.OAuth.Services;
+using Vanilla.TelegramBot.Interfaces;
+using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.Repositories;
+using Vanilla.TelegramBot.Services;
+
+namespace Vanilla.TelegramBot
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            Console.WriteLine("Hello, Vanilla TG bot server");
+
+            // Build a config object, using env vars and JSON providers.
+            IConfigurationRoot config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
+
+            // Get values from the config given their key and their target type.
+            var settings = config.GetRequiredSection("Settings").Get<SettingsModel>();
+            if (settings == null) throw new Exception("No found setting section");
+
+            var services = new ServiceCollection();
+            services.AddDbContextFactory<ApplicationDbContext>(options =>
+                options.UseNpgsql(settings.DatabaseConfiguration.ConnectionString),
+                ServiceLifetime.Transient);
+
+            services.AddTransient<IUserRepository, Repositories.UserRepository>();
+            services.AddTransient<IUserService, Services.UserService>();
+            services.AddSingleton<IBotService, BotService>();
+
+            services.AddTransient<Vanilla.OAuth.Services.UserRepository>();
+            services.AddTransient<AuthService>(provider => new AuthService(settings.TokenConfiguration));
+            services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
+               options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
+               ServiceLifetime.Transient);
+
+            services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
+               options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
+               ServiceLifetime.Transient);
+
+            services.AddDbContextFactory<Vanilla.Data.ApplicationDbContext>(options =>
+               options.UseNpgsql(settings.CoreDatabaseConfiguration.ConnectionString),
+               ServiceLifetime.Transient);
+
+            services.AddTransient<Vanilla_App.Interfaces.IUserRepository, Vanilla_App.Repository.UserRepository>();
+            services.AddTransient<Vanilla_App.Interfaces.IProjectRepository, Vanilla_App.Repository.ProjectRepository>();
+            services.AddTransient<Vanilla_App.Services.UserService>();
+            services.AddTransient<Vanilla_App.Interfaces.IProjectService, Vanilla_App.Services.ProjectService>();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            using (var dbContext = serviceProvider.GetService<ApplicationDbContext>())
+            {
+                dbContext.Database.EnsureCreated();
+                dbContext.Database.Migrate();
+            }
+
+            using (var dbContext = serviceProvider.GetService<Vanilla.OAuth.ApplicationDbContext>())
+            {
+                dbContext.Database.EnsureCreated();
+                dbContext.Database.Migrate();
+            }
+
+            var botService = serviceProvider.GetService<IBotService>();
+            var x = botService.StartListening();
+            x.Wait();
+
+            
+
+        }
+
+ 
+    }
+}
