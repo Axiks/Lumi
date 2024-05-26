@@ -11,5 +11,9 @@ namespace Vanilla.Data
     public class ApplicationDbContext : DbContext
     {
         public DbSet<ProjectEntity> Projects { get; set; }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+        { }
     }
 }

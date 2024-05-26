@@ -23,14 +23,19 @@ namespace Vanilla_App.Services
             _projectRepository = projectRepository;
         }
 
-        public async Task<ProjectModel> ProjectCreateAsync(UserModel user, ProjectCreateRequestModel project)
+        public async Task<ProjectModel> ProjectCreateAsync(Guid userId, ProjectCreateRequestModel project)
         {
-            return await _projectRepository.CreateAsync(user.Id, project);
+            return await _projectRepository.CreateAsync(userId, project);
         }
 
         public void ProjectDelete(Guid projectId)
         {
             _projectRepository.Delete(projectId);
+        }
+
+        public async Task<List<ProjectModel>> ProjectGetAllAsync()
+        {
+            return await _projectRepository.GetAllAsync();
         }
 
         public async Task<ProjectModel> ProjectGetAsync(Guid projectId)

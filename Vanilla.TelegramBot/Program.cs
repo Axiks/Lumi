@@ -6,11 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Exceptions;
-using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
@@ -43,6 +38,7 @@ namespace Vanilla.TelegramBot
             services.AddTransient<IUserRepository, Repositories.UserRepository>();
             services.AddTransient<IUserService, Services.UserService>();
             services.AddSingleton<IBotService, BotService>();
+            services.AddTransient<ILogger, ConsoleLogger>();
 
             services.AddTransient<Vanilla.OAuth.Services.UserRepository>();
             services.AddTransient<AuthService>(provider => new AuthService(settings.TokenConfiguration));
@@ -72,6 +68,12 @@ namespace Vanilla.TelegramBot
             }
 
             using (var dbContext = serviceProvider.GetService<Vanilla.OAuth.ApplicationDbContext>())
+            {
+                dbContext.Database.EnsureCreated();
+                dbContext.Database.Migrate();
+            }
+
+            using (var dbContext = serviceProvider.GetService<Vanilla.Data.ApplicationDbContext>())
             {
                 dbContext.Database.EnsureCreated();
                 dbContext.Database.Migrate();

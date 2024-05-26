@@ -22,7 +22,7 @@ namespace Vanilla_App.Repository
         }
         public async Task<ProjectModel> CreateAsync(Guid ownerId, ProjectCreateRequestModel projectRequest)
         {
-            var projectEntity = new ProjectEntity { Name = projectRequest.Name, Description = projectRequest.Description, OwnerId = ownerId };
+            var projectEntity = new ProjectEntity { Name = projectRequest.Name, Description = projectRequest.Description, DevelopStatus = projectRequest.DevelopStatus, OwnerId = ownerId };
 
             foreach (var url in projectRequest.Links)
             {
@@ -39,14 +39,20 @@ namespace Vanilla_App.Repository
 
         public void Delete(Guid projectId)
         {
-            _dbContext.Remove(projectId);
+            var project = _dbContext.Projects
+                .Include(x => x.Links)
+                .FirstOrDefault(x => x.Id == projectId);
+            project.Links.RemoveAll(x => x.Id == projectId);
+            _dbContext.Projects.Remove(project);
             _dbContext.SaveChanges();
         }
 
         public async Task<List<ProjectModel>> GetAllAsync()
         {
             List<ProjectModel> allProjects = new List<ProjectModel>();
-            var allProjectsEntity = await _dbContext.Projects.ToListAsync();
+            var allProjectsEntity = await _dbContext.Projects
+                .Include(x => x.Links)
+                .ToListAsync();
             foreach (var projectEntity in allProjectsEntity)
             {
                 allProjects.Add(MapperHelper.ProjectEntityToProjectModel(projectEntity));

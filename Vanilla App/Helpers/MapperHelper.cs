@@ -17,6 +17,7 @@ namespace Vanilla_App.Helpers
                 Id = projectEntity.Id,
                 Name = projectEntity.Name,
                 Description = projectEntity.Description,
+                DevelopmentStatus = projectEntity.DevelopStatus,
                 OwnerId = projectEntity.OwnerId,
                 Links = projectEntity.Links.Select(x => x.Url),
                 Created = projectEntity.Created,

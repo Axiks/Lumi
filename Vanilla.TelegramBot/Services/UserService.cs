@@ -22,6 +22,31 @@ namespace Vanilla.TelegramBot.Services
             _authService = authService;
             _userRepository = userRepository;
         }
+
+        public async Task<UserModel> GetUser(Guid userId)
+        {
+            var localUser = await _userRepository.GetUserAsync(userId);
+            if (localUser is null) throw new Exception("User don`t exist in tg service");
+
+            var oauthUser = await _oauthUserService.GetUserAsync(userId);
+            if (oauthUser is null) throw new Exception("User don`t exist in oauth service");
+
+            _authService.GenerateToken(oauthUser);
+
+            var userModel = new UserModel
+            {
+                UserId = oauthUser.Id,
+                Token = _authService.GenerateToken(oauthUser),
+                TelegramId = localUser.TelegramId,
+                Username = localUser.Username,
+                FirstName = localUser.FirstName,
+                LastName = localUser.LastName,
+                RegisterInServiceAt = localUser.CreatedAt,
+                RegisterInSystemAt = oauthUser.CreatedAt
+            };
+            return userModel;
+        }
+
         // Gegister user in 2 diferent system
         public async Task<UserModel> RegisterUser(UserRegisterModel userRequest)
         {

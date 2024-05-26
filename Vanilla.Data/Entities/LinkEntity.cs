@@ -10,7 +10,7 @@ namespace Vanilla.Data.Entities
     {
         public Guid Id { get; set; }
         public required string Url { get; set; }
-        public DateTime Created { get; set; }
-        public DateTime Updated { get; set; }
+        public DateTime Created { get; set; } = DateTime.UtcNow;
+        public DateTime Updated { get; set; } = DateTime.UtcNow;
     }
 }
