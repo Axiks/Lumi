@@ -47,6 +47,17 @@ namespace Vanilla.TelegramBot.Repositories
             return MapperHelper.UserEntityToUserCreateResponseModel(userEntity);
         }
 
+        public async Task<List<UserCreateResponseModel>> GetUsersAsync(string username)
+        {
+            var usersEntity = _dbContext.Users.Where(x => x.Username == username).ToList();
+            var users = new List<UserCreateResponseModel>();
+            foreach (var userEntity in usersEntity)
+            {
+                users.Add(MapperHelper.UserEntityToUserCreateResponseModel(userEntity));
+            }
+            return users;
+        }
+
         public async void RemoveUserAsync(Guid userId)
         {
             var user = await _dbContext.Users.FirstAsync(x => x.UserId == userId);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.BotAPI.AvailableTypes;
 using Vanilla.OAuth.Models;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
@@ -21,6 +22,33 @@ namespace Vanilla.TelegramBot.Services
             _oauthUserService = oauthUserService;
             _authService = authService;
             _userRepository = userRepository;
+        }
+
+        public async Task<List<UserModel>> FindByUsername(string username)
+        {
+            var users = await _userRepository.GetUsersAsync(username);
+
+            var response = new List<UserModel>();
+            foreach (var localUser in users)
+            {
+                var oauthUser = await _oauthUserService.GetUserAsync(localUser.UserId);
+                if (oauthUser is null) throw new Exception("User don`t exist in oauth service");
+
+                var userModel = new UserModel
+                {
+                    UserId = oauthUser.Id,
+                    Token = _authService.GenerateToken(oauthUser),
+                    TelegramId = localUser.TelegramId,
+                    Username = localUser.Username,
+                    FirstName = localUser.FirstName,
+                    LastName = localUser.LastName,
+                    RegisterInServiceAt = localUser.CreatedAt,
+                    RegisterInSystemAt = oauthUser.CreatedAt
+                };
+
+                response.Add(userModel);
+            }
+            return response;
         }
 
         public async Task<UserModel> GetUser(Guid userId)
