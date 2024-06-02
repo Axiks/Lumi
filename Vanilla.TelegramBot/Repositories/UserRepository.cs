@@ -26,6 +26,8 @@ namespace Vanilla.TelegramBot.Repositories
                 UserId = user.UserId,
                 TelegramId = user.TelegramId,
                 Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
             };
             await _dbContext.AddAsync(userEntity);
             await _dbContext.SaveChangesAsync();

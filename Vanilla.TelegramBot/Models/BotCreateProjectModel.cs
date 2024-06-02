@@ -17,7 +17,7 @@ namespace Vanilla.TelegramBot.Models
         public DevelopmentStatusEnum? DevelopStatus { get; set; }
         public string PollIdDevelopmentStatus { get; set; }
         public List<string>? Links { get; set; }
-        public List<int> MessagesWhenCreating { get; set; } = new List<int>();
+        public List<int> SendedMessages { get; set; } = new List<int>();
 
         public BotCreateProjectModel(Guid UserId, long TelegramUserId) {
             this.UserId = UserId;

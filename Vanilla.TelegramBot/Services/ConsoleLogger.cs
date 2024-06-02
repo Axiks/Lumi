@@ -25,7 +25,20 @@ namespace Vanilla.TelegramBot.Services
             };
             _loggs.Add(log);
 
+            switch (logType)
+            {
+                case LogType.Information:
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    break;
+                case LogType.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case LogType.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+            }
             Console.WriteLine(logType + " & " + message);
+            Console.ForegroundColor = ConsoleColor.White;
 
             return log.Id;
         }

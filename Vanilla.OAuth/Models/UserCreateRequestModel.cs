@@ -8,6 +8,6 @@ namespace Vanilla.OAuth.Models
 {
     public class UserCreateRequestModel
     {
-        public required string Username { get; set; }
+        public string? Username { get; set; }
     }
 }

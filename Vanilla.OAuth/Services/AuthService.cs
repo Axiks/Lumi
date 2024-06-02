@@ -89,7 +89,7 @@ namespace Vanilla.OAuth.Services
             var ci = new ClaimsIdentity();
 
             ci.AddClaim(new Claim("id", user.Id.ToString()));
-            ci.AddClaim(new Claim(ClaimTypes.Name, user.Nickname));
+            if(user.Nickname is not null) ci.AddClaim(new Claim(ClaimTypes.Name, user.Nickname));
 
             return ci;
         }

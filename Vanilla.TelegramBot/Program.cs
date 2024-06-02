@@ -11,6 +11,7 @@ using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Repositories;
 using Vanilla.TelegramBot.Services;
+using Vanilla.TelegramBot.Services.Bot;
 
 namespace Vanilla.TelegramBot
 {
@@ -65,6 +66,7 @@ namespace Vanilla.TelegramBot
             {
                 dbContext.Database.EnsureCreated();
                 dbContext.Database.Migrate();
+                //dbContext.Database.Aut
             }
 
             using (var dbContext = serviceProvider.GetService<Vanilla.OAuth.ApplicationDbContext>())
@@ -79,13 +81,25 @@ namespace Vanilla.TelegramBot
                 dbContext.Database.Migrate();
             }
 
-            var botService = serviceProvider.GetService<IBotService>();
-            var x = botService.StartListening();
-            x.Wait();
+            RunBot();
 
-            
+            void RunBot()
+            {
+                try
+                {
+                    var botService = serviceProvider.GetService<IBotService>();
+                    var x = botService.StartListening();
+                    x.Wait();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    //RunBot();
+                }
+            }
 
         }
+
 
  
     }

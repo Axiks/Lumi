@@ -9,6 +9,7 @@ using Vanilla_App.Helpers;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
 using Microsoft.EntityFrameworkCore;
+using Vanilla.Common.Enums;
 
 
 namespace Vanilla_App.Repository
@@ -72,6 +73,8 @@ namespace Vanilla_App.Repository
             var projectEntity = await _dbContext.Projects.FirstAsync(x => x.Id == project.Id);
             if (project.Name != null) projectEntity.Name = project.Name;
             if (project.Description != null) projectEntity.Description = project.Description;
+
+            if (project.ProjectRequest is not null) projectEntity.DevelopStatus = (DevelopmentStatusEnum)project.ProjectRequest;
 
             // erse urls and fetch new
             if (project.Links != null)
