@@ -72,22 +72,22 @@ namespace Vanilla.TelegramBot.Services.Bot
             Message? sendedMessage = null;
             if (command == Command.name)
             {
-                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, "What value to replace?", replyMarkup: Keyboards.CannelKeyboard());
+                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("WhatValueToReplace"), replyMarkup: Keyboards.CannelKeyboard());
             }
             else if (command == Command.description)
             {
-                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, "What value to replace?", replyMarkup: Keyboards.CannelKeyboard());
+                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("WhatValueToReplace"), replyMarkup: Keyboards.CannelKeyboard());
             }
             else if (command == Command.status)
             {
                 // Generate new pool
-                var pollArgs = MessageWidgets.GeneratePull(_userContext.User.TelegramId);
+                var pollArgs = MessageWidgets.GeneratePull(_userContext.User.TelegramId, _userContext);
                 pollArgs.ReplyMarkup = Keyboards.CannelKeyboard();
                 sendedMessage = _botClient.SendPoll(pollArgs);
             }
             else if (command == Command.links)
             {
-                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, "What value to replace?", replyMarkup: Keyboards.CannelKeyboard());
+                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("WhatValueToReplace"), replyMarkup: Keyboards.CannelKeyboard());
             }
 
             if(sendedMessage is not null)
@@ -111,7 +111,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                     case Command.name:
                         if (text.Length > 64)
                         {
-                            var messValidation = _botClient.SendMessage(_userContext.User.TelegramId, "Wow, the name of your project is as catchy as the names of some anime!\r\n\r\nBut unfortunately, I cannot accept it\r\nThe name must not exceed 64 characters", parseMode: "HTML");
+                            var messValidation = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UpdateProjectNameValidation"), parseMode: "HTML");
                             _sendedMessagesId.Add(messValidation.MessageId);
                             return;
                         }
@@ -120,7 +120,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                     case Command.description:
                         if (text.Length > 4000)
                         {
-                            var messValidation = _botClient.SendMessage(_userContext.User.TelegramId, "Wow Wow I see huge ambitions here, but alas, I can't fit them into one calf\r\n\r\nDescribe your project more concisely. The maximum I can write is 4000 characters", parseMode: "HTML");
+                            var messValidation = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UpdateProjectDescriptionValidation"), parseMode: "HTML");
                             _sendedMessagesId.Add(messValidation.MessageId);
                             return;
                         }
@@ -180,7 +180,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             ClearMessages();
 
             //forming project card
-            _botClient.SendMessage(_userContext.User.TelegramId, "Successfully updated!");
+            _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UpdateProjectSuccess"));
             UpdatedSuccessEvent.Invoke(_userContext);
         }
 
@@ -200,7 +200,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 _logger.WriteLog("Acccaes dainen to poll", LogType.Error);
                 _sendedMessagesId.Add(botUpdate.Message.MessageId);
 
-                var messValidation = _botClient.SendMessage(_userContext.User.TelegramId, "I am waiting for a response to the survey", parseMode: "HTML");
+                var messValidation = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UpdateProjectPoolValidation"), parseMode: "HTML");
                 _sendedMessagesId.Add(messValidation.MessageId);
                 return false;
             };
@@ -215,7 +215,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             if (botUpdate.Message.ViaBot != null && botUpdate.Message.ViaBot.Id == _botClient.GetMe().Id)
             {
                 _sendedMessagesId.Add(botUpdate.Message.MessageId);
-                var mess = _botClient.SendMessage(botUpdate.Message.Chat.Id, "Munch\r\nThis is my message!!! \n<b>I won't miss it</b>\n\nWrite it yourself", parseMode: "HTML");
+                var mess = _botClient.SendMessage(botUpdate.Message.Chat.Id, _userContext.ResourceManager.GetString("ThiIsMyMessageValidationMess"), parseMode: "HTML");
                 _sendedMessagesId.Add(mess.MessageId);
                 return false;
             }
@@ -225,7 +225,7 @@ namespace Vanilla.TelegramBot.Services.Bot
         private void UnexpectedInput()
         {
             _logger.WriteLog("Unexpected input", LogType.Warning);
-            var errorMess = _botClient.SendMessage(_userContext.User.TelegramId, "Oooh\r\nHow nice of you to send this, but it's not what I expected ;(", parseMode: "HTML");
+            var errorMess = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UpdateProjectSuccess"), parseMode: "HTML");
             _sendedMessagesId.Add(errorMess.MessageId);
         }
         public void ClearMessages()

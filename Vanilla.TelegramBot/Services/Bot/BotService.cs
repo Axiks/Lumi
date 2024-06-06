@@ -1,4 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.Globalization;
+using System.Reflection;
+using System.Resources;
+using System.Text;
 using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
@@ -55,7 +59,6 @@ namespace Vanilla.TelegramBot.Services.Bot
             _botClient = new TelegramBotClient(_settings.BotAccessToken);
 
             _logger.WriteLog("Init bot service", LogType.Information);
-
         }
 
         public async Task StartListening()
@@ -133,7 +136,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                         catch (Exception ex)
                         {
                             Guid exeptionId = Guid.NewGuid();
-                            var mess = String.Format("Oooh\r\n\r\nAn internal server error has occurred\r\nIf the bot does not work correctly in the future, please contact {0}\r\n\r\nError ID: <b>{1}</b>", "@Yumikki", exeptionId);
+                            var mess = String.Format(currentUserContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
                             _botClient.SendMessage(chatId: currentUserContext.User.TelegramId, mess, parseMode: "HTML");
                             _logger.WriteLog(ex.Message + "; Exeption ID: " + exeptionId, LogType.Error);
                         }
@@ -185,7 +188,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                     userContext.CreateProjectContext = null;
                     userContext.BotProjectCreator = null;
 
-                    _botClient.SendMessage(update.Message.Chat.Id, "Main menu", replyMarkup: Keyboards.MainMenu());
+                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu());
                 }
                 else if (userContext.BotProjectUpdater is not null)
                 {
@@ -193,11 +196,11 @@ namespace Vanilla.TelegramBot.Services.Bot
                     userContext.BotProjectUpdater.ClearMessages();
                     userContext.BotProjectUpdater = null;
 
-                    _botClient.SendMessage(update.Message.Chat.Id, "Main menu", replyMarkup: Keyboards.MainMenu());
+                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu());
                 }
                 else
                 {
-                    _botClient.SendMessage(update.Message.Chat.Id, "Main menu", replyMarkup: Keyboards.MainMenu());
+                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu());
                 }
                 return true;
             }
@@ -215,8 +218,8 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             var projectId = userContext.BotProjectUpdater.projectModel.Id;
             var project = _projectService.ProjectGetAsync(projectId).Result;
-            var message = MessageWidgets.AboutProject(project, userContext.User);
-            var replyMarkuppp = GetProjectItemMenu(project);
+            var message = MessageWidgets.AboutProject(project, userContext.User, userContext);
+            var replyMarkuppp = GetProjectItemMenu(project, userContext);
             _botClient.EditMessageText(chatId: userContext.User.TelegramId, messageId: messageToUpdate, text: message, replyMarkup: replyMarkuppp, parseMode: "HTML");
 
             userContext.UpdateProjectContext = null;
@@ -241,16 +244,16 @@ namespace Vanilla.TelegramBot.Services.Bot
                 }
             );
 
-            if (userProjects == null || userProjects.Count() == 0) _botClient.SendMessage(chatId, "About such\r\nYou don't have any projects yet\r\n\r\nBut you can add it!", replyMarkup: replyNoProjectMarkup);
+            if (userProjects == null || userProjects.Count() == 0) _botClient.SendMessage(chatId, userContext.ResourceManager.GetString("UserDontHaveProjectsMess"), replyMarkup: replyNoProjectMarkup);
 
 
             foreach (var project in userProjects)
             {
                 string deliver = " mya~ ";
 
-                var replyMarkuppp = GetProjectItemMenu(project);
+                var replyMarkuppp = GetProjectItemMenu(project, userContext);
 
-                _botClient.SendMessage(chatId, MessageWidgets.AboutProject(project, userContext.User),
+                _botClient.SendMessage(chatId, MessageWidgets.AboutProject(project, userContext.User, userContext),
                     replyMarkup: replyMarkuppp, parseMode: "HTML");
             }
 
@@ -332,52 +335,6 @@ namespace Vanilla.TelegramBot.Services.Bot
             DeleteMessage(userContext.User.TelegramId, messageId);
         }
 
-        /*private void BotMessageHendler(Telegram.BotAPI.GettingUpdates.Update botUpdate, UserContextModel userContext)
-        {
-            if (botUpdate.Message.Text is null) return;
-            var text = botUpdate.Message.Text;
-            long chatId = userContext.User.TelegramId;
-
-            //var userProject = inCreateProjects.FirstOrDefault(x => x.UserId == user.UserId && (x.Name is null || x.Description is null || x.DevelopStatus is null || x.Links is null));
-            //var userProject = userContext.CreateProjectContext;
-          *//*  if (userProject is not null)
-            {
-                userProject.SendedMessages.Add(botUpdate.Message.MessageId);
-
-                if (botUpdate.Message.ViaBot != null && botUpdate.Message.ViaBot.Id == _botClient.GetMe().Id)
-                {
-                    var mess = _botClient.SendMessage(botUpdate.Message.Chat.Id, "Munch\r\nThis is my message!!! \n<b>I won't miss it</b>\n\nWrite it yourself", parseMode: "HTML");
-                    userProject.SendedMessages.Add(mess.MessageId);
-                    return;
-                }
-
-                AddProjectProcess(userProject, text, chatId);
-            }
-            else
-            {
-                // Clear first message
-                //_botClient.DeleteMessage(chatId, messageId: update.Message.MessageId);
-            }*/
-
-        /*var userUpdateProject = inUpdateProjects.FirstOrDefault(x => x.UserId == userContext.User.UserId);
-        if (userUpdateProject is not null)
-        {
-            var selectedItem = userUpdateProject.SelectedItem;
-            var updatedModel = new ProjectUpdateRequestModel
-            {
-                Id = userUpdateProject.ProjectId,
-            };
-
-            if (selectedItem == SelectedItem.Name) updatedModel.Name = text;
-            else if (selectedItem == SelectedItem.Description) updatedModel.Description = text;
-            *//* else if(selectedItem == SelectedItem.Status) updatedModel.Description = text;
-             else if(selectedItem == SelectedItem.Description) updatedModel.Description = text;*//*
-
-
-            _projectService.ProjectUpdateAsync(updatedModel);
-        }*//*
-    }*/
-
         private bool BotSleshCommandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
         {
             if (update.Message is null) return false;
@@ -385,13 +342,13 @@ namespace Vanilla.TelegramBot.Services.Bot
             if (update.Message.Text == "/menu")
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
-                _botClient.SendMessage(update.Message.Chat.Id, "Main menu", replyMarkup: Keyboards.MainMenu());
+                _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu());
                 return true;
             }
             else if (update.Message.Text == "/start")
             {
                 var username = update.Message.Chat.FirstName ?? update.Message.Chat.Username ?? "";
-                string welcomeMessage = string.Format("Hi {0}! \nI'm glad to see you here\r\nHere you can create and manage your own projects\r\n\r\n🌟<b>To check people's projects, it is enough to type @{1} here, or in any other chat</b>🌟 \n\nI hope you like it here ❤️", username, _botClient.GetMe().Username);
+                string welcomeMessage = string.Format(userContext.ResourceManager.GetString("Welcome"), username, _botClient.GetMe().Username);
                 _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.MainMenu(), parseMode: "HTML");
                 return true;
             }
@@ -404,8 +361,9 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
 
-                SendMessageArgs inputMessage = new SendMessageArgs(update.Message.Chat.Id,
-                    "Thank you for being with us ❤\nAlso thank people who helped to develop this bot\n\nYou can contact the author here: <a href=\"https://t.me/Yumikki\">@Yumikki</a>\nPS. If you are fascinated by the magic of programming, we will be happy to welcome you <a href=\"https://t.me/include_anime\">to our family</a> 😊");
+                var ms = userContext.ResourceManager.GetString("About");
+                _logger.WriteLog(ms, LogType.Information);
+                SendMessageArgs inputMessage = new SendMessageArgs(update.Message.Chat.Id, ms);
                 inputMessage.ParseMode = "HTML";
 
                 _botClient.SendMessage(inputMessage);
@@ -427,7 +385,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             var inlineAddOwnProjectButton = new InlineQueryResultsButton
             {
-                Text = "Add own project",
+                Text = userContext.ResourceManager.GetString("AddOwnProject"),
                 StartParameter = "addProject"
             };
 
@@ -473,7 +431,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 //var messageContent = AboutProjectFormating(project);
                 var owner = _userService.GetUser(project.OwnerId).Result;
-                var messageContent = MessageWidgets.AboutProject(project, owner);
+                var messageContent = MessageWidgets.AboutProject(project, owner, userContext);
 
                 var inputMessage = new InputTextMessageContent(messageContent);
                 inputMessage.ParseMode = "HTML";
@@ -517,127 +475,6 @@ namespace Vanilla.TelegramBot.Services.Bot
             catch (Exception ex)
             {
                 _logger.WriteLog(ex.Message, LogType.Error);
-
-
-                /*  protected override void OnCallbackQuery(CallbackQuery cQuery)
-                  {
-                      var args = cQuery.Data.Split(' ');
-                      if (cQuery.Message == null)
-                      {
-                          _botClient.AnswerCallbackQuery(cQuery.Id, "This button is no longer available", true, cacheTime: 99999);
-                          return;
-                      }
-                      var demoInvoice = _db.DemoInvoices.GetConfiguration(cQuery.Message.Chat.Id, cQuery.Message.MessageId);
-                      if (demoInvoice == null)
-                      {
-                          _botClient.AnswerCallbackQuery(cQuery.Id, "This button is no longer available", true, cacheTime: 99999);
-                          return;
-                      }
-
-                      void UpdateDemoInvoice()
-                      {
-                          _botClient.AnswerCallbackQuery(cQuery.Id, cacheTime: 5);
-
-                          var keyboard = demoInvoice.GenInlineKeyboard();
-                          _botClient.EditMessageReplyMarkup(new EditMessageReplyMarkup
-                          {
-                              ChatId = cQuery.Message.Chat.Id,
-                              MessageId = cQuery.Message.MessageId,
-                              ReplyMarkup = keyboard
-                          });
-
-                          _db.DemoInvoices.Update(demoInvoice);
-                      }
-
-                      switch (args[0])
-                      {
-                          case "switch":
-                              {
-                                  switch (args[1])
-                                  {
-                                      case "needName":
-                                          demoInvoice.NeedName = !demoInvoice.NeedName;
-                                          break;
-                                      case "needEmail":
-                                          demoInvoice.NeedEmail = !demoInvoice.NeedEmail;
-                                          break;
-                                      case "needPhone":
-                                          demoInvoice.NeedPhone = !demoInvoice.NeedPhone;
-                                          break;
-                                      case "needShipping":
-                                          demoInvoice.NeedShippingAddress = !demoInvoice.NeedShippingAddress;
-                                          break;
-                                      case "sendPhoto":
-                                          demoInvoice.SendPhoto = !demoInvoice.SendPhoto;
-                                          break;
-                                      case "sendWebview":
-                                          demoInvoice.SendWebView = !demoInvoice.SendWebView;
-                                          break;
-                                      default:
-                                          _botClient.AnswerCallbackQuery(cQuery.Id, "???", cacheTime: 999);
-                                          return;
-                                  }
-                                  UpdateDemoInvoice();
-                              }
-                              break;
-                          case "setCurrency":
-                              demoInvoice.Currency = Enum.Parse<CurrencyCodes>(args[1], true);
-                              UpdateDemoInvoice();
-                              break;
-                          case "sendInvoice":
-                              {
-                                  _botClient.AnswerCallbackQuery(cQuery.Id, cacheTime: 2);
-                                  _botClient.EditMessageText(cQuery.Message.Chat.Id, cQuery.Message.MessageId, MSG.DemoInvoiceResult, ParseMode.HTML, replyMarkup: null);
-
-                                  const string productName = "Working Time Machine";
-                                  const string description = "Want to visit your great-great-great-grandparents? Make a fortune at the races? Shake hands with Hammurabi and take a stroll in the Hanging Gardens? Order our Working Time Machine today!";
-
-                                  var prices = new LabeledPrice[]
-                                  {
-                                      new LabeledPrice("Subtotal", 12345),
-                                      new LabeledPrice("Handling", 5431),
-                                      new LabeledPrice("Discount", -3454)
-                                  };
-
-                                  var invoice = new SendInvoiceArgs(cQuery.Message.Chat.Id, productName, description, "WorkingTimeMachine", Properties.ProviderToken, demoInvoice.Currency.ToString(), prices)
-                                  {
-                                      // ProviderData = demoInvoice.SendWebView ? "<Your provider data to use WebView>" : null,
-                                      NeedName = demoInvoice.NeedName,
-                                      NeedEmail = demoInvoice.NeedEmail,
-                                      NeedPhoneNumber = demoInvoice.NeedPhone,
-                                      NeedShippingAddress = demoInvoice.NeedShippingAddress,
-                                      IsFlexible = demoInvoice.NeedShippingAddress,
-                                      StartParameter = "buy_tshirt"
-                                  };
-                                  if (demoInvoice.SendPhoto)
-                                  {
-                                      const string photoUrl = "https://telegra.ph/file/a242b4418901347c47be6.jpg";
-                                      invoice.PhotoUrl = photoUrl;
-                                      invoice.PhotoSize = 51488;
-                                      invoice.PhotoHeight = 490;
-                                      invoice.PhotoWidth = 640;
-                                  }
-
-                                  try
-                                  {
-                                      _botClient.SendInvoice(invoice);
-                                  }
-                                  catch (BotRequestException exp)
-                                  {
-                                      var error = string.Format(MSG.SendInvoiceError, exp.Message);
-                                      _botClient.SendMessage(cQuery.Message.Chat.Id, error, ParseMode.HTML);
-                                  }
-
-                                  _db.DemoInvoices.Delete(demoInvoice);
-                              }
-                              break;
-                          default:
-                              _botClient.AnswerCallbackQuery(cQuery.Id, "???", cacheTime: 999);
-                              break;
-                      }
-                  }*/
-
-
             }
         }
 
@@ -650,6 +487,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             string? username = null;
             string? firstname = null;
             string? lastname = null;
+            //string? дфтпгфпу = null;
 
             if (update.Message is not null)
             {
@@ -696,6 +534,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 throw new Exception("Don`t find user tg id");
             }
 
+            UserContextModel? userContext = null;
             try
             {
                 user = _userService.SignInUser(chatId).Result;
@@ -716,7 +555,10 @@ namespace Vanilla.TelegramBot.Services.Bot
                     LastName = lastname
                 }).Result;
 
-                string welcomeMessage = user.Username is not null || user.FirstName is not null ? "Welcome: " + user.Username ?? user.FirstName + "!" : "Welcome!";
+                userContext = new UserContextModel(user);
+                _usersContext.Add(userContext);
+
+                string welcomeMessage = user.Username is not null || user.FirstName is not null ? String.Format(userContext.ResourceManager.GetString("WelcomeUserMessage"), userContext.User.Username) : userContext.ResourceManager.GetString("WelcomeMessage");
 
                 try
                 {
@@ -730,16 +572,17 @@ namespace Vanilla.TelegramBot.Services.Bot
             }
 
             if (!_usersContext.Exists(x => x.User.UserId == user.UserId)) _usersContext.Add(new UserContextModel(user));
-            var currentUserContext = _usersContext.First(x => x.User.UserId == user.UserId);
-            return currentUserContext;
+
+            userContext = _usersContext.First(x => x.User.UserId == user.UserId);
+            return userContext;
         }
 
         private void ViewUpdateMenu(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext, ProjectModel projectModel)
         {
             var replyMarkuppp = GetUpdateKeyboard(projectModel);
 
-            var message = MessageWidgets.AboutProject(projectModel, userContext.User);
-            message += "\n" + "What do you want to update?";
+            var message = MessageWidgets.AboutProject(projectModel, userContext.User, userContext);
+            message += "\n\n" + userContext.ResourceManager.GetString("UpdateProjectInitMessasge");
 
             if(update.CallbackQuery.Message is not null)
             {
@@ -777,12 +620,12 @@ namespace Vanilla.TelegramBot.Services.Bot
             return replyMarkuppp;
         }
 
-        private InlineKeyboardMarkup GetProjectItemMenu(ProjectModel project)
+        private InlineKeyboardMarkup GetProjectItemMenu(ProjectModel project, UserContextModel userContext)
         {
             string deliver = " mya~ ";
 
-            var updateBtn = new InlineKeyboardButton(text: "Update ");
-            var deleteBtn = new InlineKeyboardButton(text: "Delete ");
+            var updateBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("UpdateBtn"));
+            var deleteBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("DeleteBtn"));
             updateBtn.CallbackData = "update" + deliver + project.Id;
             deleteBtn.CallbackData = "delete" + deliver + project.Id;
 

@@ -1,0 +1,269 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Abandoned" xml:space="preserve">
+    <value>Abandoned</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>The purpose of this project is to create a "bridge" between various creative personalities and the development of our creative sparks 🌟
+
+&lt;b&gt;Thank you&lt;/b&gt; for being with us ❤
+Also thank people who helped to develop this bot
+
+Created by a community member &lt;a href="https://t.me/include_anime"&gt;Programmers &amp; Cookies&lt;/a&gt;
+You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&lt;/a&gt;</value>
+  </data>
+  <data name="AddOwnProject" xml:space="preserve">
+    <value>Add own project</value>
+  </data>
+  <data name="Cannel" xml:space="preserve">
+    <value>Cannel</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="CreateProjectInitMess" xml:space="preserve">
+    <value>What is the name of your wonderful project?</value>
+  </data>
+  <data name="CreateProkectDescriptionValidationMess" xml:space="preserve">
+    <value>Wow Wow I see huge ambitions here, but alas, I can't fit them into one calf
+
+Describe your project more concisely. The maximum I can write is 4000 characters</value>
+  </data>
+  <data name="CreateProkectDevelopStatusMess" xml:space="preserve">
+    <value>Point to the links related to the project
+It can be a project development channel or its website
+
+❔ Separate several links with a comma
+&lt;i&gt;Example&lt;/i&gt;
+&lt;i&gt;https://t.me/include_anime, https://t.me/pandcgalaxy_bot&lt;/i&gt;</value>
+  </data>
+  <data name="CreateProkectDevelopStatusValidationMess" xml:space="preserve">
+    <value>Whoops!
+
+You must choose the correct answer, not write to me!</value>
+  </data>
+  <data name="CreateProkectNameAnswerMess" xml:space="preserve">
+    <value>Tell us more about it</value>
+  </data>
+  <data name="CreateProkectNameValidationMess" xml:space="preserve">
+    <value>Wow, the name of your project is as catchy as the names of some anime!
+
+But unfortunately, I cannot accept it
+The name must not exceed 64 characters</value>
+  </data>
+  <data name="CreateProkectSuccessMessage" xml:space="preserve">
+    <value>
+
+&lt;b&gt;I have successfully added your incredible project :3&lt;/b&gt;
+🔎 Now anyone can find it through inline search
+</value>
+  </data>
+  <data name="DeleteBtn" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Developed" xml:space="preserve">
+    <value>Developed</value>
+  </data>
+  <data name="FindThisProjectBtn" xml:space="preserve">
+    <value>Find this project</value>
+  </data>
+  <data name="InDevelopment" xml:space="preserve">
+    <value>In development</value>
+  </data>
+  <data name="MainMenu" xml:space="preserve">
+    <value>Main menu</value>
+  </data>
+  <data name="PlannedToDevelop" xml:space="preserve">
+    <value>Planned to develop</value>
+  </data>
+  <data name="PoolDescription" xml:space="preserve">
+    <value>Select the completion project status</value>
+  </data>
+  <data name="ServerError" xml:space="preserve">
+    <value>Oooh
+
+An internal server error has occurred
+If the bot does not work correctly in the future, please contact {0}
+
+Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ThiIsMyMessageValidationMess" xml:space="preserve">
+    <value>Munch
+
+This is my message!!! 
+&lt;b&gt;I won't miss it&lt;/b&gt;
+
+Write it yourself</value>
+  </data>
+  <data name="UnexpectedInputMess" xml:space="preserve">
+    <value>Oooh
+
+How nice of you to send this, but it's not what I expected ;(</value>
+  </data>
+  <data name="UpdateBtn" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="UpdateProjectDescriptionValidation" xml:space="preserve">
+    <value>Wow Wow I see huge ambitions here, but alas, I can't fit them into one calf
+
+Describe your project more concisely. The maximum I can write is 4000 characters</value>
+  </data>
+  <data name="UpdateProjectInitMessasge" xml:space="preserve">
+    <value>Which value to replace?</value>
+  </data>
+  <data name="UpdateProjectNameValidation" xml:space="preserve">
+    <value>Wow, the name of your project is as catchy as the names of some anime!
+
+But unfortunately, I cannot accept it
+The name must not exceed 64 characters</value>
+  </data>
+  <data name="UpdateProjectPoolValidation" xml:space="preserve">
+    <value>I am waiting for a response to the survey</value>
+  </data>
+  <data name="UpdateProjectSuccess" xml:space="preserve">
+    <value>Successfully updated!</value>
+  </data>
+  <data name="UserDontHaveProjectsMess" xml:space="preserve">
+    <value>About such
+You don't have any projects yet
+
+But you can add it!</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Hi {0}!
+I'm glad to see you here
+I help you save and share your great projects, in a profitable way, anywhere
+
+🌟To add and manage your projects, open /menu
+
+🔎&lt;b&gt;To check people's projects, it is enough to type @{1} here, or in any other chat and channel&lt;/b&gt;
+
+I hope you like it here ❤️</value>
+  </data>
+  <data name="WelcomeMessage" xml:space="preserve">
+    <value>Welcome!</value>
+  </data>
+  <data name="WelcomeUserMessage" xml:space="preserve">
+    <value>Welcome: {0}!</value>
+  </data>
+  <data name="WhatValueToReplace" xml:space="preserve">
+    <value>What value to replace?</value>
+  </data>
+</root>

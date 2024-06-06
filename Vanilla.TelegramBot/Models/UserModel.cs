@@ -14,6 +14,7 @@ namespace Vanilla.TelegramBot.Models
         public string? Username { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public string? LanguageCode { get; set; }
         public required DateTime RegisterInSystemAt { get; set; }
         public required DateTime RegisterInServiceAt { get; set; }
 

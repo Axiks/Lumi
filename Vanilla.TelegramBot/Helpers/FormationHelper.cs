@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace Vanilla.TelegramBot.Helpers
 {
@@ -19,7 +21,9 @@ namespace Vanilla.TelegramBot.Helpers
                 var validateUri = Uri.TryCreate(link, UriKind.Absolute, out outUri);
 
                 bool isShemeValid = outUri.Scheme == "https" || outUri.Scheme == "http" ? true : false;
-                bool isHostValid = outUri.Host.Split(".").Length > 1 && outUri.Host.Split(".").Last() != "." ? true : false;
+                bool isHostValid = outUri.Host.Split(".").Length > 1 && outUri  .Host.Split(".").Last() != "." ? true : false;
+
+                
 
                 if (!validateUri || !isShemeValid || !isHostValid)
                 {
@@ -31,6 +35,5 @@ namespace Vanilla.TelegramBot.Helpers
             Links.AddRange(links);
             return Links;
         }
-
     }
 }

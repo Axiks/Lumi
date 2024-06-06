@@ -17,6 +17,7 @@ using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Vanilla.TelegramBot.Services.Bot
 {
@@ -39,7 +40,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             _userContext.CreateProjectContext = new BotCreateProjectModel(userContext.User.UserId, userContext.User.TelegramId);
             _logger = logger;
 
-            var messInit = _botClient.SendMessage(userContext.User.TelegramId, "What is the name of your wonderful project?", replyMarkup: Keyboards.CannelKeyboard());
+            var messInit = _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("CreateProjectInitMess"), replyMarkup: Keyboards.CannelKeyboard());
             userContext.CreateProjectContext.SendedMessages.Add(messInit.MessageId);
         }
 
@@ -56,7 +57,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                     return;
                 }
 
-                    var messageText = update.Message.Text;
+                var messageText = update.Message.Text;
                 var chatId = update.Message.Chat.Id;
 
                 // Save name
@@ -64,14 +65,14 @@ namespace Vanilla.TelegramBot.Services.Bot
                 {
                     if (messageText.Length > 64)
                     {
-                        var messValidation = _botClient.SendMessage(chatId, "Wow, the name of your project is as catchy as the names of some anime!\r\n\r\nBut unfortunately, I cannot accept it\r\nThe name must not exceed 64 characters", parseMode: "HTML");
+                        var messValidation = _botClient.SendMessage(chatId, _userContext.ResourceManager.GetString("CreateProkectNameValidationMess"), parseMode: "HTML");
                         userProject.SendedMessages.Add(messValidation.MessageId);
                         return;
                     }
 
                     userProject.Name = messageText;
 
-                    var messName = _botClient.SendMessage(chatId, "Tell us more about it");
+                    var messName = _botClient.SendMessage(chatId, _userContext.ResourceManager.GetString("CreateProkectNameAnswerMess"));
                     userProject.SendedMessages.Add(messName.MessageId);
                     return;
                 }
@@ -80,14 +81,14 @@ namespace Vanilla.TelegramBot.Services.Bot
                 {
                     if (messageText.Length > 4000)
                     {
-                        var messValidation = _botClient.SendMessage(chatId, "Wow Wow I see huge ambitions here, but alas, I can't fit them into one calf\r\n\r\nDescribe your project more concisely. The maximum I can write is 4000 characters", parseMode: "HTML");
+                        var messValidation = _botClient.SendMessage(chatId, _userContext.ResourceManager.GetString("CreateProkectDescriptionValidationMess"), parseMode: "HTML");
                         userProject.SendedMessages.Add(messValidation.MessageId);
                         return;
                     }
 
                     userProject.Description = messageText;
 
-                    var pollArgs = MessageWidgets.GeneratePull(chatId);
+                    var pollArgs = MessageWidgets.GeneratePull(chatId, _userContext);
                     var sendedMessage = _botClient.SendPoll(pollArgs);
 
                     userProject.PollIdDevelopmentStatus = sendedMessage.Poll.Id;
@@ -99,7 +100,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
                 if (userProject.DevelopStatus is null)
                 {
-                    var messValidation = _botClient.SendMessage(chatId, "Whoops!\n\nYou must choose the correct answer, not write to me!", parseMode: "HTML");
+                    var messValidation = _botClient.SendMessage(chatId, _userContext.ResourceManager.GetString("CreateProkectDevelopStatusValidationMess"), parseMode: "HTML");
                     userProject.SendedMessages.Add(messValidation.MessageId);
                     return;
                 }
@@ -146,7 +147,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             var userProject = _userContext.CreateProjectContext;
 
             _logger.WriteLog("Unexpected input", LogType.Warning);
-            var errorMess = _botClient.SendMessage(_userContext.User.TelegramId, "Oooh\r\nHow nice of you to send this, but it's not what I expected ;(", parseMode: "HTML");
+            var errorMess = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UnexpectedInputMess"), parseMode: "HTML");
             userProject.SendedMessages.Add(errorMess.MessageId);
         }
 
@@ -159,7 +160,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             if (botUpdate.Message.ViaBot != null && botUpdate.Message.ViaBot.Id == _botClient.GetMe().Id)
             {
-                var mess = _botClient.SendMessage(botUpdate.Message.Chat.Id, "Munch\r\nThis is my message!!! \n<b>I won't miss it</b>\n\nWrite it yourself", parseMode: "HTML");
+                var mess = _botClient.SendMessage(botUpdate.Message.Chat.Id, _userContext.ResourceManager.GetString("ThiIsMyMessageValidationMess"), parseMode: "HTML");
                 userProject.SendedMessages.Add(mess.MessageId);
                 return false;
             }
@@ -181,7 +182,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             var selectedOption = statusAsList[optionIndex];
 
             userProject.DevelopStatus = selectedOption;
-            var messPoll = _botClient.SendMessage(poll.User.Id, "List the link to this project via comma");
+            var messPoll = _botClient.SendMessage(poll.User.Id, _userContext.ResourceManager.GetString("CreateProkectDevelopStatusMess"), parseMode: "HTML", linkPreviewOptions: new LinkPreviewOptions() { IsDisabled = true });
             userProject.SendedMessages.Add(messPoll.MessageId);
             return;
         }
@@ -200,14 +201,17 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             //_botClient.SendMessage(_userContext.User.TelegramId, "I successfully added your project :3");
             
-            var messageContent = MessageWidgets.AboutProject(project, _userContext.User);
-            messageContent += "\n\n <b>🌟 I successfully added your project :3</b>";
+            var messageContent = MessageWidgets.AboutProject(project, _userContext.User, _userContext);
+            messageContent += _userContext.ResourceManager.GetString("CreateProkectSuccessMessage");
 
             // Clear messages
             ClearMessages();
 
+            _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu());
+            var replyMarkuppp = GetProjectInlineOpenKeyboard(project);
             //echo information about project
-            _botClient.SendMessage(_userContext.User.TelegramId, messageContent, replyMarkup: Keyboards.MainMenu(), parseMode: "HTML");
+            //_botClient.SendMessage(_userContext.User.TelegramId, messageContent, replyMarkup: Keyboards.MainMenu(), parseMode: "HTML");
+            _botClient.SendMessage(_userContext.User.TelegramId, messageContent, replyMarkup: replyMarkuppp, parseMode: "HTML");
 
             CreatedSuccessEvent.Invoke(_userContext);
             // Clear "cashe"
@@ -218,6 +222,23 @@ namespace Vanilla.TelegramBot.Services.Bot
         {
             var userProject = _userContext.CreateProjectContext;
             _botClient.DeleteMessages(_userContext.User.TelegramId, userProject.SendedMessages);
+        }
+
+        private InlineKeyboardMarkup GetProjectInlineOpenKeyboard(ProjectModel projectModel)
+        {
+            var ShowProjectBtn = new InlineKeyboardButton(text: _userContext.ResourceManager.GetString("FindThisProjectBtn"));
+            ShowProjectBtn.SwitchInlineQueryCurrentChat = projectModel.Name;
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                                                ShowProjectBtn
+                                            },
+                }
+            );
+
+            return replyMarkuppp;
         }
 
     }

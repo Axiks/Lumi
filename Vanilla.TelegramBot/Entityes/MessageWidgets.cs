@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.BotAPI.AvailableMethods;
+﻿using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Models;
@@ -13,26 +8,28 @@ namespace Vanilla.TelegramBot.Entityes
 {
     public static class MessageWidgets
     {
-        public static string AboutProject(ProjectModel project, Models.UserModel user)
+        public static string AboutProject(ProjectModel project, Models.UserModel user, UserContextModel userContext)
         {
             string links = "";
             foreach (var link in project.Links)
             {
                 Uri linkUri = new Uri(link);
-                links += "<a href=\"" + linkUri + "\">" + linkUri.Host.ToString() + "</a>" + "\n";
+                //links += "<a href=\"" + FavionParser(linkUri.OriginalString) + "\">" + linkUri.Host.ToString()  + "</a>" + "\n";
+                links += String.Format("<a href=\"{0}\">&#128279 {1}</a>", linkUri.OriginalString, linkUri.Host.ToString());
             }
 
-            var messageContent = string.Format("<b>{0}</b> \n{1} \n\n{2}\n{3}\n{4}",
+            var messageContent = string.Format("<b>{0}</b> \n{1} \n\n{2}\n{3} {4}",
                                         project.Name,
                                         project.Description,
-                                        "<i>" + project.DevelopmentStatus.ToString() + "</i>",
+                                        
                                         links,
+                                        "<i>" + userContext.ResourceManager.GetString(project.DevelopmentStatus.ToString()) + "</i>",
                                         "@" + user.Username
                                 );
-            return messageContent;
+            return messageContent; 
         }
 
-        public static SendPollArgs GeneratePull(long chatId)
+        public static SendPollArgs GeneratePull(long chatId, UserContextModel userContext)
         {
             var pullOptions = new List<InputPollOption>
                 {
@@ -54,10 +51,17 @@ namespace Vanilla.TelegramBot.Entityes
                     }
                 };
 
-            var pollParameters = new SendPollArgs(chatId, "Select the completion project status", pullOptions);
+            var pollParameters = new SendPollArgs(chatId, userContext.ResourceManager.GetString("PoolDescription"), pullOptions);
             pollParameters.IsAnonymous = false;
 
             return pollParameters;
+        }
+
+        private static string FavionParser(string url)
+        {
+            //url = "https://github.com/favicon.ico";
+            var iconUrl = String.Format("https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url={0}&size=64", url);
+            return iconUrl;
         }
     }
 }
