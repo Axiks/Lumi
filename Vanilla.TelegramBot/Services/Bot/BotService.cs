@@ -546,7 +546,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             }
             catch
             {
-                if(update.Message is null)
+                if(update.Message is null && update.InlineQuery is null && update.CallbackQuery is null)
                 {
                     _logger.WriteLog("Unable to create user", LogType.Error);
                     throw new Exception("Unable to create user");

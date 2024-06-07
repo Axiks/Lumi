@@ -85,16 +85,25 @@ namespace Vanilla.TelegramBot
 
             void RunBot()
             {
+                var botService = serviceProvider.GetService<IBotService>();
                 try
                 {
-                    var botService = serviceProvider.GetService<IBotService>();
+                    
                     var x = botService.StartListening();
                     x.Wait();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    //RunBot();
+
+                    int i = 1;
+                    while (i < 30)
+                    {
+                        Thread.Sleep(1000);
+                        Console.WriteLine("Sleep sec: " + i.ToString());
+                        i++;
+                    }
+                    RunBot();
                 }
             }
 
