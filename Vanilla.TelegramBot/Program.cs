@@ -86,6 +86,7 @@ namespace Vanilla.TelegramBot
             void RunBot()
             {
                 var botService = serviceProvider.GetService<IBotService>();
+                var logger = serviceProvider.GetService<ILogger>();
                 try
                 {
                     
@@ -95,6 +96,7 @@ namespace Vanilla.TelegramBot
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
+                    logger.WriteLog(ex.Message, Common.Enums.LogType.Error);
 
                     int i = 1;
                     while (i < 30)
