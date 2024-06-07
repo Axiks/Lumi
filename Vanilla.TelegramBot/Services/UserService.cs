@@ -89,7 +89,8 @@ namespace Vanilla.TelegramBot.Services
                 TelegramId = userRequest.TelegramId,
                 Username = userRequest.Username,
                 FirstName = userRequest.FirstName, 
-                LastName = userRequest.LastName
+                LastName = userRequest.LastName,
+                LanguageCode = userRequest.LanguageCode,
             });
 
             var userModel = new UserModel
@@ -100,6 +101,7 @@ namespace Vanilla.TelegramBot.Services
                 Username = localUser.Username,
                 FirstName = localUser.FirstName,
                 LastName = localUser.LastName,
+                LanguageCode = localUser.LanguageCode,
                 RegisterInServiceAt = localUser.CreatedAt,
                 RegisterInSystemAt = oauthUser.CreatedAt
             };
@@ -124,6 +126,7 @@ namespace Vanilla.TelegramBot.Services
                 Username = localUser.Username,
                 FirstName = localUser.FirstName,
                 LastName = localUser.LastName,
+                LanguageCode = localUser.LanguageCode,
                 RegisterInServiceAt = localUser.CreatedAt,
                 RegisterInSystemAt = oauthUser.CreatedAt
             };

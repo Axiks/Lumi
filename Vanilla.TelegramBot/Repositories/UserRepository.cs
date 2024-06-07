@@ -23,6 +23,7 @@ namespace Vanilla.TelegramBot.Repositories
                 Username = user.Username,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                LanguageCode = user.LanguageCode,
             };
             await _dbContext.AddAsync(userEntity);
             await _dbContext.SaveChangesAsync();

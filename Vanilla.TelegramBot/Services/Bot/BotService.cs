@@ -56,7 +56,8 @@ namespace Vanilla.TelegramBot.Services.Bot
             _settings = config.GetRequiredSection("Settings").Get<SettingsModel>();
             if (_settings == null) throw new Exception("No found setting section");
 
-            _botClient = new TelegramBotClient(_settings.BotAccessToken);
+            string botToken = Environment.GetEnvironmentVariable("ACCESS_TOKEN") ?? _settings.BotAccessToken;
+            _botClient = new TelegramBotClient(botToken);
 
             _logger.WriteLog("Init bot service", LogType.Information);
         }
@@ -487,7 +488,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             string? username = null;
             string? firstname = null;
             string? lastname = null;
-            //string? дфтпгфпу = null;
+            string? languageCode = null;
 
             if (update.Message is not null)
             {
@@ -503,6 +504,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 username = update.InlineQuery.From.Username;
                 firstname = update.InlineQuery.From.FirstName;
                 lastname = update.InlineQuery.From.LastName;
+                languageCode = update.InlineQuery.From.LanguageCode;
             }
             else if (update.PollAnswer is not null)
             {
@@ -511,6 +513,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 username = update.PollAnswer.User.Username;
                 firstname = update.PollAnswer.User.FirstName;
                 lastname = update.PollAnswer.User.LastName;
+                languageCode = update.PollAnswer.User.LanguageCode;
             }
             else if (update.CallbackQuery is not null)
             {
@@ -519,6 +522,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 username = update.CallbackQuery.From.Username;
                 firstname = update.CallbackQuery.From.FirstName;
                 lastname = update.CallbackQuery.From.LastName;
+                languageCode = update.CallbackQuery.From.LanguageCode;
             }
             else if (update.ChosenInlineResult is not null)
             {
@@ -527,6 +531,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 username = update.ChosenInlineResult.From.Username;
                 firstname = update.ChosenInlineResult.From.FirstName;
                 lastname = update.ChosenInlineResult.From.LastName;
+                languageCode = update.ChosenInlineResult.From.LanguageCode;
             }
             else
             {
@@ -552,7 +557,8 @@ namespace Vanilla.TelegramBot.Services.Bot
                     TelegramId = chatId,
                     Username = username,
                     FirstName = firstname,
-                    LastName = lastname
+                    LastName = lastname,
+                    LanguageCode = languageCode,
                 }).Result;
 
                 userContext = new UserContextModel(user);

@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  tg_bot-service:
+    image: app:latest
+    depends_on:
+        - "postgres_db"
+    build: .
+    environment:
+        ACCESS_TOKEN: "${ACCESS_TOKEN}"
+    networks:
+        - vanilla-dev
+  
+  postgres_db:
+    image: postgres:latest
+    ports:
+      - "5434:5432"
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - pgconf:/etc/postgresql
+      - pglog:/var/log/postgresql
+    environment:
+        POSTGRES_DB: "${DB_NAME}"
+        POSTGRES_USER: "${DB_USERNAME}"
+        POSTGRES_PASSWORD: "${DB_PASSWORD}"
+    networks:
+        - vanilla-dev
+
+networks:
+ vanilla-dev:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+
+volumes:
+  pgdata:
+    driver: local
+  pgconf:
+    driver: local
+  pglog:
+    driver: local
