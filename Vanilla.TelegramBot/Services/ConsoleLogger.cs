@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Hosting.Server;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +18,11 @@ namespace Vanilla.TelegramBot.Services
 
         public Guid WriteLog(string message, LogType logType)
         {
+
+            string logFolderPath = "AppLog";
+            Directory.CreateDirectory(logFolderPath);
+
+
             var log = new LogModel
             {
                 Message = message,
@@ -39,6 +46,11 @@ namespace Vanilla.TelegramBot.Services
             }
             Console.WriteLine(logType + " & " + message);
             Console.ForegroundColor = ConsoleColor.White;
+
+            using (StreamWriter sw = File.AppendText(logFolderPath + "/" + "log.txt"))
+            {
+                sw.WriteLine(logType + " & " + message);
+            }
 
             return log.Id;
         }

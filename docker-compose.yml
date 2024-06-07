@@ -6,6 +6,8 @@ services:
     depends_on:
         - "postgres_db"
     build: .
+    volumes:
+      - ./applog:/app/AppLog
     environment:
         ACCESS_TOKEN: "${ACCESS_TOKEN}"
     networks:

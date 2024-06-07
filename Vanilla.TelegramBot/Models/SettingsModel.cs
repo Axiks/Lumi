@@ -22,7 +22,7 @@ namespace Vanilla.TelegramBot.Models
         public required string Database { get; set; }
         public required string Username { get; set; }
         public required string Password { get; set; }
-        public string ConnectionString => string.Format("Host={0};Database={1};Username={2};Password={3}", Host, Database, Username, Password);
+        public string ConnectionString => string.Format("Host={0};Database={1};Username={2};Password={3}", Environment.GetEnvironmentVariable("DB_HOST") ?? Host, Database, Username, Password);
     }
 
 }

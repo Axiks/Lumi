@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Vanilla.TelegramBot": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DB_HOST": "localhost"
+      }
+    }
+  }
+}
