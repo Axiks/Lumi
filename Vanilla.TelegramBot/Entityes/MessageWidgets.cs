@@ -16,7 +16,10 @@ namespace Vanilla.TelegramBot.Entityes
                 Uri linkUri = new Uri(link);
                 //links += "<a href=\"" + FavionParser(linkUri.OriginalString) + "\">" + linkUri.Host.ToString()  + "</a>" + "\n";
                 links += String.Format("<a href=\"{0}\">&#128279 {1}</a>", linkUri.OriginalString, linkUri.Host.ToString());
+                links += " ";
             }
+
+            var username = user.Username is not null ? "@" + user.Username : user.FirstName;
 
             var messageContent = string.Format("<b>{0}</b> \n{1} \n\n{2}\n{3} {4}",
                                         project.Name,
@@ -24,7 +27,7 @@ namespace Vanilla.TelegramBot.Entityes
                                         
                                         links,
                                         "<i>" + userContext.ResourceManager.GetString(project.DevelopmentStatus.ToString()) + "</i>",
-                                        "@" + user.Username
+                                        username
                                 );
             return messageContent; 
         }

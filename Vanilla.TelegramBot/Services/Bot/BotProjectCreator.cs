@@ -40,7 +40,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             _userContext.CreateProjectContext = new BotCreateProjectModel(userContext.User.UserId, userContext.User.TelegramId);
             _logger = logger;
 
-            var messInit = _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("CreateProjectInitMess"), replyMarkup: Keyboards.CannelKeyboard());
+            var messInit = _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("CreateProjectInitMess"), replyMarkup: Keyboards.CannelKeyboard(userContext));
             userContext.CreateProjectContext.SendedMessages.Add(messInit.MessageId);
         }
 
@@ -207,7 +207,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             // Clear messages
             ClearMessages();
 
-            _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu());
+            _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(_userContext));
             var replyMarkuppp = GetProjectInlineOpenKeyboard(project);
             //echo information about project
             //_botClient.SendMessage(_userContext.User.TelegramId, messageContent, replyMarkup: Keyboards.MainMenu(), parseMode: "HTML");

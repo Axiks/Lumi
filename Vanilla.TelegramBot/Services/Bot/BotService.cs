@@ -29,7 +29,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
         private readonly ILogger _logger;
 
-        private readonly string[] mainMenuitems = { "Add project", "View own projects" };
+        //private readonly string[] mainMenuitems = { "Add project", "View own projects" };
 
         private List<UserContextModel> _usersContext = new List<UserContextModel>();
 
@@ -122,12 +122,11 @@ namespace Vanilla.TelegramBot.Services.Bot
                             else if (update.CallbackQuery is not null)
                             {
                                 var messageText = update.CallbackQuery.Data;
-                                if(messageText == mainMenuitems[0])
+                                if(messageText == currentUserContext.ResourceManager.GetString("AddProject"))
                                 {
                                     ToCreateProject(update, currentUserContext);
                                     continue;
                                 }
-
                                 var userContext = GetUserContext(update);
                                 ToUpdateProject(update, userContext);
 
@@ -165,19 +164,19 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             var chatId = userContext.User.TelegramId; //also fix
 
-            if (!isUserHaveRunTask && update.Message.Text == mainMenuitems[0])
+            if (!isUserHaveRunTask && update.Message.Text == userContext.ResourceManager.GetString("AddProject"))
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
                 ToCreateProject(update, userContext);
                 return true;
             }
-            else if (!isUserHaveRunTask && update.Message.Text == mainMenuitems[1])
+            else if (!isUserHaveRunTask && update.Message.Text == userContext.ResourceManager.GetString("ViewOwnProjects"))
             {
                 //DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
                 ToViewUserProjets(update, userContext);
                 return true;
             }
-            else if (update.Message.Text == "Cannel")
+            else if (update.Message.Text == userContext.ResourceManager.GetString("Cannel"))
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
 
@@ -189,7 +188,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                     userContext.CreateProjectContext = null;
                     userContext.BotProjectCreator = null;
 
-                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu());
+                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
                 }
                 else if (userContext.BotProjectUpdater is not null)
                 {
@@ -197,11 +196,11 @@ namespace Vanilla.TelegramBot.Services.Bot
                     userContext.BotProjectUpdater.ClearMessages();
                     userContext.BotProjectUpdater = null;
 
-                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu());
+                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
                 }
                 else
                 {
-                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu());
+                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
                 }
                 return true;
             }
@@ -234,7 +233,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             var userProjects = _projectService.ProjectGetAllAsync().Result.Where(x => x.OwnerId == userContext.User.UserId).OrderBy(x => x.Created);
 
             var makeNewProjectBtn = new InlineKeyboardButton(text: "Add project");
-            makeNewProjectBtn.CallbackData = mainMenuitems[0];
+            makeNewProjectBtn.CallbackData = userContext.ResourceManager.GetString("AddProject");
 
             var replyNoProjectMarkup = new InlineKeyboardMarkup
             (
@@ -339,18 +338,33 @@ namespace Vanilla.TelegramBot.Services.Bot
         private bool BotSleshCommandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
         {
             if (update.Message is null) return false;
-            if (userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null) return false;
+            if (update.Message.Text is null) return false;
+            if (update.Message.Text.First() != '/') return false;
+            //if (userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null) return false;
+            if (userContext.BotProjectCreator is not null) {
+                userContext.BotProjectCreator.ClearMessages();
+                userContext.BotProjectCreator = null;
+                userContext.CreateProjectContext = null;
+                _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
+            }
+            else if (userContext.BotProjectUpdater is not null)
+            {
+                userContext.BotProjectUpdater.ClearMessages();
+                userContext.BotProjectUpdater = null;
+                userContext.UpdateProjectContext = null;
+                _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
+            };
             if (update.Message.Text == "/menu")
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
-                _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu());
+                _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
                 return true;
             }
             else if (update.Message.Text == "/start")
             {
                 var username = update.Message.Chat.FirstName ?? update.Message.Chat.Username ?? "";
                 string welcomeMessage = string.Format(userContext.ResourceManager.GetString("Welcome"), username, _botClient.GetMe().Username);
-                _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.MainMenu(), parseMode: "HTML");
+                _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.MainMenu(userContext), parseMode: "HTML");
                 return true;
             }
             else if (update.Message.Text == "/start addProject")
@@ -437,15 +451,15 @@ namespace Vanilla.TelegramBot.Services.Bot
                 var inputMessage = new InputTextMessageContent(messageContent);
                 inputMessage.ParseMode = "HTML";
 
-
-                var desription = "@" + owner.Username + "\n" + project.Description;
+                var ownerName = owner.Username is not null ? "@" + owner.Username : owner.FirstName;
+                var desription = ownerName + "\n" + project.Description;
 
                 int messageMaxLenght = 4090;
                 if (desription.Length >= messageMaxLenght)
                 {
                     int howMuchMore = desription.Length - messageMaxLenght;
                     int abbreviation = desription.Length - howMuchMore - 3;
-                    desription = "@" + owner.Username + "\n" + project.Description.Substring(0, abbreviation) + "...";
+                    desription = ownerName + "\n" + project.Description.Substring(0, abbreviation) + "...";
                 }
 
                 //var replyMarkuppp = userContext.User.TelegramId == owner.TelegramId && inline.From.Id == userContext.User.TelegramId && inline.ChatType == "sender" ? GetProjectItemMenu(project) : null;

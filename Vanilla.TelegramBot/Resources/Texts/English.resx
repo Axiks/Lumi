@@ -132,8 +132,14 @@ You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&l
   <data name="AddOwnProject" xml:space="preserve">
     <value>Add own project</value>
   </data>
+  <data name="AddProject" xml:space="preserve">
+    <value>Add project</value>
+  </data>
+  <data name="CanceledOperation" xml:space="preserve">
+    <value>Canceled the previous operation</value>
+  </data>
   <data name="Cannel" xml:space="preserve">
-    <value>Cannel</value>
+    <value>Cancel</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Create</value>
@@ -246,6 +252,9 @@ You don't have any projects yet
 
 But you can add it!</value>
   </data>
+  <data name="ViewOwnProjects" xml:space="preserve">
+    <value>View own projects</value>
+  </data>
   <data name="Welcome" xml:space="preserve">
     <value>Hi {0}!
 I'm glad to see you here
@@ -265,5 +274,8 @@ I hope you like it here ❤️</value>
   </data>
   <data name="WhatValueToReplace" xml:space="preserve">
     <value>What value to replace?</value>
+  </data>
+  <data name="WorkRecoveryMes" xml:space="preserve">
+    <value>Sorry for the inconvenience. The bot actually resumed work</value>
   </data>
 </root>

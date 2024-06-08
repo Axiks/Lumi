@@ -4,31 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.BotAPI.AvailableTypes;
+using Vanilla.TelegramBot.Models;
 
 namespace Vanilla.TelegramBot.UI
 {
     public static class Keyboards
     {
-        private readonly static string[] _mainMenuitems = { "Add project", "View own projects" };
-        public static ReplyKeyboardMarkup MainMenu()
+        //private readonly static string[] _mainMenuitems = { "Add project", "View own projects" };
+        public static ReplyKeyboardMarkup MainMenu(UserContextModel userContext)
         {
             KeyboardButton[][] mainMenuKeyboardButtons = new KeyboardButton[][]{
                                         new KeyboardButton[]{
-                                            new KeyboardButton(_mainMenuitems[0]),
+                                            new KeyboardButton(userContext.ResourceManager.GetString("AddProject")),
                                             },// column 1
                                          new KeyboardButton[]{
-                                             new KeyboardButton(_mainMenuitems[1])
+                                             new KeyboardButton(userContext.ResourceManager.GetString("ViewOwnProjects"))
                                              }
                                     };
 
             return new(mainMenuKeyboardButtons);
         }
 
-        public static ReplyKeyboardMarkup CannelKeyboard()
+        public static ReplyKeyboardMarkup CannelKeyboard(UserContextModel userContext)
         {
             var cannelKeyboardButtons = new KeyboardButton[][]{
                                             new KeyboardButton[]{
-                                                new KeyboardButton("Cannel"),
+                                                new KeyboardButton(userContext.ResourceManager.GetString("Cannel")),
                                             }
                                         };
              return new ReplyKeyboardMarkup(cannelKeyboardButtons);

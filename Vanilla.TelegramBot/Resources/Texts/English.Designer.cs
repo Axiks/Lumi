@@ -94,7 +94,25 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Cannel.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Add project.
+        /// </summary>
+        internal static string AddProject {
+            get {
+                return ResourceManager.GetString("AddProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Canceled the previous operation.
+        /// </summary>
+        internal static string CanceledOperation {
+            get {
+                return ResourceManager.GetString("CanceledOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Cancel.
         /// </summary>
         internal static string Cannel {
             get {
@@ -364,6 +382,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu View own projects.
+        /// </summary>
+        internal static string ViewOwnProjects {
+            get {
+                return ResourceManager.GetString("ViewOwnProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Hi {0}!
         ///I&apos;m glad to see you here
         ///I help you save and share your great projects, in a profitable way, anywhere
@@ -404,6 +431,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string WhatValueToReplace {
             get {
                 return ResourceManager.GetString("WhatValueToReplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Sorry for the inconvenience. The bot actually resumed work.
+        /// </summary>
+        internal static string WorkRecoveryMes {
+            get {
+                return ResourceManager.GetString("WorkRecoveryMes", resourceCulture);
             }
         }
     }

@@ -72,22 +72,22 @@ namespace Vanilla.TelegramBot.Services.Bot
             Message? sendedMessage = null;
             if (command == Command.name)
             {
-                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("WhatValueToReplace"), replyMarkup: Keyboards.CannelKeyboard());
+                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("WhatValueToReplace"), replyMarkup: Keyboards.CannelKeyboard(_userContext));
             }
             else if (command == Command.description)
             {
-                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("WhatValueToReplace"), replyMarkup: Keyboards.CannelKeyboard());
+                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("WhatValueToReplace"), replyMarkup: Keyboards.CannelKeyboard(_userContext));
             }
             else if (command == Command.status)
             {
                 // Generate new pool
                 var pollArgs = MessageWidgets.GeneratePull(_userContext.User.TelegramId, _userContext);
-                pollArgs.ReplyMarkup = Keyboards.CannelKeyboard();
+                pollArgs.ReplyMarkup = Keyboards.CannelKeyboard(_userContext);
                 sendedMessage = _botClient.SendPoll(pollArgs);
             }
             else if (command == Command.links)
             {
-                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("WhatValueToReplace"), replyMarkup: Keyboards.CannelKeyboard());
+                sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("WhatValueToReplace"), replyMarkup: Keyboards.CannelKeyboard(_userContext));
             }
 
             if(sendedMessage is not null)
