@@ -85,7 +85,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Add own project.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Добавити свій проект.
         /// </summary>
         internal static string AddOwnProject {
             get {
@@ -112,7 +112,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Cancel.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Відмінити.
         /// </summary>
         internal static string Cannel {
             get {
@@ -121,7 +121,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Create.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Створити.
         /// </summary>
         internal static string Create {
             get {
@@ -209,7 +209,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Delete.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Видалити.
         /// </summary>
         internal static string DeleteBtn {
             get {
@@ -272,10 +272,10 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Oooh
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Оуу
         ///
-        ///An internal server error has occurred
-        ///If the bot does not work correctly in the future, please contact {0}
+        ///Відбулась внутрішня помилка серверу
+        ///Якщо бот, надалі, не працюватиме належним чином, зв&apos;яжіться з {0}
         ///
         ///Error ID: &lt;b&gt;{1}&lt;/b&gt;.
         /// </summary>
@@ -286,12 +286,10 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Munch
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Отакої
         ///
-        ///This is my message!!! 
-        ///&lt;b&gt;I won&apos;t miss it&lt;/b&gt;
-        ///
-        ///Write it yourself.
+        ///Виглядає як моє повідомлення!! 
+        ///&lt;b&gt;Не можу його прийняти&lt;/b&gt;.
         /// </summary>
         internal static string ThiIsMyMessageValidationMess {
             get {
@@ -300,9 +298,11 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Oooh
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu ООО
         ///
-        ///How nice of you to send this, but it&apos;s not what I expected ;(.
+        ///Як мило з вашого боку, що прислали це повідомлення, але воно не є тим чого я очікую;(
+        ///
+        ///Повторіть спробу ще раз.
         /// </summary>
         internal static string UnexpectedInputMess {
             get {
@@ -391,15 +391,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Hi {0}!
-        ///I&apos;m glad to see you here
-        ///I help you save and share your great projects, in a profitable way, anywhere
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Привіт {0}!
+        ///Я рада тебе бачити у нас
+        ///Я можу допомогти тобі у збережені і поширені твоїх  чудових проектів, у вигідний спосіб, де завгодно
         ///
-        ///🌟To add and manage your projects, open /menu
+        ///🌟Щоб добавити, або управляти своїми проектами, відкрий  /menu
         ///
-        ///🔎&lt;b&gt;To check people&apos;s projects, it is enough to type @{1} here, or in any other chat and channel&lt;/b&gt;
+        ///🔎&lt;b&gt;Щоб переглянути проекти учасників, достатньо набрати @{1} тут, або в будь-якому іншому чаті чи каналі&lt;/b&gt;
         ///
-        ///I hope you like it here ❤️.
+        ///Я рада що ти з нами ❤️.
         /// </summary>
         internal static string Welcome {
             get {
@@ -408,7 +408,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Welcome!.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Вітаю.
         /// </summary>
         internal static string WelcomeMessage {
             get {
@@ -417,7 +417,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Welcome: {0}!.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Вітаю: {0}!.
         /// </summary>
         internal static string WelcomeUserMessage {
             get {

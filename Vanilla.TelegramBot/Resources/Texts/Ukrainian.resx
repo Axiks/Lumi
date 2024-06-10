@@ -130,7 +130,7 @@ Created by a community member &lt;a href="https://t.me/include_anime"&gt;Program
 You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&lt;/a&gt;</value>
   </data>
   <data name="AddOwnProject" xml:space="preserve">
-    <value>Add own project</value>
+    <value>Добавити свій проект</value>
   </data>
   <data name="AddProject" xml:space="preserve">
     <value>Add project</value>
@@ -139,10 +139,10 @@ You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&l
     <value>Canceled the previous operation</value>
   </data>
   <data name="Cannel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Відмінити</value>
   </data>
   <data name="Create" xml:space="preserve">
-    <value>Create</value>
+    <value>Створити</value>
   </data>
   <data name="CreateProjectInitMess" xml:space="preserve">
     <value>What is the name of your wonderful project?</value>
@@ -182,7 +182,7 @@ The name must not exceed 64 characters</value>
 </value>
   </data>
   <data name="DeleteBtn" xml:space="preserve">
-    <value>Delete</value>
+    <value>Видалити</value>
   </data>
   <data name="Developed" xml:space="preserve">
     <value>Developed</value>
@@ -203,25 +203,25 @@ The name must not exceed 64 characters</value>
     <value>Select the completion project status</value>
   </data>
   <data name="ServerError" xml:space="preserve">
-    <value>Oooh
+    <value>Оуу
 
-An internal server error has occurred
-If the bot does not work correctly in the future, please contact {0}
+Відбулась внутрішня помилка серверу
+Якщо бот, надалі, не працюватиме належним чином, зв'яжіться з {0}
 
 Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
   </data>
   <data name="ThiIsMyMessageValidationMess" xml:space="preserve">
-    <value>Munch
+    <value>Отакої
 
-This is my message!!! 
-&lt;b&gt;I won't miss it&lt;/b&gt;
-
-Write it yourself</value>
+Виглядає як моє повідомлення!! 
+&lt;b&gt;Не можу його прийняти&lt;/b&gt;</value>
   </data>
   <data name="UnexpectedInputMess" xml:space="preserve">
-    <value>Oooh
+    <value>ООО
 
-How nice of you to send this, but it's not what I expected ;(</value>
+Як мило з вашого боку, що прислали це повідомлення, але воно не є тим чого я очікую;(
+
+Повторіть спробу ще раз</value>
   </data>
   <data name="UpdateBtn" xml:space="preserve">
     <value>Update</value>
@@ -256,21 +256,21 @@ But you can add it!</value>
     <value>View own projects</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Hi {0}!
-I'm glad to see you here
-I help you save and share your great projects, in a profitable way, anywhere
+    <value>Привіт {0}!
+Я рада тебе бачити у нас
+Я можу допомогти тобі у збережені і поширені твоїх  чудових проектів, у вигідний спосіб, де завгодно
 
-🌟To add and manage your projects, open /menu
+🌟Щоб добавити, або управляти своїми проектами, відкрий  /menu
 
-🔎&lt;b&gt;To check people's projects, it is enough to type @{1} here, or in any other chat and channel&lt;/b&gt;
+🔎&lt;b&gt;Щоб переглянути проекти учасників, достатньо набрати @{1} тут, або в будь-якому іншому чаті чи каналі&lt;/b&gt;
 
-I hope you like it here ❤️</value>
+Я рада що ти з нами ❤️</value>
   </data>
   <data name="WelcomeMessage" xml:space="preserve">
-    <value>Welcome!</value>
+    <value>Вітаю</value>
   </data>
   <data name="WelcomeUserMessage" xml:space="preserve">
-    <value>Welcome: {0}!</value>
+    <value>Вітаю: {0}!</value>
   </data>
   <data name="WhatValueToReplace" xml:space="preserve">
     <value>What value to replace?</value>

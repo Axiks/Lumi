@@ -20,6 +20,7 @@ namespace Vanilla.TelegramBot.Models
         {
             User = user;
 
+            user.LanguageCode = "ua";
             _resourceManager = user.LanguageCode == "ua" || user.LanguageCode == "ru" ? new ResourceManager("Vanilla.TelegramBot.Resources.Texts.Ukrainian", typeof(Ukrainian).Assembly) : new ResourceManager("Vanilla.TelegramBot.Resources.Texts.English", typeof(English).Assembly);
         }
     }
