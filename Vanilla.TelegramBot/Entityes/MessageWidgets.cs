@@ -38,19 +38,19 @@ namespace Vanilla.TelegramBot.Entityes
                 {
                     new InputPollOption
                     {
-                        Text = DevelopmentStatusEnum.InDevelopment.ToString(),
+                        Text = userContext.ResourceManager.GetString(DevelopmentStatusEnum.InDevelopment.ToString()),
                     },
                     new InputPollOption
                     {
-                        Text = DevelopmentStatusEnum.Developed.ToString()
+                        Text = userContext.ResourceManager.GetString(DevelopmentStatusEnum.Developed.ToString())
                     },
                     new InputPollOption
                     {
-                        Text = DevelopmentStatusEnum.PlannedToDevelop.ToString()
+                        Text = userContext.ResourceManager.GetString(DevelopmentStatusEnum.PlannedToDevelop.ToString())
                     },
                     new InputPollOption
                     {
-                        Text = DevelopmentStatusEnum.Abandoned.ToString()
+                        Text = userContext.ResourceManager.GetString(DevelopmentStatusEnum.Abandoned.ToString())
                     }
                 };
 

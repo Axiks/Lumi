@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Abandoned" xml:space="preserve">
-    <value>Abandoned</value>
+    <value>Закинуто</value>
   </data>
   <data name="About" xml:space="preserve">
     <value>The purpose of this project is to create a "bridge" between various creative personalities and the development of our creative sparks 🌟
@@ -130,13 +130,13 @@ Created by a community member &lt;a href="https://t.me/include_anime"&gt;Program
 You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&lt;/a&gt;</value>
   </data>
   <data name="AddOwnProject" xml:space="preserve">
-    <value>Добавити свій проект</value>
+    <value>Додати власний проект</value>
   </data>
   <data name="AddProject" xml:space="preserve">
-    <value>Add project</value>
+    <value>Додати проект</value>
   </data>
   <data name="CanceledOperation" xml:space="preserve">
-    <value>Canceled the previous operation</value>
+    <value>Відмінено попередню дію</value>
   </data>
   <data name="Cannel" xml:space="preserve">
     <value>Відмінити</value>
@@ -145,62 +145,71 @@ You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&l
     <value>Створити</value>
   </data>
   <data name="CreateProjectInitMess" xml:space="preserve">
-    <value>What is the name of your wonderful project?</value>
+    <value>Як називається твій проект?</value>
   </data>
   <data name="CreateProkectDescriptionValidationMess" xml:space="preserve">
-    <value>Wow Wow I see huge ambitions here, but alas, I can't fit them into one calf
+    <value>Воу Воу! Я бачу в тебе величезні амбіції, але нажаль не зможу їх вмістити в одне повідомлення
 
-Describe your project more concisely. The maximum I can write is 4000 characters</value>
+Опишіть свій проект більш стисло. Максимально зможу вмістити лише 4000 знаків</value>
   </data>
   <data name="CreateProkectDevelopStatusMess" xml:space="preserve">
-    <value>Point to the links related to the project
-It can be a project development channel or its website
+    <value>Вкажіть на пов'язані з проектом посилання
+Це може бути як канал розвитку проекту, так і саме посилання на проект
 
-❔ Separate several links with a comma
-&lt;i&gt;Example&lt;/i&gt;
+❔ Для введення більше ніж одного посилання, розділи їх комою (,)
+&lt;i&gt;Приклад&lt;/i&gt;
 &lt;i&gt;https://t.me/include_anime, https://t.me/pandcgalaxy_bot&lt;/i&gt;</value>
   </data>
   <data name="CreateProkectDevelopStatusValidationMess" xml:space="preserve">
-    <value>Whoops!
+    <value>Ой!
 
-You must choose the correct answer, not write to me!</value>
+
+
+Ви повинні обрати одну з відповідей, а не писати мені!</value>
   </data>
   <data name="CreateProkectNameAnswerMess" xml:space="preserve">
-    <value>Tell us more about it</value>
+    <value>Розкажи про цей проект докладніше</value>
   </data>
   <data name="CreateProkectNameValidationMess" xml:space="preserve">
-    <value>Wow, the name of your project is as catchy as the names of some anime!
+    <value>Ого, ваша назва проекту на стільки довга, як назви деяких аніме!
 
-But unfortunately, I cannot accept it
-The name must not exceed 64 characters</value>
+Але, на жаль, я не можу цього прийняти
+
+Назва не повинна перевищувати 64 символи</value>
   </data>
   <data name="CreateProkectSuccessMessage" xml:space="preserve">
     <value>
 
-&lt;b&gt;I have successfully added your incredible project :3&lt;/b&gt;
-🔎 Now anyone can find it through inline search
+&lt;b&gt;Я успішно записала ваш неймовірний проект&lt;/b&gt;
+🔎 Тепер будь-хто зможе його знайти через inline пошук
 </value>
   </data>
   <data name="DeleteBtn" xml:space="preserve">
     <value>Видалити</value>
   </data>
+  <data name="DenialOfAccess" xml:space="preserve">
+    <value>Відказано у доступі</value>
+  </data>
   <data name="Developed" xml:space="preserve">
-    <value>Developed</value>
+    <value>Розроблено</value>
   </data>
   <data name="FindThisProjectBtn" xml:space="preserve">
-    <value>Find this project</value>
+    <value>Знайти через inline пошук</value>
   </data>
   <data name="InDevelopment" xml:space="preserve">
-    <value>In development</value>
+    <value>У розробці</value>
   </data>
   <data name="MainMenu" xml:space="preserve">
-    <value>Main menu</value>
+    <value>Головне меню</value>
   </data>
   <data name="PlannedToDevelop" xml:space="preserve">
-    <value>Planned to develop</value>
+    <value>Планується розробити</value>
   </data>
   <data name="PoolDescription" xml:space="preserve">
-    <value>Select the completion project status</value>
+    <value>Вкажіть етап розробки на якому знаходиться проект</value>
+  </data>
+  <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
+    <value>Проект було видалено</value>
   </data>
   <data name="ServerError" xml:space="preserve">
     <value>Оуу
@@ -224,15 +233,15 @@ Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
 Повторіть спробу ще раз</value>
   </data>
   <data name="UpdateBtn" xml:space="preserve">
-    <value>Update</value>
+    <value>Оновити</value>
   </data>
   <data name="UpdateProjectDescriptionValidation" xml:space="preserve">
-    <value>Wow Wow I see huge ambitions here, but alas, I can't fit them into one calf
+    <value>Воу Воу! Я бачу в тебе величезні амбіції, але нажаль не зможу їх вмістити в одне повідомлення
 
-Describe your project more concisely. The maximum I can write is 4000 characters</value>
+Опишіть свій проект більш стисло. Максимально зможу вмістити лише 4000 знаків</value>
   </data>
   <data name="UpdateProjectInitMessasge" xml:space="preserve">
-    <value>Which value to replace?</value>
+    <value>Що хочеш оновити?</value>
   </data>
   <data name="UpdateProjectNameValidation" xml:space="preserve">
     <value>Wow, the name of your project is as catchy as the names of some anime!
@@ -244,16 +253,13 @@ The name must not exceed 64 characters</value>
     <value>I am waiting for a response to the survey</value>
   </data>
   <data name="UpdateProjectSuccess" xml:space="preserve">
-    <value>Successfully updated!</value>
+    <value>Оновлено!</value>
   </data>
   <data name="UserDontHaveProjectsMess" xml:space="preserve">
-    <value>About such
-You don't have any projects yet
-
-But you can add it!</value>
+    <value>Я ще не маю записаних твоїх проектів, але можем їх добавити прям зараз!</value>
   </data>
   <data name="ViewOwnProjects" xml:space="preserve">
-    <value>View own projects</value>
+    <value>Мої проекти</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Привіт {0}!
@@ -273,9 +279,9 @@ But you can add it!</value>
     <value>Вітаю: {0}!</value>
   </data>
   <data name="WhatValueToReplace" xml:space="preserve">
-    <value>What value to replace?</value>
+    <value>Введи нове значення</value>
   </data>
   <data name="WorkRecoveryMes" xml:space="preserve">
-    <value>Sorry for the inconvenience. The bot actually resumed work</value>
+    <value>Вибачте за незручності. Бот відновив свою роботу</value>
   </data>
 </root>

@@ -184,6 +184,9 @@ The name must not exceed 64 characters</value>
   <data name="DeleteBtn" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="DenialOfAccess" xml:space="preserve">
+    <value>Denial of access</value>
+  </data>
   <data name="Developed" xml:space="preserve">
     <value>Developed</value>
   </data>
@@ -201,6 +204,10 @@ The name must not exceed 64 characters</value>
   </data>
   <data name="PoolDescription" xml:space="preserve">
     <value>Select the completion project status</value>
+  </data>
+  <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
+    <value>The project has been deleted</value>
+    <comment>Mes</comment>
   </data>
   <data name="ServerError" xml:space="preserve">
     <value>Oooh

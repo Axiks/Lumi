@@ -306,16 +306,16 @@ namespace Vanilla.TelegramBot.Services.Bot
                     _projectService.ProjectDelete(projectModel.Id);
                     if(update.CallbackQuery.Message is not null)
                     {
-                        _botClient.EditMessageText(userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: "The project has been deleted");
+                        _botClient.EditMessageText(userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: userContext.ResourceManager.GetString("ProjectHasBeenDeletedMes"));
                     }
                     else
                     {
-                        _botClient.SendMessage(userContext.User.TelegramId, text: "The project has been deleted");
+                        _botClient.SendMessage(userContext.User.TelegramId, text: userContext.ResourceManager.GetString("ProjectHasBeenDeletedMes"));
                     }
                 }
                 else
                 {
-                    _botClient.SendMessage(userContext.User.TelegramId, "Denial of access");
+                    _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("DenialOfAccess"));
                 }
             }
         }
