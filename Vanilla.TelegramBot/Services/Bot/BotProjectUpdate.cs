@@ -129,7 +129,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                     case Command.links:
                         try
                         {
-                            updateModel.Links = FormationHelper.Links(text);
+                            updateModel.Links = FormationHelper.Links(text, _userContext);
                         }
                         catch (ValidationException e)
                         {
@@ -146,6 +146,9 @@ namespace Vanilla.TelegramBot.Services.Bot
                             return;
                         }
                         break;
+                    default:
+                        UnexpectedInput();
+                        return;
                 }
                 _projectService.ProjectUpdateAsync(updateModel);
                 SuccessUpdated(update);
@@ -224,8 +227,8 @@ namespace Vanilla.TelegramBot.Services.Bot
 
         private void UnexpectedInput()
         {
-            _logger.WriteLog("Unexpected input", LogType.Warning);
-            var errorMess = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UpdateProjectSuccess"), parseMode: "HTML");
+            _logger.WriteLog(_userContext.ResourceManager.GetString("ThiIsMyMessageValidationMess"), LogType.Warning);
+            var errorMess = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UnexpectedInputsa"), parseMode: "HTML");
             _sendedMessagesId.Add(errorMess.MessageId);
         }
         public void ClearMessages()

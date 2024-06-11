@@ -121,13 +121,13 @@
     <value>Закинуто</value>
   </data>
   <data name="About" xml:space="preserve">
-    <value>The purpose of this project is to create a "bridge" between various creative personalities and the development of our creative sparks 🌟
+    <value>Метою даного проекту є створення свого роду «мосту» між різними творчими особистостями та розвиток наших творчих іскор 🌟
 
-&lt;b&gt;Thank you&lt;/b&gt; for being with us ❤
-Also thank people who helped to develop this bot
+&lt;b&gt;Дякую&lt;/b&gt; за те, що ви з нами❤
+Також дякую усім людям котрі допомагають при розробці даного бота
 
-Created by a community member &lt;a href="https://t.me/include_anime"&gt;Programmers &amp; Cookies&lt;/a&gt;
-You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&lt;/a&gt;</value>
+Створено учасником спільноти &lt;a href="https://t.me/include_anime"&gt;Програмісти і печеньки&lt;/a&gt;
+Ви можете зв'язатися з автором тут: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&lt;/a&gt;</value>
   </data>
   <data name="AddOwnProject" xml:space="preserve">
     <value>Додати власний проект</value>
@@ -190,6 +190,9 @@ You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&l
   <data name="DenialOfAccess" xml:space="preserve">
     <value>Відказано у доступі</value>
   </data>
+  <data name="Description" xml:space="preserve">
+    <value>Опис</value>
+  </data>
   <data name="Developed" xml:space="preserve">
     <value>Розроблено</value>
   </data>
@@ -199,8 +202,17 @@ You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&l
   <data name="InDevelopment" xml:space="preserve">
     <value>У розробці</value>
   </data>
+  <data name="Links" xml:space="preserve">
+    <value>Посилання</value>
+  </data>
+  <data name="LinksNotCorrect" xml:space="preserve">
+    <value>Посилання &lt;i&gt;{0}&lt;/i&gt; є не вірним. Спробуй ще раз</value>
+  </data>
   <data name="MainMenu" xml:space="preserve">
     <value>Головне меню</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Ім'я</value>
   </data>
   <data name="PlannedToDevelop" xml:space="preserve">
     <value>Планується розробити</value>
@@ -219,11 +231,17 @@ You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&l
 
 Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
   </data>
+  <data name="Status" xml:space="preserve">
+    <value>Етап розробки</value>
+  </data>
   <data name="ThiIsMyMessageValidationMess" xml:space="preserve">
     <value>Отакої
 
 Виглядає як моє повідомлення!! 
 &lt;b&gt;Не можу його прийняти&lt;/b&gt;</value>
+  </data>
+  <data name="UnexpectedInput" xml:space="preserve">
+    <value>Некоректний ввід</value>
   </data>
   <data name="UnexpectedInputMess" xml:space="preserve">
     <value>ООО
@@ -244,13 +262,14 @@ Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
     <value>Що хочеш оновити?</value>
   </data>
   <data name="UpdateProjectNameValidation" xml:space="preserve">
-    <value>Wow, the name of your project is as catchy as the names of some anime!
+    <value>Ого, ваша назва проекту на стільки довга, як назви деяких аніме!
 
-But unfortunately, I cannot accept it
-The name must not exceed 64 characters</value>
+Але, на жаль, я не можу цього прийняти
+
+Назва не повинна перевищувати 64 символи</value>
   </data>
   <data name="UpdateProjectPoolValidation" xml:space="preserve">
-    <value>I am waiting for a response to the survey</value>
+    <value>Я очікую відповіді на опитування</value>
   </data>
   <data name="UpdateProjectSuccess" xml:space="preserve">
     <value>Оновлено!</value>

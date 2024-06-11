@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using Vanilla.TelegramBot.Models;
 
 namespace Vanilla.TelegramBot.Helpers
 {
     public static class FormationHelper
     {
-        public static List<string> Links(string text)
+        public static List<string> Links(string text, UserContextModel userContext)
         {
             var stringLinks = text.Split(",");
             var Links = new List<string>();
@@ -32,7 +33,7 @@ namespace Vanilla.TelegramBot.Helpers
 
                 if (!ValidateUrl(url))
                 {
-                    throw new ValidationException(String.Format("Link <i>{0}</i> isn`t correct. Try again", link));
+                    throw new ValidationException(String.Format(userContext.ResourceManager.GetString("LinksNotCorrect"), link));
                 }
 
                 Regex isHaveShema = new Regex(@"^https?:\/\/");
@@ -48,7 +49,7 @@ namespace Vanilla.TelegramBot.Helpers
 
                 if (!validateUri || !isShemeValid)
                 {
-                    throw new ValidationException(String.Format("Link <i>{0}</i> isn`t correct. Try again", link));
+                    throw new ValidationException(String.Format(userContext.ResourceManager.GetString("LinksNotCorrect"), link));
                 }
 
                 Links.Add(url);

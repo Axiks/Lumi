@@ -109,7 +109,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 {
                     try
                     {
-                        var links =  FormationHelper.Links(messageText);
+                        var links =  FormationHelper.Links(messageText, _userContext);
                         userProject.Links = new List<string>(links);
                         AddProject();
                     }

@@ -70,13 +70,13 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The purpose of this project is to create a &quot;bridge&quot; between various creative personalities and the development of our creative sparks 🌟
+        ///   Looks up a localized string similar to Метою даного проекту є створення свого роду «мосту» між різними творчими особистостями та розвиток наших творчих іскор 🌟
         ///
-        ///&lt;b&gt;Thank you&lt;/b&gt; for being with us ❤
-        ///Also thank people who helped to develop this bot
+        ///&lt;b&gt;Дякую&lt;/b&gt; за те, що ви з нами❤
+        ///Також дякую усім людям котрі допомагають при розробці даного бота
         ///
-        ///Created by a community member &lt;a href=&quot;https://t.me/include_anime&quot;&gt;Programmers &amp; Cookies&lt;/a&gt;
-        ///You can contact the author here: &lt;a href=&quot;https://t.me/Yumikki&quot;&gt;@Yumikki&lt;/a&gt;.
+        ///Створено учасником спільноти &lt;a href=&quot;https://t.me/include_anime&quot;&gt;Програмісти і печеньки&lt;/a&gt;
+        ///Ви можете зв&apos;язатися з автором тут: &lt;a href=&quot;https://t.me/Yumikki&quot;&gt;@Yumikki&lt;/a&gt;.
         /// </summary>
         internal static string About {
             get {
@@ -230,6 +230,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Опис.
+        /// </summary>
+        internal static string Description {
+            get {
+                return ResourceManager.GetString("Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Розроблено.
         /// </summary>
         internal static string Developed {
@@ -257,11 +266,38 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Посилання.
+        /// </summary>
+        internal static string Links {
+            get {
+                return ResourceManager.GetString("Links", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Посилання &lt;i&gt;{0}&lt;/i&gt; є не вірним. Спробуй ще раз.
+        /// </summary>
+        internal static string LinksNotCorrect {
+            get {
+                return ResourceManager.GetString("LinksNotCorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Головне меню.
         /// </summary>
         internal static string MainMenu {
             get {
                 return ResourceManager.GetString("MainMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ім&apos;я.
+        /// </summary>
+        internal static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
@@ -307,6 +343,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Етап розробки.
+        /// </summary>
+        internal static string Status {
+            get {
+                return ResourceManager.GetString("Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Отакої
         ///
         ///Виглядає як моє повідомлення!! 
@@ -315,6 +360,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string ThiIsMyMessageValidationMess {
             get {
                 return ResourceManager.GetString("ThiIsMyMessageValidationMess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Некоректний ввід.
+        /// </summary>
+        internal static string UnexpectedInput {
+            get {
+                return ResourceManager.GetString("UnexpectedInput", resourceCulture);
             }
         }
         
@@ -361,10 +415,11 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wow, the name of your project is as catchy as the names of some anime!
+        ///   Looks up a localized string similar to Ого, ваша назва проекту на стільки довга, як назви деяких аніме!
         ///
-        ///But unfortunately, I cannot accept it
-        ///The name must not exceed 64 characters.
+        ///Але, на жаль, я не можу цього прийняти
+        ///
+        ///Назва не повинна перевищувати 64 символи.
         /// </summary>
         internal static string UpdateProjectNameValidation {
             get {
@@ -373,7 +428,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I am waiting for a response to the survey.
+        ///   Looks up a localized string similar to Я очікую відповіді на опитування.
         /// </summary>
         internal static string UpdateProjectPoolValidation {
             get {

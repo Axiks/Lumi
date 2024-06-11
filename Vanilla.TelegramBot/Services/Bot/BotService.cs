@@ -599,7 +599,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
         private void ViewUpdateMenu(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext, ProjectModel projectModel)
         {
-            var replyMarkuppp = GetUpdateKeyboard(projectModel);
+            var replyMarkuppp = GetUpdateKeyboard(userContext, projectModel);
 
             var message = MessageWidgets.AboutProject(projectModel, userContext.User, userContext);
             message += "\n\n" + userContext.ResourceManager.GetString("UpdateProjectInitMessasge");
@@ -614,12 +614,12 @@ namespace Vanilla.TelegramBot.Services.Bot
             }
         }
 
-        private InlineKeyboardMarkup GetUpdateKeyboard(ProjectModel projectModel)
+        private InlineKeyboardMarkup GetUpdateKeyboard(UserContextModel userContext, ProjectModel projectModel)
         {
-            var nameBtn = new InlineKeyboardButton(text: "Name");
-            var descriptionBtn = new InlineKeyboardButton(text: "Description");
-            var devStatusBtn = new InlineKeyboardButton(text: "Status");
-            var linksBtn = new InlineKeyboardButton(text: "Links");
+            var nameBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Name"));
+            var descriptionBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Description"));
+            var devStatusBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Status"));
+            var linksBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Links"));
             nameBtn.CallbackData = _punktsMenu[0] + _deliver + projectModel.Id;
             descriptionBtn.CallbackData = _punktsMenu[1] + _deliver + projectModel.Id;
             devStatusBtn.CallbackData = _punktsMenu[2] + _deliver + projectModel.Id;

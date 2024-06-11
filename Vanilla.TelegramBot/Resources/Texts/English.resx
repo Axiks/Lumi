@@ -187,6 +187,9 @@ The name must not exceed 64 characters</value>
   <data name="DenialOfAccess" xml:space="preserve">
     <value>Denial of access</value>
   </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
   <data name="Developed" xml:space="preserve">
     <value>Developed</value>
   </data>
@@ -196,8 +199,17 @@ The name must not exceed 64 characters</value>
   <data name="InDevelopment" xml:space="preserve">
     <value>In development</value>
   </data>
+  <data name="Links" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="LinksNotCorrect" xml:space="preserve">
+    <value>Link &lt;i&gt;{0}&lt;/i&gt; isn`t correct. Try again</value>
+  </data>
   <data name="MainMenu" xml:space="preserve">
     <value>Main menu</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
   </data>
   <data name="PlannedToDevelop" xml:space="preserve">
     <value>Planned to develop</value>
@@ -217,6 +229,9 @@ If the bot does not work correctly in the future, please contact {0}
 
 Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
   </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
   <data name="ThiIsMyMessageValidationMess" xml:space="preserve">
     <value>Munch
 
@@ -224,6 +239,9 @@ This is my message!!!
 &lt;b&gt;I won't miss it&lt;/b&gt;
 
 Write it yourself</value>
+  </data>
+  <data name="UnexpectedInput" xml:space="preserve">
+    <value>Unexpected input</value>
   </data>
   <data name="UnexpectedInputMess" xml:space="preserve">
     <value>Oooh
