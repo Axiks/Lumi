@@ -11,6 +11,7 @@ namespace Vanilla.Common.Enums
         InDevelopment,
         Developed,
         PlannedToDevelop,
-        Abandoned
+        Abandoned,
+        Frozen
     }
 }

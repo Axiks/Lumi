@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Models;
 
 namespace Vanilla.TelegramBot.Helpers
@@ -71,6 +72,30 @@ namespace Vanilla.TelegramBot.Helpers
             Match match = pattern.Match(value);
             if (match.Success == false) return false;
             return true;
+        }
+
+        public static string GetEmojiStatus(DevelopmentStatusEnum DevelopmentStatus)
+        {
+            string developStatusEmoji = "";
+            switch (DevelopmentStatus)
+            {
+                case DevelopmentStatusEnum.PlannedToDevelop:
+                    developStatusEmoji = "📘";
+                    break;
+                case DevelopmentStatusEnum.InDevelopment:
+                    developStatusEmoji = "📒";
+                    break;
+                case DevelopmentStatusEnum.Developed:
+                    developStatusEmoji = "📗";
+                    break;
+                case DevelopmentStatusEnum.Abandoned:
+                    developStatusEmoji = "📕";
+                    break;
+                case DevelopmentStatusEnum.Frozen:
+                    developStatusEmoji = "📙";
+                    break;
+            }
+            return developStatusEmoji;
         }
     }
 }

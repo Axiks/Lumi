@@ -1,6 +1,7 @@
 ﻿using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Vanilla.Common.Enums;
+using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Models;
 using Vanilla_App.Models;
 
@@ -20,13 +21,15 @@ namespace Vanilla.TelegramBot.Entityes
             }
 
             var username = user.Username is not null ? "@" + user.Username : user.FirstName;
+            string developStatusEmoji = FormationHelper.GetEmojiStatus(project.DevelopmentStatus);
 
-            var messageContent = string.Format("<b>{0}</b> \n{1} \n\n{2}\n{3} {4}",
+
+            var messageContent = string.Format("<b>{0}</b> \n\n{1} \n\n{2}\n{3} {4}",
                                         project.Name,
                                         project.Description,
                                         
                                         links,
-                                        "<i>" + userContext.ResourceManager.GetString(project.DevelopmentStatus.ToString()) + "</i>",
+                                        developStatusEmoji + " <i>" + userContext.ResourceManager.GetString(project.DevelopmentStatus.ToString()) + "</i>",
                                         username
                                 );
             return messageContent; 
@@ -38,19 +41,24 @@ namespace Vanilla.TelegramBot.Entityes
                 {
                     new InputPollOption
                     {
-                        Text = userContext.ResourceManager.GetString(DevelopmentStatusEnum.InDevelopment.ToString()),
+                        Text = FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.InDevelopment) + " " +  userContext.ResourceManager.GetString(DevelopmentStatusEnum.InDevelopment.ToString()),
                     },
                     new InputPollOption
                     {
-                        Text = userContext.ResourceManager.GetString(DevelopmentStatusEnum.Developed.ToString())
+                        Text = FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.Developed) + " " + userContext.ResourceManager.GetString(DevelopmentStatusEnum.Developed.ToString())
                     },
                     new InputPollOption
                     {
-                        Text = userContext.ResourceManager.GetString(DevelopmentStatusEnum.PlannedToDevelop.ToString())
+                        Text = FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.PlannedToDevelop) + " " + userContext.ResourceManager.GetString(DevelopmentStatusEnum.PlannedToDevelop.ToString())
                     },
                     new InputPollOption
                     {
-                        Text = userContext.ResourceManager.GetString(DevelopmentStatusEnum.Abandoned.ToString())
+                        Text = FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.Abandoned) + " " +  userContext.ResourceManager.GetString(DevelopmentStatusEnum.Abandoned.ToString())
+                    }
+                    ,
+                    new InputPollOption
+                    {
+                        Text = FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.Frozen) + " " +  userContext.ResourceManager.GetString(DevelopmentStatusEnum.Frozen.ToString())
                     }
                 };
 

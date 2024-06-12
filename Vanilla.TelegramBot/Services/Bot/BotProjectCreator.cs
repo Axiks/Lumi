@@ -134,6 +134,10 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 PollHendler(update);
             }
+            else if (update.ChosenInlineResult is not null)
+            {
+                // fix
+            }
             else
             {
                 UnexpectedInput();
@@ -162,6 +166,11 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 var mess = _botClient.SendMessage(botUpdate.Message.Chat.Id, _userContext.ResourceManager.GetString("ThiIsMyMessageValidationMess"), parseMode: "HTML");
                 userProject.SendedMessages.Add(mess.MessageId);
+                return false;
+            }
+            else if (botUpdate.Message.ViaBot != null)
+            {
+                UnexpectedInput();
                 return false;
             }
             return true;

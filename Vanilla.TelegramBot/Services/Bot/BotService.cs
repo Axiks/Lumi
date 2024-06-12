@@ -11,6 +11,7 @@ using Telegram.BotAPI.InlineMode;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Entityes;
+using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
@@ -95,6 +96,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                             if (update.InlineQuery is not null)
                             {
                                 InlineSearch(update, currentUserContext);
+                                continue;
                             }
 
                             // Midlware
@@ -345,6 +347,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             if (update.Message is null) return false;
             if (update.Message.Text is null) return false;
             if (update.Message.Text.First() != '/') return false;
+            if (update.Message.Text.Split(" ").Length > 2) return false;
             //if (userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null) return false;
             if (userContext.BotProjectCreator is not null) {
                 userContext.BotProjectCreator.ClearMessages();
@@ -457,8 +460,10 @@ namespace Vanilla.TelegramBot.Services.Bot
                 var inputMessage = new InputTextMessageContent(messageContent);
                 inputMessage.ParseMode = "HTML";
 
+                string developStatusEmoji = FormationHelper.GetEmojiStatus(project.DevelopmentStatus);
+
                 var ownerName = owner.Username is not null ? "@" + owner.Username : owner.FirstName;
-                var desription = ownerName + "\n" + project.Description;
+                var desription = developStatusEmoji + " " + ownerName + "\n" + project.Description;
 
                 int messageMaxLenght = 4090;
                 if (desription.Length >= messageMaxLenght)

@@ -172,6 +172,10 @@ namespace Vanilla.TelegramBot.Services.Bot
                 _projectService.ProjectUpdateAsync(updateModel);
                 SuccessUpdated(update);
             }
+            else if (update.ChosenInlineResult is not null)
+            {
+                // fix
+            }
             else
             {
                 UnexpectedInput();
@@ -208,13 +212,6 @@ namespace Vanilla.TelegramBot.Services.Bot
                 return false;
             };
 
-            if (botUpdate.Message.Text is null)
-            {
-                _sendedMessagesId.Add(botUpdate.Message.MessageId);
-                UnexpectedInput();
-                return false;
-            }
-
             if (botUpdate.Message.ViaBot != null && botUpdate.Message.ViaBot.Id == _botClient.GetMe().Id)
             {
                 _sendedMessagesId.Add(botUpdate.Message.MessageId);
@@ -222,13 +219,26 @@ namespace Vanilla.TelegramBot.Services.Bot
                 _sendedMessagesId.Add(mess.MessageId);
                 return false;
             }
+            else if (botUpdate.Message.ViaBot != null)
+            {
+                _sendedMessagesId.Add(botUpdate.Message.MessageId);
+                UnexpectedInput();
+                return false;
+            }
+            else if (botUpdate.Message.Text is null)
+            {
+                _sendedMessagesId.Add(botUpdate.Message.MessageId);
+                UnexpectedInput();
+                return false;
+            }
+
             return true;
         }
 
         private void UnexpectedInput()
         {
-            _logger.WriteLog(_userContext.ResourceManager.GetString("ThiIsMyMessageValidationMess"), LogType.Warning);
-            var errorMess = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UnexpectedInputsa"), parseMode: "HTML");
+            _logger.WriteLog("UnexpectedInpu", LogType.Warning);
+            var errorMess = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UnexpectedInputMess"), parseMode: "HTML");
             _sendedMessagesId.Add(errorMess.MessageId);
         }
         public void ClearMessages()

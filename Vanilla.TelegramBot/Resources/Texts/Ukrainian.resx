@@ -163,8 +163,6 @@
   <data name="CreateProkectDevelopStatusValidationMess" xml:space="preserve">
     <value>Ой!
 
-
-
 Ви повинні обрати одну з відповідей, а не писати мені!</value>
   </data>
   <data name="CreateProkectNameAnswerMess" xml:space="preserve">
@@ -197,6 +195,9 @@
   <data name="FindThisProjectBtn" xml:space="preserve">
     <value>Знайти через inline пошук</value>
   </data>
+  <data name="Frozen" xml:space="preserve">
+    <value>Заморожено</value>
+  </data>
   <data name="InDevelopment" xml:space="preserve">
     <value>У розробці</value>
   </data>
@@ -213,10 +214,10 @@
     <value>Ім'я</value>
   </data>
   <data name="PlannedToDevelop" xml:space="preserve">
-    <value>Планується розробити</value>
+    <value>В планах</value>
   </data>
   <data name="PoolDescription" xml:space="preserve">
-    <value>Вкажіть етап розробки на якому знаходиться проект</value>
+    <value>На якому етапі розробки знаходиться ваш проект?</value>
   </data>
   <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
     <value>Проект було видалено</value>
@@ -244,7 +245,7 @@ Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
   <data name="UnexpectedInputMess" xml:space="preserve">
     <value>ООО
 
-Як мило з вашого боку, що прислали це повідомлення, але воно не є тим чого я очікую;(
+Як мило з вашого боку, що прислали це повідомлення, але воно не є тим чого я очікувала 😑
 
 Повторіть спробу ще раз</value>
   </data>
