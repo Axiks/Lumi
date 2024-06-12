@@ -208,7 +208,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             ClearMessages();
 
             _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(_userContext));
-            var replyMarkuppp = GetProjectInlineOpenKeyboard(project);
+            var replyMarkuppp = GetProjectInlineOpenKeyboard(project, _userContext);
             //echo information about project
             //_botClient.SendMessage(_userContext.User.TelegramId, messageContent, replyMarkup: Keyboards.MainMenu(), parseMode: "HTML");
             _botClient.SendMessage(_userContext.User.TelegramId, messageContent, replyMarkup: replyMarkuppp, parseMode: "HTML");
@@ -224,17 +224,28 @@ namespace Vanilla.TelegramBot.Services.Bot
             _botClient.DeleteMessages(_userContext.User.TelegramId, userProject.SendedMessages);
         }
 
-        private InlineKeyboardMarkup GetProjectInlineOpenKeyboard(ProjectModel projectModel)
+        private InlineKeyboardMarkup GetProjectInlineOpenKeyboard(ProjectModel projectModel, UserContextModel userContext)
         {
-            var ShowProjectBtn = new InlineKeyboardButton(text: _userContext.ResourceManager.GetString("FindThisProjectBtn"));
-            ShowProjectBtn.SwitchInlineQueryCurrentChat = projectModel.Name;
+            var SearchProjectBtn = new InlineKeyboardButton(text: _userContext.ResourceManager.GetString("FindThisProjectBtn"));
+            SearchProjectBtn.SwitchInlineQueryCurrentChat = projectModel.Name;
+
+            string deliver = " mya~ ";
+
+            var updateBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("UpdateBtn"));
+            var deleteBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("DeleteBtn"));
+            updateBtn.CallbackData = "update" + deliver + projectModel.Id;
+            deleteBtn.CallbackData = "delete" + deliver + projectModel.Id;
 
             var replyMarkuppp = new InlineKeyboardMarkup
             (
                 new InlineKeyboardButton[][]{
                     new InlineKeyboardButton[]{
-                                                ShowProjectBtn
-                                            },
+                        updateBtn,
+                        deleteBtn
+                    },
+                    new InlineKeyboardButton[]{
+                        SearchProjectBtn
+                    },
                 }
             );
 

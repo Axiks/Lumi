@@ -122,9 +122,14 @@ namespace Vanilla.TelegramBot.Services.Bot
                             else if (update.CallbackQuery is not null)
                             {
                                 var messageText = update.CallbackQuery.Data;
-                                if(messageText == currentUserContext.ResourceManager.GetString("AddProject"))
+                                if(messageText == "AddProject")
                                 {
                                     ToCreateProject(update, currentUserContext);
+                                    continue;
+                                }
+                                else if (messageText == "MainMenu")
+                                {
+                                    _botClient.SendMessage(currentUserContext.User.TelegramId, currentUserContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(currentUserContext));
                                     continue;
                                 }
                                 var userContext = GetUserContext(update);
@@ -364,7 +369,8 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 var username = update.Message.Chat.FirstName ?? update.Message.Chat.Username ?? "";
                 string welcomeMessage = string.Format(userContext.ResourceManager.GetString("Welcome"), username, _botClient.GetMe().Username);
-                _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.MainMenu(userContext), parseMode: "HTML");
+                _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.InlineStartMenuKeyboard(userContext), parseMode: "HTML");
+                //_botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.MainMenu(userContext), parseMode: "HTML");
                 return true;
             }
             else if (update.Message.Text == "/start addProject")

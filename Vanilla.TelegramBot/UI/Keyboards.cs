@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.BotAPI.AvailableTypes;
 using Vanilla.TelegramBot.Models;
+using Vanilla_App.Models;
 
 namespace Vanilla.TelegramBot.UI
 {
@@ -33,6 +34,27 @@ namespace Vanilla.TelegramBot.UI
                                             }
                                         };
              return new ReplyKeyboardMarkup(cannelKeyboardButtons);
+        }
+
+        public static InlineKeyboardMarkup InlineStartMenuKeyboard(UserContextModel userContext)
+        {
+            var AddProjectBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("AddProject"));
+            AddProjectBtn.CallbackData = "AddProject";
+            var MainMenuBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("MainMenu"));
+            MainMenuBtn.CallbackData = "MainMenu";
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                                                AddProjectBtn
+                                            },
+                    new InlineKeyboardButton[]{
+                                                MainMenuBtn
+                                            },
+                }
+            );
+            return replyMarkuppp;
         }
     }
 }
