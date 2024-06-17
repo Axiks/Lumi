@@ -42,6 +42,8 @@ namespace Vanilla.TelegramBot.UI
             AddProjectBtn.CallbackData = "AddProject";
             var MainMenuBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("MainMenu"));
             MainMenuBtn.CallbackData = "MainMenu";
+            var SearchBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Search"));
+            SearchBtn.SwitchInlineQueryCurrentChat = "";
 
             var replyMarkuppp = new InlineKeyboardMarkup
             (
@@ -50,7 +52,8 @@ namespace Vanilla.TelegramBot.UI
                                                 AddProjectBtn
                                             },
                     new InlineKeyboardButton[]{
-                                                MainMenuBtn
+                                                MainMenuBtn,
+                                                SearchBtn
                                             },
                 }
             );
