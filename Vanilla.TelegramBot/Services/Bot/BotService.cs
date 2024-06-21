@@ -175,7 +175,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             if (!isUserHaveRunTask && update.Message.Text == userContext.ResourceManager.GetString("AddProject"))
             {
-                DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
+                //DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
                 ToCreateProject(update, userContext);
                 return true;
             }
@@ -420,7 +420,10 @@ namespace Vanilla.TelegramBot.Services.Bot
             var inline = update.InlineQuery;
             var query = inline.Query;
 
-            var inlineAddOwnProjectButton = new InlineQueryResultsButton
+            //future function
+            var inlineOffset = inline.Offset;
+
+             var inlineAddOwnProjectButton = new InlineQueryResultsButton
             {
                 Text = userContext.ResourceManager.GetString("AddOwnProject"),
                 StartParameter = "addProject"
@@ -463,9 +466,20 @@ namespace Vanilla.TelegramBot.Services.Bot
                 }
             }
 
-            int index = 0;
-            foreach (var project in projects)
+            projects.AddRange(projects);
+
+            int maxProjects = 48;
+            int index = inlineOffset is not null && inlineOffset != "" ? int.Parse(inlineOffset) + 1 : 0;
+            int toIndex = index + 1 + maxProjects <= projects.Count ? index + 1 + maxProjects : projects.Count;
+
+            var offsetProjectId = toIndex < projects.Count ? toIndex.ToString() : null;
+
+
+            while (index < toIndex)
             {
+                //var project in projects
+                var project = projects[index];
+
                 //var messageContent = AboutProjectFormating(project);
                 var owner = _userService.GetUser(project.OwnerId).Result;
                 var messageContent = MessageWidgets.AboutProject(project, owner, userContext);
@@ -502,7 +516,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             var ans = new AnswerInlineQueryArgs(inline.Id, res);
 
-            _botClient.AnswerInlineQuery(inlineQueryId: inline.Id, results: res, button: inlineAddOwnProjectButton);
+            _botClient.AnswerInlineQuery(inlineQueryId: inline.Id, results: res, button: inlineAddOwnProjectButton, nextOffset: offsetProjectId, cacheTime: 24);
         }
 
         private void DeleteMessage(long chatId, int messageId)
