@@ -141,6 +141,9 @@ You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&l
   <data name="Cannel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="CommandNotRecognized" xml:space="preserve">
+    <value>Command &lt;i&gt;{0}&lt;/i&gt; not recognized</value>
+  </data>
   <data name="Create" xml:space="preserve">
     <value>Create</value>
   </data>

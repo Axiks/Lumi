@@ -141,6 +141,9 @@
   <data name="Cannel" xml:space="preserve">
     <value>Відмінити</value>
   </data>
+  <data name="CommandNotRecognized" xml:space="preserve">
+    <value>Команда &lt;i&gt;{0}&lt;/i&gt; не розпізнана</value>
+  </data>
   <data name="Create" xml:space="preserve">
     <value>Створити</value>
   </data>

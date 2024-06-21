@@ -6,6 +6,7 @@ using System.Text;
 using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
+using Telegram.BotAPI.Extensions;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.InlineMode;
 using Telegram.BotAPI.UpdatingMessages;
@@ -70,6 +71,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             var me = _botClient.GetMe();
             Console.WriteLine("My name is {0}.", me.FirstName);
             Console.WriteLine($"Start listening for @{me.Username}");
+            Console.WriteLine($"Start time " + DateTime.UtcNow.ToString());
             Console.WriteLine($"https://t.me/{me.Username}");
 
             var updates = _botClient.GetUpdates();
@@ -347,6 +349,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             if (update.Message is null) return false;
             if (update.Message.Text is null) return false;
             if (update.Message.Text.First() != '/') return false;
+            if (update.Message.Text.Split("/").Length != 2) return false;
             if (update.Message.Text.Split(" ").Length > 2) return false;
             //if (userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null) return false;
             if (userContext.BotProjectCreator is not null) {
@@ -397,6 +400,16 @@ namespace Vanilla.TelegramBot.Services.Bot
             else if (update.Message.Text == "/test-exeption")
             {
                 throw new Exception("test exeption");
+            }
+            else
+            {
+                var ms = userContext.ResourceManager.GetString("CommandNotRecognized");
+                var formatedMs = String.Format(ms, update.Message.Text);
+
+                SendMessageArgs inputMessage = new SendMessageArgs(update.Message.Chat.Id, formatedMs);
+                inputMessage.ParseMode = "HTML";
+
+                _botClient.SendMessage(inputMessage);
             }
 
             return false;
@@ -560,7 +573,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             }
             else
             {
-                _logger.WriteLog("Don`t find user tg id", LogType.Error);
+                _logger.WriteLog("Don`t find user tg id; Update type: " + update.GetUpdateType(), LogType.Error);
                 throw new Exception("Don`t find user tg id");
             }
 

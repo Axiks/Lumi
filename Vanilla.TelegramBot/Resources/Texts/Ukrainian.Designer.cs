@@ -121,6 +121,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Команда &lt;i&gt;{0}&lt;/i&gt; не розпізнана.
+        /// </summary>
+        internal static string CommandNotRecognized {
+            get {
+                return ResourceManager.GetString("CommandNotRecognized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Створити.
         /// </summary>
         internal static string Create {
