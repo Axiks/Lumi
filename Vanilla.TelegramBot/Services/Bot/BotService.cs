@@ -105,6 +105,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                             if (update.CallbackQuery is not null)
                             {
                                 _botClient.AnswerCallbackQuery(update.CallbackQuery.Id);
+                                if(BotCallBackComandHendler(update, currentUserContext)) continue;
                             }
 
                             if (BotInlineComandHendler(update, currentUserContext)) continue;
@@ -164,6 +165,17 @@ namespace Vanilla.TelegramBot.Services.Bot
             Console.ReadLine();
         }
 
+        private bool BotCallBackComandHendler(Update update, UserContextModel userContext)
+        {
+            var command = update.CallbackQuery.Data;
+            if (command == userContext.ResourceManager.GetString("AddProject"))
+            {
+                ToCreateProject(update, userContext);
+                return true;
+            }
+
+            return false;
+        }
 
         private string _deliver = " mya~ ";
         private bool BotInlineComandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
@@ -241,7 +253,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             // temp fix
             var userProjects = _projectService.ProjectGetAllAsync().Result.Where(x => x.OwnerId == userContext.User.UserId).OrderBy(x => x.Created);
 
-            var makeNewProjectBtn = new InlineKeyboardButton(text: "Add project");
+            var makeNewProjectBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("AddProject"));
             makeNewProjectBtn.CallbackData = userContext.ResourceManager.GetString("AddProject");
 
             var replyNoProjectMarkup = new InlineKeyboardMarkup
