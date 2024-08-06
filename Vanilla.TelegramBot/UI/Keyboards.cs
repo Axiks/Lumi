@@ -33,7 +33,9 @@ namespace Vanilla.TelegramBot.UI
                                                 new KeyboardButton(userContext.ResourceManager.GetString("Cannel")),
                                             }
                                         };
-             return new ReplyKeyboardMarkup(cannelKeyboardButtons);
+            var replyMarkup = new ReplyKeyboardMarkup(cannelKeyboardButtons);
+            replyMarkup.ResizeKeyboard = true;
+            return replyMarkup;
         }
 
         public static InlineKeyboardMarkup InlineStartMenuKeyboard(UserContextModel userContext)
