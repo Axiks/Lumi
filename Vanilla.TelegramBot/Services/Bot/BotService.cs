@@ -478,8 +478,6 @@ namespace Vanilla.TelegramBot.Services.Bot
                 }
             }
 
-            projects.AddRange(projects);
-
             int maxProjects = 48;
             int index = inlineOffset is not null && inlineOffset != "" ? int.Parse(inlineOffset) + 1 : 0;
             int toIndex = index + 1 + maxProjects <= projects.Count ? index + 1 + maxProjects : projects.Count;

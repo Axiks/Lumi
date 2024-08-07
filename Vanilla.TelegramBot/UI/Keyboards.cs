@@ -35,6 +35,7 @@ namespace Vanilla.TelegramBot.UI
                                         };
             var replyMarkup = new ReplyKeyboardMarkup(cannelKeyboardButtons);
             replyMarkup.ResizeKeyboard = true;
+            //replyMarkup.InputFieldPlaceholder = "Costume placeholder";
             return replyMarkup;
         }
 
