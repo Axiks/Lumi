@@ -26,7 +26,7 @@ namespace Vanilla.TelegramBot.UI
             return new(mainMenuKeyboardButtons);
         }
 
-        public static ReplyKeyboardMarkup CannelKeyboard(UserContextModel userContext)
+        public static ReplyKeyboardMarkup CannelKeyboard(UserContextModel userContext, String placeholder = null)
         {
             var cannelKeyboardButtons = new KeyboardButton[][]{
                                             new KeyboardButton[]{
@@ -35,7 +35,8 @@ namespace Vanilla.TelegramBot.UI
                                         };
             var replyMarkup = new ReplyKeyboardMarkup(cannelKeyboardButtons);
             replyMarkup.ResizeKeyboard = true;
-            //replyMarkup.InputFieldPlaceholder = "Costume placeholder";
+            if (placeholder != null)
+                replyMarkup.InputFieldPlaceholder = placeholder;
             return replyMarkup;
         }
 
