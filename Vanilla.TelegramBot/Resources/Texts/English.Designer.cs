@@ -290,11 +290,20 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Main menu.
+        ///   Looks up a localized string similar to Open menu.
         /// </summary>
         internal static string MainMenu {
             get {
                 return ResourceManager.GetString("MainMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose an action from the menu.
+        /// </summary>
+        internal static string MainMenuSendMes {
+            get {
+                return ResourceManager.GetString("MainMenuSendMes", resourceCulture);
             }
         }
         

@@ -8,6 +8,7 @@ namespace Vanilla.TelegramBot.Models
     {
         private ResourceManager _resourceManager;
 
+        public List<int> SendMessages { get; set; } = new List<int>();
 
         public readonly UserModel User;
         public ResourceManager ResourceManager { get { return _resourceManager; } }

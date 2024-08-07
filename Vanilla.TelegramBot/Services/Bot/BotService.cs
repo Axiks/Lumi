@@ -134,7 +134,8 @@ namespace Vanilla.TelegramBot.Services.Bot
                                 }
                                 else if (messageText == "MainMenu")
                                 {
-                                    _botClient.SendMessage(currentUserContext.User.TelegramId, currentUserContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(currentUserContext));
+                                    //_botClient.SendMessage(currentUserContext.User.TelegramId, currentUserContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(currentUserContext));
+                                    OpenMainMenu(currentUserContext);
                                     continue;
                                 }
                                 var userContext = GetUserContext(update);
@@ -188,12 +189,15 @@ namespace Vanilla.TelegramBot.Services.Bot
             if (!isUserHaveRunTask && update.Message.Text == userContext.ResourceManager.GetString("AddProject"))
             {
                 //DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
+                DeleteAllMesssages(userContext);
                 ToCreateProject(update, userContext);
                 return true;
             }
             else if (!isUserHaveRunTask && update.Message.Text == userContext.ResourceManager.GetString("ViewOwnProjects"))
             {
                 //DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
+
+                DeleteAllMesssages(userContext);
                 ToViewUserProjets(update, userContext);
                 return true;
             }
@@ -209,7 +213,8 @@ namespace Vanilla.TelegramBot.Services.Bot
                     userContext.CreateProjectContext = null;
                     userContext.BotProjectCreator = null;
 
-                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
+                    OpenMainMenu(userContext);
+                    //_botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
                 }
                 else if (userContext.BotProjectUpdater is not null)
                 {
@@ -217,11 +222,13 @@ namespace Vanilla.TelegramBot.Services.Bot
                     userContext.BotProjectUpdater.ClearMessages();
                     userContext.BotProjectUpdater = null;
 
-                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
+                    OpenMainMenu(userContext);
+                    //_botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
                 }
                 else
                 {
-                    _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
+                    OpenMainMenu(userContext);
+                    //_botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
                 }
                 return true;
             }
@@ -274,8 +281,10 @@ namespace Vanilla.TelegramBot.Services.Bot
 
                 var replyMarkuppp = GetProjectItemMenu(project, userContext);
 
-                _botClient.SendMessage(chatId, MessageWidgets.AboutProject(project, userContext.User, userContext),
+                var messageObj = _botClient.SendMessage(chatId, MessageWidgets.AboutProject(project, userContext.User, userContext),
                     replyMarkup: replyMarkuppp, parseMode: "HTML");
+
+                userContext.SendMessages.Add(messageObj.MessageId);
             }
 
             try
@@ -340,6 +349,17 @@ namespace Vanilla.TelegramBot.Services.Bot
                 }
             }
         }
+        private void OpenMainMenu(UserContextModel userContext)
+        {
+       /*     if (userContext.SendMessages is not null || userContext.SendMessages.Count() != 0)
+            {
+                _botClient.EditMessageReplyMarkup(userContext.User.TelegramId, userContext.SendMessages.Last(), replyMarkup: Keyboards.MainMenu(userContext));
+            }
+            else*/
+                var message_obj = _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
+                userContext.SendMessages.Add(message_obj.MessageId);
+        }
+
 
         private void ToCreateProject(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
         {
@@ -380,14 +400,20 @@ namespace Vanilla.TelegramBot.Services.Bot
             if (update.Message.Text == "/menu")
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
-                _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
+                DeleteAllMesssages(userContext);
+
+                var messageObj = _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
+                userContext.SendMessages.Add(messageObj.MessageId);
                 return true;
             }
             else if (update.Message.Text == "/start")
             {
                 var username = update.Message.Chat.FirstName ?? update.Message.Chat.Username ?? "";
                 string welcomeMessage = string.Format(userContext.ResourceManager.GetString("Welcome"), username, _botClient.GetMe().Username);
-                _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.InlineStartMenuKeyboard(userContext), parseMode: "HTML");
+                DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
+                DeleteAllMesssages(userContext);
+                var messageObj = _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.InlineStartMenuKeyboard(userContext), parseMode: "HTML");
+                userContext.SendMessages.Add(messageObj.MessageId);
                 //_botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.MainMenu(userContext), parseMode: "HTML");
                 return true;
             }
@@ -399,13 +425,15 @@ namespace Vanilla.TelegramBot.Services.Bot
             else if (update.Message.Text == "/about")
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
+                DeleteAllMesssages(userContext);
 
                 var ms = userContext.ResourceManager.GetString("About");
                 _logger.WriteLog(ms, LogType.Information);
                 SendMessageArgs inputMessage = new SendMessageArgs(update.Message.Chat.Id, ms);
                 inputMessage.ParseMode = "HTML";
 
-                _botClient.SendMessage(inputMessage);
+                var messageObj = _botClient.SendMessage(inputMessage);
+                userContext.SendMessages.Add(messageObj.MessageId);
                 return true;
 
             }
@@ -423,6 +451,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
                 _botClient.SendMessage(inputMessage);
             }
+           
 
             return false;
         }
@@ -686,6 +715,25 @@ namespace Vanilla.TelegramBot.Services.Bot
             );
 
             return replyMarkuppp;
+        }
+
+        private void DeleteAllMesssages(UserContextModel userContext)
+        {
+/*            foreach (var messageId in userContext.SendMessages)
+            {
+                DeleteMessage(userContext.User.TelegramId, messageId);
+            }*/
+
+            try
+            {
+                _botClient.DeleteMessages(userContext.User.TelegramId, userContext.SendMessages);
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteLog(ex.Message, LogType.Error);
+            }
+
+            userContext.SendMessages.Clear();
         }
 
         private InlineKeyboardMarkup GetProjectItemMenu(ProjectModel project, UserContextModel userContext)

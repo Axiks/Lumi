@@ -92,8 +92,18 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             if(sendedMessage is not null)
             {
+                FocusOnTheUpdateMessage(updateMessageId);
                 _sendedMessagesId.Add(sendedMessage.MessageId);
             }
+        }
+
+        public void FocusOnTheUpdateMessage(int updateMessageId)
+        {
+            var messagesToDelete = _userContext.SendMessages.Where(x => x != updateMessageId);
+            if (messagesToDelete.Count() == 0) return;
+
+            _botClient.DeleteMessages(_userContext.User.TelegramId, messagesToDelete);
+            _userContext.SendMessages.RemoveAll(x => x != updateMessageId);
         }
 
         public void EnterPoint(Telegram.BotAPI.GettingUpdates.Update update)
@@ -187,7 +197,9 @@ namespace Vanilla.TelegramBot.Services.Bot
             ClearMessages();
 
             //forming project card
-            _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UpdateProjectSuccess"));
+            var mwssageObj =  _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UpdateProjectSuccess"));
+           _userContext.SendMessages.Add(mwssageObj.MessageId);
+
             UpdatedSuccessEvent.Invoke(_userContext);
         }
 

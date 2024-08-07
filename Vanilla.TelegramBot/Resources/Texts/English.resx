@@ -209,7 +209,10 @@ The name must not exceed 64 characters</value>
     <value>Link &lt;i&gt;{0}&lt;/i&gt; isn`t correct. Try again</value>
   </data>
   <data name="MainMenu" xml:space="preserve">
-    <value>Main menu</value>
+    <value>Open menu</value>
+  </data>
+  <data name="MainMenuSendMes" xml:space="preserve">
+    <value>Choose an action from the menu</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>

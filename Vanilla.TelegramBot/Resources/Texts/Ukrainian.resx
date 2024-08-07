@@ -211,7 +211,10 @@
     <value>Посилання &lt;i&gt;{0}&lt;/i&gt; є не вірним. Спробуй ще раз</value>
   </data>
   <data name="MainMenu" xml:space="preserve">
-    <value>Головне меню</value>
+    <value>Відкрити меню</value>
+  </data>
+  <data name="MainMenuSendMes" xml:space="preserve">
+    <value>Оберіть дію з меню</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Ім'я</value>

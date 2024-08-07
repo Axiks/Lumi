@@ -216,11 +216,14 @@ namespace Vanilla.TelegramBot.Services.Bot
             // Clear messages
             ClearMessages();
 
-            _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(_userContext));
             var replyMarkuppp = GetProjectInlineOpenKeyboard(project, _userContext);
             //echo information about project
             //_botClient.SendMessage(_userContext.User.TelegramId, messageContent, replyMarkup: Keyboards.MainMenu(), parseMode: "HTML");
-            _botClient.SendMessage(_userContext.User.TelegramId, messageContent, replyMarkup: replyMarkuppp, parseMode: "HTML");
+            var messageObjWithCreatedProject = _botClient.SendMessage(_userContext.User.TelegramId, messageContent, replyMarkup: replyMarkuppp, parseMode: "HTML");
+            _userContext.SendMessages.Add(messageObjWithCreatedProject.MessageId);
+
+            var messageObjWithMenu = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(_userContext));
+            _userContext.SendMessages.Add(messageObjWithMenu.MessageId);
 
             CreatedSuccessEvent.Invoke(_userContext);
             // Clear "cashe"
