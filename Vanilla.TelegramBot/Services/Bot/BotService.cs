@@ -21,6 +21,7 @@ using Vanilla_App.Models;
 
 namespace Vanilla.TelegramBot.Services.Bot
 {
+
     public class BotService : IBotService
     {
         private readonly TelegramBotClient _botClient;

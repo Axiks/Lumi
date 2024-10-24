@@ -1,15 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
-using Vanilla.TelegramBot.Repositories;
 using Vanilla.TelegramBot.Services;
 using Vanilla.TelegramBot.Services.Bot;
 
@@ -31,7 +25,44 @@ namespace Vanilla.TelegramBot
             var settings = config.GetRequiredSection("Settings").Get<SettingsModel>();
             if (settings == null) throw new Exception("No found setting section");
 
+            //var services = new ServiceCollection();
+            var services = PrepareServices(settings);
+
+            var serviceProvider = services.BuildServiceProvider();
+            PrepareDB(serviceProvider);
+
+            RunBot();
+            void RunBot()
+            {
+                var botService = serviceProvider.GetService<IBotService>();
+                var logger = serviceProvider.GetService<ILogger>();
+                try
+                {
+                    var x = botService.StartListening();
+                    x.Wait();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    logger.WriteLog(ex.Message, Common.Enums.LogType.Error);
+
+                    int i = 1;
+                    while (i < 30)
+                    {
+                        Thread.Sleep(1000);
+                        Console.WriteLine("Sleep sec: " + i.ToString());
+                        i++;
+                    }
+                    RunBot();
+                }
+            }
+
+        }
+
+        public static ServiceCollection PrepareServices(SettingsModel settings)
+        {
             var services = new ServiceCollection();
+
             services.AddDbContextFactory<ApplicationDbContext>(options =>
                 options.UseNpgsql(settings.DatabaseConfiguration.ConnectionString),
                 ServiceLifetime.Transient);
@@ -60,8 +91,11 @@ namespace Vanilla.TelegramBot
             services.AddTransient<Vanilla_App.Services.UserService>();
             services.AddTransient<Vanilla_App.Interfaces.IProjectService, Vanilla_App.Services.ProjectService>();
 
-            var serviceProvider = services.BuildServiceProvider();
+            return services;
+        }
 
+        public static void PrepareDB(ServiceProvider serviceProvider)
+        {
             using (var dbContext = serviceProvider.GetService<ApplicationDbContext>())
             {
                 dbContext.Database.EnsureCreated();
@@ -80,38 +114,7 @@ namespace Vanilla.TelegramBot
                 dbContext.Database.EnsureCreated();
                 dbContext.Database.Migrate();
             }
-
-            RunBot();
-
-            void RunBot()
-            {
-                var botService = serviceProvider.GetService<IBotService>();
-                var logger = serviceProvider.GetService<ILogger>();
-                try
-                {
-                    
-                    var x = botService.StartListening();
-                    x.Wait();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    logger.WriteLog(ex.Message, Common.Enums.LogType.Error);
-
-                    int i = 1;
-                    while (i < 30)
-                    {
-                        Thread.Sleep(1000);
-                        Console.WriteLine("Sleep sec: " + i.ToString());
-                        i++;
-                    }
-                    RunBot();
-                }
-            }
-
         }
-
-
  
     }
 }
