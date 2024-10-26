@@ -129,11 +129,17 @@ Also thank people who helped to develop this bot
 Created by a community member &lt;a href="https://t.me/include_anime"&gt;Programmers &amp; Cookies&lt;/a&gt;
 You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&lt;/a&gt;</value>
   </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Accept</value>
+  </data>
   <data name="AddOwnProject" xml:space="preserve">
     <value>Add own project</value>
   </data>
   <data name="AddProject" xml:space="preserve">
     <value>Add project</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
   <data name="CanceledOperation" xml:space="preserve">
     <value>Canceled the previous operation</value>
@@ -199,6 +205,9 @@ The name must not exceed 64 characters</value>
   <data name="FindThisProjectBtn" xml:space="preserve">
     <value>Find this project</value>
   </data>
+  <data name="GetBonus" xml:space="preserve">
+    <value>Get bonus</value>
+  </data>
   <data name="InDevelopment" xml:space="preserve">
     <value>In development</value>
   </data>
@@ -217,6 +226,9 @@ The name must not exceed 64 characters</value>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
   <data name="PlannedToDevelop" xml:space="preserve">
     <value>Planned to develop</value>
   </data>
@@ -234,6 +246,9 @@ An internal server error has occurred
 If the bot does not work correctly in the future, please contact {0}
 
 Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="Spend" xml:space="preserve">
+    <value>Spend</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Status</value>
@@ -308,5 +323,8 @@ I hope you like it here ❤️</value>
   </data>
   <data name="WorkRecoveryMes" xml:space="preserve">
     <value>Sorry for the inconvenience. The bot actually resumed work</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
   </data>
 </root>

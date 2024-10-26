@@ -7,10 +7,10 @@ using Vanilla_App.Models;
 
 namespace Vanilla_App.Interfaces
 {
-    internal interface IBonusService
+    public interface IBonusService
     {
-        List<string> GetUsersWithBonus();
-        List<UserBonusModel> GetUserBonuses(string tgId);
-        void TakeBonus(int bonusId);
+        public List<UserBonusModel>? GetUserBonuses(long tgId);
+        public UserBonusModel? GetBonus(long bonusId);
+        public void TakeBonus(int bonusId);
     }
 }

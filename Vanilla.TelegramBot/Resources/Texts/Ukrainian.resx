@@ -129,11 +129,17 @@
 Створено учасником спільноти &lt;a href="https://t.me/include_anime"&gt;Програмісти і печеньки&lt;/a&gt;
 Ви можете зв'язатися з автором тут: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&lt;/a&gt;</value>
   </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Підтвердити</value>
+  </data>
   <data name="AddOwnProject" xml:space="preserve">
     <value>Додати власний проект</value>
   </data>
   <data name="AddProject" xml:space="preserve">
     <value>Додати проект</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Відмінити</value>
   </data>
   <data name="CanceledOperation" xml:space="preserve">
     <value>Попередню дію скасовано</value>
@@ -201,6 +207,9 @@
   <data name="Frozen" xml:space="preserve">
     <value>Заморожено</value>
   </data>
+  <data name="GetBonus" xml:space="preserve">
+    <value>Отримати бонус</value>
+  </data>
   <data name="InDevelopment" xml:space="preserve">
     <value>У розробці</value>
   </data>
@@ -218,6 +227,9 @@
   </data>
   <data name="Name" xml:space="preserve">
     <value>Ім'я</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ні</value>
   </data>
   <data name="PlannedToDevelop" xml:space="preserve">
     <value>В планах</value>
@@ -238,6 +250,9 @@
 Якщо бот, надалі, не працюватиме належним чином, зв'яжіться з {0}
 
 Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="Spend" xml:space="preserve">
+    <value>Витратити</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Етап розробки</value>
@@ -310,5 +325,8 @@ Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
   </data>
   <data name="WorkRecoveryMes" xml:space="preserve">
     <value>Вибачте за незручності. Бот відновив свою роботу</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Так</value>
   </data>
 </root>

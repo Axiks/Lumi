@@ -6,6 +6,8 @@ using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Services;
 using Vanilla.TelegramBot.Services.Bot;
+using Vanilla_App.Interfaces;
+using Vanilla_App.Services;
 
 namespace Vanilla.TelegramBot
 {
@@ -67,7 +69,8 @@ namespace Vanilla.TelegramBot
                 options.UseNpgsql(settings.DatabaseConfiguration.ConnectionString),
                 ServiceLifetime.Transient);
 
-            services.AddTransient<IUserRepository, Repositories.UserRepository>();
+            services.AddTransient<Interfaces.IUserRepository, Repositories.UserRepository>();
+            services.AddTransient<IBonusService, BonusService>();
             services.AddTransient<IUserService, Services.UserService>();
             services.AddSingleton<IBotService, BotService>();
             services.AddTransient<ILogger, ConsoleLogger>();

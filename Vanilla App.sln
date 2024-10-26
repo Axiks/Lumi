@@ -13,13 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vanilla.TelegramBot", "Vani
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vanilla.Common", "Vanilla.Common\Vanilla.Common.csproj", "{02D89E76-C3DB-429E-9DC1-0727C708D6F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vanilla.Aspire.AppHost", "Vanilla.Aspire\Vanilla.Aspire.AppHost\Vanilla.Aspire.AppHost.csproj", "{293B3A42-2C46-4DB6-8E4C-355E3AA39F9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vanilla.Aspire.AppHost", "Vanilla.Aspire\Vanilla.Aspire.AppHost\Vanilla.Aspire.AppHost.csproj", "{293B3A42-2C46-4DB6-8E4C-355E3AA39F9A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vanilla.Aspire.ServiceDefaults", "Vanilla.Aspire\Vanilla.Aspire.ServiceDefaults\Vanilla.Aspire.ServiceDefaults.csproj", "{9E05E084-062A-4E31-8E9E-602AB575376F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vanilla.Aspire.ApiService", "Vanilla.Aspire\Vanilla.Aspire.ApiService\Vanilla.Aspire.ApiService.csproj", "{E7E8E820-1A64-487A-8733-AE0DA83CAC32}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vanilla.Aspire.Web", "Vanilla.Aspire\Vanilla.Aspire.Web\Vanilla.Aspire.Web.csproj", "{D8C900FB-9EA7-40C4-A8A1-CB6B04715019}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{BAE35AFE-13CF-4F2A-9DC8-B0BAC96ADE3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +68,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{293B3A42-2C46-4DB6-8E4C-355E3AA39F9A} = {BAE35AFE-13CF-4F2A-9DC8-B0BAC96ADE3F}
+		{9E05E084-062A-4E31-8E9E-602AB575376F} = {BAE35AFE-13CF-4F2A-9DC8-B0BAC96ADE3F}
+		{E7E8E820-1A64-487A-8733-AE0DA83CAC32} = {BAE35AFE-13CF-4F2A-9DC8-B0BAC96ADE3F}
+		{D8C900FB-9EA7-40C4-A8A1-CB6B04715019} = {BAE35AFE-13CF-4F2A-9DC8-B0BAC96ADE3F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {129EBCBD-9F4C-430D-95CD-E73DE33ED214}

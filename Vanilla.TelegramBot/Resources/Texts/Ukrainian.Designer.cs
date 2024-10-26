@@ -85,6 +85,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Підтвердити.
+        /// </summary>
+        internal static string Accept {
+            get {
+                return ResourceManager.GetString("Accept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Додати власний проект.
         /// </summary>
         internal static string AddOwnProject {
@@ -99,6 +108,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string AddProject {
             get {
                 return ResourceManager.GetString("AddProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Відмінити.
+        /// </summary>
+        internal static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
             }
         }
         
@@ -271,6 +289,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Отримати бонус.
+        /// </summary>
+        internal static string GetBonus {
+            get {
+                return ResourceManager.GetString("GetBonus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to У розробці.
         /// </summary>
         internal static string InDevelopment {
@@ -325,6 +352,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ні.
+        /// </summary>
+        internal static string No {
+            get {
+                return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to В планах.
         /// </summary>
         internal static string PlannedToDevelop {
@@ -371,6 +407,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string ServerError {
             get {
                 return ResourceManager.GetString("ServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Витратити.
+        /// </summary>
+        internal static string Spend {
+            get {
+                return ResourceManager.GetString("Spend", resourceCulture);
             }
         }
         
@@ -545,6 +590,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string WorkRecoveryMes {
             get {
                 return ResourceManager.GetString("WorkRecoveryMes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Так.
+        /// </summary>
+        internal static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
             }
         }
     }
