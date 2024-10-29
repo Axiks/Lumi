@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting.Server;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vanilla.Common.Enums;
+﻿using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 

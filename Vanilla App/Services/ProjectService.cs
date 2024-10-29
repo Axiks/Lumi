@@ -1,16 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vanilla.Data;
-using Vanilla.Data.Entities;
-using Vanilla.OAuth.Entities;
-using Vanilla_App.Helpers;
-using Vanilla_App.Interfaces;
+﻿using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
-using Vanilla_App.Repository;
 
 namespace Vanilla_App.Services
 {
@@ -47,5 +36,5 @@ namespace Vanilla_App.Services
         {
             return await _projectRepository.UpdateAsync(project);
         }
-    }    
+    }
 }

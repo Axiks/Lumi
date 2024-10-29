@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vanilla.OAuth.Models;
+﻿using Vanilla.Common.Models;
 
-namespace Vanilla.TelegramBot.Models
+namespace Vanilla.Common
 {
     public class SettingsModel
     {
         public required string BotAccessToken { get; set; }
-        public required DatabaseConfigModel DatabaseConfiguration { get; set; }
+        public required DatabaseConfigModel TgBotDatabaseConfiguration { get; set; }
         public required DatabaseConfigModel OAuthDatabaseConfiguration { get; set; }
         public required DatabaseConfigModel CoreDatabaseConfiguration { get; set; }
         public required TokenConfiguration TokenConfiguration { get; set; }
@@ -18,10 +13,10 @@ namespace Vanilla.TelegramBot.Models
 
     public class DatabaseConfigModel
     {
-        public required string Host { get; set; }
-        public required string Database { get; set; }
-        public required string Username { get; set; }
-        public required string Password { get; set; }
+        public required string Host { get; init; }
+        public required string Database { get; init; }
+        public required string Username { get; init; }
+        public required string Password { get; init; }
         public string ConnectionString => string.Format("Host={0};Database={1};Username={2};Password={3}", Environment.GetEnvironmentVariable("DB_HOST") ?? Host, Database, Username, Password);
     }
 

@@ -1,14 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
-using System.Threading.Tasks;
+using Vanilla.Common.Models;
 using Vanilla.OAuth.Models;
 
 namespace Vanilla.OAuth.Services
@@ -16,7 +11,8 @@ namespace Vanilla.OAuth.Services
     public class AuthService
     {
         public readonly TokenConfiguration _tokenConfig;
-        public AuthService(TokenConfiguration tokenSetting) {
+        public AuthService(TokenConfiguration tokenSetting)
+        {
             _tokenConfig = tokenSetting;
             /*// Build a config object, using env vars and JSON providers.
             IConfigurationRoot config = new ConfigurationBuilder()
@@ -89,7 +85,7 @@ namespace Vanilla.OAuth.Services
             var ci = new ClaimsIdentity();
 
             ci.AddClaim(new Claim("id", user.Id.ToString()));
-            if(user.Nickname is not null) ci.AddClaim(new Claim(ClaimTypes.Name, user.Nickname));
+            if (user.Nickname is not null) ci.AddClaim(new Claim(ClaimTypes.Name, user.Nickname));
 
             return ci;
         }

@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.BotAPI.AvailableTypes;
-using Vanilla.OAuth.Models;
-using Vanilla.OAuth.Services;
+﻿using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
-using Vanilla.TelegramBot.Repositories;
 
 namespace Vanilla.TelegramBot.Services
 {
@@ -88,7 +80,7 @@ namespace Vanilla.TelegramBot.Services
                 UserId = oauthUser.Id,
                 TelegramId = userRequest.TelegramId,
                 Username = userRequest.Username,
-                FirstName = userRequest.FirstName, 
+                FirstName = userRequest.FirstName,
                 LastName = userRequest.LastName,
                 LanguageCode = userRequest.LanguageCode,
             });

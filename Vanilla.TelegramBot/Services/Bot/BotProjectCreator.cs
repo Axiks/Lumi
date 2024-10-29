@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
-using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Entityes;
@@ -17,7 +11,6 @@ using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Vanilla.TelegramBot.Services.Bot
 {
@@ -51,7 +44,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             if (update.Message is not null)
             {
                 if (!MessagePrepareHendler(update)) return;
-                if(update.Message.Text is null)
+                if (update.Message.Text is null)
                 {
                     UnexpectedInput();
                     return;
@@ -109,7 +102,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 {
                     try
                     {
-                        var links =  FormationHelper.Links(messageText, _userContext);
+                        var links = FormationHelper.Links(messageText, _userContext);
                         userProject.Links = new List<string>(links);
                         AddProject();
                     }
@@ -120,7 +113,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                         userProject.SendedMessages.Add(errorMess.MessageId);
                         return;
                     }
-                    catch(Exception  e)
+                    catch (Exception e)
                     {
                         _logger.WriteLog(e.Message, LogType.Error);
                         var errorMess = _botClient.SendMessage(chatId, e.Message, parseMode: "HTML");
@@ -178,7 +171,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
         private void PollHendler(Telegram.BotAPI.GettingUpdates.Update update)
         {
-            if(update.PollAnswer is null) return;
+            if (update.PollAnswer is null) return;
 
             var userProject = _userContext.CreateProjectContext;
             if (userProject.DevelopStatus is not null) return;
@@ -209,7 +202,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             }).Result;
 
             //_botClient.SendMessage(_userContext.User.TelegramId, "I successfully added your project :3");
-            
+
             var messageContent = MessageWidgets.AboutProject(project, _userContext.User, _userContext);
             messageContent += _userContext.ResourceManager.GetString("CreateProkectSuccessMessage");
 

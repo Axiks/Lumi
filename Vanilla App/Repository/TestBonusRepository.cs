@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vanilla_App.Interfaces;
+﻿using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
 
 namespace Vanilla_App.Repository
@@ -11,9 +6,10 @@ namespace Vanilla_App.Repository
     public class TestBonusRepository : IBonusRepository
     {
         private static Random random = new Random();
-        private List<UserBonusModel> _userBonusModels {  get; init; }
+        private List<UserBonusModel> _userBonusModels { get; init; }
 
-        public TestBonusRepository() {
+        public TestBonusRepository()
+        {
             _userBonusModels = GenerateUsersBonus(64);
         }
 
@@ -43,8 +39,9 @@ namespace Vanilla_App.Repository
             List<UserBonusModel> userBonusModels = new List<UserBonusModel>();
 
             long _lastTgId = random.Next(64);
-            for (int i = 0; i < lenght; i++) {
-                if(random.Next(2) != 1) _lastTgId = random.Next(64);
+            for (int i = 0; i < lenght; i++)
+            {
+                if (random.Next(2) != 1) _lastTgId = random.Next(64);
 
                 userBonusModels.Add(new UserBonusModel
                 {

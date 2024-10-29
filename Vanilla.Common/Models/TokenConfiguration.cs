@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Vanilla.OAuth.Models
+﻿namespace Vanilla.Common.Models
 {
     public class TokenConfiguration
     {
@@ -13,6 +7,6 @@ namespace Vanilla.OAuth.Models
         public required string Issuer { get; set; }
         public required string Audience { get; set; }
 
-        
+
     }
 }

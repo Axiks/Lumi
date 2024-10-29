@@ -1,9 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Vanilla.OAuth.Entities;
 using Vanilla.OAuth.Helpers;
 using Vanilla.OAuth.Interfaces;
@@ -46,7 +41,7 @@ namespace Vanilla.OAuth.Services
         public async Task<BasicUserModel> UpdateUserAsync(UserUpdateRequestModel updateUser)
         {
             var userEntity = await _dbContext.Users.FirstAsync(x => x.Id == updateUser.UserId);
-            if(updateUser.Username is not null) userEntity.Nickname = updateUser.Username;
+            if (updateUser.Username is not null) userEntity.Nickname = updateUser.Username;
             await _dbContext.SaveChangesAsync();
 
             return MappingHelper.UserEntityToBasicUserModel(userEntity);

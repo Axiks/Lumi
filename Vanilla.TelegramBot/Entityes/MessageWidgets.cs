@@ -27,12 +27,12 @@ namespace Vanilla.TelegramBot.Entityes
             var messageContent = string.Format("<b>{0}</b> \n\n{1} \n\n{2}\n{3} {4}",
                                         project.Name,
                                         project.Description,
-                                        
+
                                         links,
                                         developStatusEmoji + " <i>" + userContext.ResourceManager.GetString(project.DevelopmentStatus.ToString()) + "</i>",
                                         username
                                 );
-            return messageContent; 
+            return messageContent;
         }
 
         public static SendPollArgs GeneratePull(long chatId, UserContextModel userContext)

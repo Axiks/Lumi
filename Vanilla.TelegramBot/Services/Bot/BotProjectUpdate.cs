@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
-using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Entityes;
@@ -17,7 +11,6 @@ using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Vanilla.TelegramBot.Services.Bot
 {
@@ -90,7 +83,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("WhatValueToReplace"), replyMarkup: Keyboards.CannelKeyboard(_userContext));
             }
 
-            if(sendedMessage is not null)
+            if (sendedMessage is not null)
             {
                 FocusOnTheUpdateMessage(updateMessageId);
                 _sendedMessagesId.Add(sendedMessage.MessageId);
@@ -148,7 +141,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                             _sendedMessagesId.Add(sendedMessage.MessageId);
                             return;
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
                             _logger.WriteLog(e.Message, LogType.Error);
                             var sendedMessage = _botClient.SendMessage(_userContext.User.TelegramId, e.Message, parseMode: "HTML");
@@ -165,7 +158,8 @@ namespace Vanilla.TelegramBot.Services.Bot
             }
             else if (update.PollAnswer is not null)
             {
-                if (command != Command.status) {
+                if (command != Command.status)
+                {
                     _logger.WriteLog("Acccaes dainen to poll", LogType.Error);
                     return;
                 };
@@ -197,8 +191,8 @@ namespace Vanilla.TelegramBot.Services.Bot
             ClearMessages();
 
             //forming project card
-            var mwssageObj =  _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UpdateProjectSuccess"));
-           _userContext.SendMessages.Add(mwssageObj.MessageId);
+            var mwssageObj = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UpdateProjectSuccess"));
+            _userContext.SendMessages.Add(mwssageObj.MessageId);
 
             UpdatedSuccessEvent.Invoke(_userContext);
         }

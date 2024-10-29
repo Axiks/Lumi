@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Vanilla.Common;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
-using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Services;
 using Vanilla.TelegramBot.Services.Bot;
 using Vanilla_App.Interfaces;
@@ -17,14 +16,19 @@ namespace Vanilla.TelegramBot
         {
             Console.WriteLine("Hello, Vanilla TG bot server");
 
-            // Build a config object, using env vars and JSON providers.
-            IConfigurationRoot config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
+            /*            //var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+
+                        string settingPath = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Vanilla.Common", "appsettings.json");
+
+                        // Build a config object, using env vars and JSON providers.
+                        IConfigurationRoot config = new ConfigurationBuilder()
+                            .AddJsonFile(settingPath)
+                            .AddEnvironmentVariables()
+                            .Build();*/
 
             // Get values from the config given their key and their target type.
-            var settings = config.GetRequiredSection("Settings").Get<SettingsModel>();
+            //var settings = config.GetRequiredSection("Settings").Get<SettingsModel>();
+            var settings = new ConfigurationMeneger().Settings;
             if (settings == null) throw new Exception("No found setting section");
 
             //var services = new ServiceCollection();
@@ -33,8 +37,8 @@ namespace Vanilla.TelegramBot
             var serviceProvider = services.BuildServiceProvider();
             PrepareDB(serviceProvider);
 
-            RunBot();
-            void RunBot()
+            RunBotWatchdog();
+            void RunBotWatchdog()
             {
                 var botService = serviceProvider.GetService<IBotService>();
                 var logger = serviceProvider.GetService<ILogger>();
@@ -55,7 +59,7 @@ namespace Vanilla.TelegramBot
                         Console.WriteLine("Sleep sec: " + i.ToString());
                         i++;
                     }
-                    RunBot();
+                    RunBotWatchdog();
                 }
             }
 
@@ -66,7 +70,7 @@ namespace Vanilla.TelegramBot
             var services = new ServiceCollection();
 
             services.AddDbContextFactory<ApplicationDbContext>(options =>
-                options.UseNpgsql(settings.DatabaseConfiguration.ConnectionString),
+                options.UseNpgsql(settings.TgBotDatabaseConfiguration.ConnectionString),
                 ServiceLifetime.Transient);
 
             services.AddTransient<Interfaces.IUserRepository, Repositories.UserRepository>();
@@ -77,13 +81,14 @@ namespace Vanilla.TelegramBot
 
             services.AddTransient<Vanilla.OAuth.Services.UserRepository>();
             services.AddTransient<AuthService>(provider => new AuthService(settings.TokenConfiguration));
-            services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
-               options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
-               ServiceLifetime.Transient);
 
             services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
                options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
                ServiceLifetime.Transient);
+
+            /*  services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
+                 options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
+                 ServiceLifetime.Transient);*/
 
             services.AddDbContextFactory<Vanilla.Data.ApplicationDbContext>(options =>
                options.UseNpgsql(settings.CoreDatabaseConfiguration.ConnectionString),
@@ -101,23 +106,20 @@ namespace Vanilla.TelegramBot
         {
             using (var dbContext = serviceProvider.GetService<ApplicationDbContext>())
             {
-                dbContext.Database.EnsureCreated();
+                //dbContext.Database.EnsureCreated();
                 dbContext.Database.Migrate();
-                //dbContext.Database.Aut
             }
 
             using (var dbContext = serviceProvider.GetService<Vanilla.OAuth.ApplicationDbContext>())
             {
-                dbContext.Database.EnsureCreated();
                 dbContext.Database.Migrate();
             }
 
             using (var dbContext = serviceProvider.GetService<Vanilla.Data.ApplicationDbContext>())
             {
-                dbContext.Database.EnsureCreated();
                 dbContext.Database.Migrate();
             }
         }
- 
+
     }
 }

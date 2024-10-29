@@ -1,3 +1,4 @@
+using Vanilla.Aspire.ServiceDefaults;
 using Vanilla.Aspire.Web;
 using Vanilla.Aspire.Web.Components;
 

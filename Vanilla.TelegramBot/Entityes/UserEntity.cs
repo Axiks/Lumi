@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Vanilla.TelegramBot.Entityes
 {
@@ -16,6 +11,6 @@ namespace Vanilla.TelegramBot.Entityes
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? LanguageCode { get; set; }
-        public DateTime CreatedAt {  get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

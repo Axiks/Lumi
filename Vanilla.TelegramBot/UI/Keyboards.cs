@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.BotAPI.AvailableTypes;
+﻿using Telegram.BotAPI.AvailableTypes;
 using Vanilla.TelegramBot.Models;
-using Vanilla_App.Models;
 
 namespace Vanilla.TelegramBot.UI
 {

@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Reflection;
-using System.Resources;
-using System.Text;
 using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
@@ -11,6 +6,7 @@ using Telegram.BotAPI.Extensions;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.InlineMode;
 using Telegram.BotAPI.UpdatingMessages;
+using Vanilla.Common;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Entityes;
 using Vanilla.TelegramBot.Helpers;
@@ -19,7 +15,6 @@ using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Vanilla.TelegramBot.Services.Bot
 {
@@ -110,7 +105,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                             if (update.CallbackQuery is not null)
                             {
                                 _botClient.AnswerCallbackQuery(update.CallbackQuery.Id);
-                                if(BotCallBackComandHendler(update, currentUserContext)) continue;
+                                if (BotCallBackComandHendler(update, currentUserContext)) continue;
                             }
 
                             if (BotInlineComandHendler(update, currentUserContext)) continue;
@@ -132,7 +127,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                             else if (update.CallbackQuery is not null)
                             {
                                 var messageText = update.CallbackQuery.Data;
-                                if(messageText == "AddProject")
+                                if (messageText == "AddProject")
                                 {
                                     ToCreateProject(update, currentUserContext);
                                     continue;
@@ -219,7 +214,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
                 bool isCanBonusUse = curentUserBonuses.Any(x => x.BonusId == bonusId && x.IsUsed == false);
 
-                if(isCanBonusUse)
+                if (isCanBonusUse)
                 {
                     //_bonusService.TakeBonus(bonusId);
                     //Console.WriteLine("Taked bonus id: " + bonusId);
@@ -335,7 +330,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 return true;
             }
             return false;
-            
+
         }
         public void OnCreated(UserContextModel userContext)
         {
@@ -421,7 +416,8 @@ namespace Vanilla.TelegramBot.Services.Bot
                 {
                     Enum.TryParse(stringCommand, out command);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     _logger.WriteLog(ex.Message, LogType.Error);
                 };
 
@@ -429,14 +425,14 @@ namespace Vanilla.TelegramBot.Services.Bot
                 userContext.BotProjectUpdater = new BotProjectUpdate(userContext, _botClient, _projectService, update, Guid.Parse(message.Split(_deliver).Last()), command, _logger, callMessageId);
                 userContext.BotProjectUpdater.UpdatedSuccessEvent += OnUpdated;
             }
-            else if(message.Split(_deliver).Length == 2 && message.Split(_deliver).First() == "delete")
+            else if (message.Split(_deliver).Length == 2 && message.Split(_deliver).First() == "delete")
             {
                 var projectId = Guid.Parse(message.Split(_deliver).Last());
                 var projectModel = _projectService.ProjectGetAsync(projectId).Result;
                 if (projectModel.OwnerId == userContext.User.UserId)
                 {
                     _projectService.ProjectDelete(projectModel.Id);
-                    if(update.CallbackQuery.Message is not null)
+                    if (update.CallbackQuery.Message is not null)
                     {
                         _botClient.EditMessageText(userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: userContext.ResourceManager.GetString("ProjectHasBeenDeletedMes"));
                     }
@@ -453,13 +449,13 @@ namespace Vanilla.TelegramBot.Services.Bot
         }
         private void OpenMainMenu(UserContextModel userContext)
         {
-       /*     if (userContext.SendMessages is not null || userContext.SendMessages.Count() != 0)
-            {
-                _botClient.EditMessageReplyMarkup(userContext.User.TelegramId, userContext.SendMessages.Last(), replyMarkup: Keyboards.MainMenu(userContext));
-            }
-            else*/
-                var message_obj = _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
-                userContext.SendMessages.Add(message_obj.MessageId);
+            /*     if (userContext.SendMessages is not null || userContext.SendMessages.Count() != 0)
+                 {
+                     _botClient.EditMessageReplyMarkup(userContext.User.TelegramId, userContext.SendMessages.Last(), replyMarkup: Keyboards.MainMenu(userContext));
+                 }
+                 else*/
+            var message_obj = _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
+            userContext.SendMessages.Add(message_obj.MessageId);
         }
 
 
@@ -486,7 +482,8 @@ namespace Vanilla.TelegramBot.Services.Bot
             if (update.Message.Text.Split("/").Length != 2) return false;
             if (update.Message.Text.Split(" ").Length > 2) return false;
             //if (userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null) return false;
-            if (userContext.BotProjectCreator is not null) {
+            if (userContext.BotProjectCreator is not null)
+            {
                 userContext.BotProjectCreator.ClearMessages();
                 userContext.BotProjectCreator = null;
                 userContext.CreateProjectContext = null;
@@ -551,8 +548,8 @@ namespace Vanilla.TelegramBot.Services.Bot
 
                 var userBonuses = _bonusService.GetUserBonuses(userContext.User.TelegramId);
 
-                string initMs = userBonuses is not null 
-                    ? string.Format("You have {0} unused bonuses from ProVision", userBonuses.Count().ToString()) 
+                string initMs = userBonuses is not null
+                    ? string.Format("You have {0} unused bonuses from ProVision", userBonuses.Count().ToString())
                     : "You don`t have bonuses";
 
                 //SendMessageArgs initMessage = new SendMessageArgs(update.Message.Chat.Id, initMs) { ParseMode = "HTML" };
@@ -560,7 +557,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 // userContext.SendMessages.Add(initMessageObj.MessageId);
 
 
-                List <List<InlineKeyboardButton>> rowWithKeysBonus = new List<List<InlineKeyboardButton>>();
+                List<List<InlineKeyboardButton>> rowWithKeysBonus = new List<List<InlineKeyboardButton>>();
                 List<InlineKeyboardButton> keysWithBonus = new List<InlineKeyboardButton>();
 
                 foreach (var bonus in userBonuses)
@@ -626,7 +623,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
                 _botClient.SendMessage(inputMessage);
             }
-           
+
 
             return false;
         }
@@ -639,7 +636,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             //future function
             var inlineOffset = inline.Offset;
 
-             var inlineAddOwnProjectButton = new InlineQueryResultsButton
+            var inlineAddOwnProjectButton = new InlineQueryResultsButton
             {
                 Text = userContext.ResourceManager.GetString("AddOwnProject"),
                 StartParameter = "addProject"
@@ -764,7 +761,8 @@ namespace Vanilla.TelegramBot.Services.Bot
                 firstname = update.Message.Chat.FirstName;
                 lastname = update.Message.Chat.LastName;
             }
-            else if(update.InlineQuery is not null){
+            else if (update.InlineQuery is not null)
+            {
                 chatId = update.InlineQuery.From.Id;
 
                 username = update.InlineQuery.From.Username;
@@ -812,11 +810,11 @@ namespace Vanilla.TelegramBot.Services.Bot
             }
             catch
             {
-                if(update.Message is null && update.InlineQuery is null && update.CallbackQuery is null)
+                if (update.Message is null && update.InlineQuery is null && update.CallbackQuery is null)
                 {
                     _logger.WriteLog("Unable to create user", LogType.Error);
                     throw new Exception("Unable to create user");
-                } 
+                }
 
                 user = _userService.RegisterUser(new UserRegisterModel
                 {
@@ -836,7 +834,8 @@ namespace Vanilla.TelegramBot.Services.Bot
                 {
                     _botClient.SendMessage(chatId, welcomeMessage);
                 }
-                catch {
+                catch
+                {
                     _logger.WriteLog("I can't send a greeting message", LogType.Warning);
                 }
 
@@ -856,7 +855,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             var message = MessageWidgets.AboutProject(projectModel, userContext.User, userContext);
             message += "\n\n" + userContext.ResourceManager.GetString("UpdateProjectInitMessasge");
 
-            if(update.CallbackQuery.Message is not null)
+            if (update.CallbackQuery.Message is not null)
             {
                 _botClient.EditMessageText(chatId: userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: message, replyMarkup: replyMarkuppp, parseMode: "HTML");
             }
@@ -894,10 +893,10 @@ namespace Vanilla.TelegramBot.Services.Bot
 
         private void DeleteAllMesssages(UserContextModel userContext)
         {
-/*            foreach (var messageId in userContext.SendMessages)
-            {
-                DeleteMessage(userContext.User.TelegramId, messageId);
-            }*/
+            /*            foreach (var messageId in userContext.SendMessages)
+                        {
+                            DeleteMessage(userContext.User.TelegramId, messageId);
+                        }*/
 
             try
             {
