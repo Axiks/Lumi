@@ -4,3 +4,6 @@ Information & Cleared 1 old messages
 Information & Init bot service
 Information & Init bot service
 Information & Init bot service
+Information & Init bot service
+Information & Cleared 1 old messages
+Error & One or more errors occurred. (Conflict: terminated by other getUpdates request; make sure that only one bot instance is running)

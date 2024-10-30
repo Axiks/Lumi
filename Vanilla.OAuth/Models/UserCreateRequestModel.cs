@@ -2,6 +2,7 @@
 {
     public class UserCreateRequestModel
     {
-        public string? Username { get; set; }
+        //public required string Username { get; set; }
+        public string? NickName { get; set; }
     }
 }

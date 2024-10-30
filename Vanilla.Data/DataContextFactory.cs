@@ -12,7 +12,7 @@ namespace Vanilla.Data
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
             var settings = new ConfigurationMeneger().Settings;
-            var connectionString = settings.TgBotDatabaseConfiguration.ConnectionString;
+            var connectionString = settings.CoreDatabaseConfiguration.ConnectionString;
 
 
             Console.WriteLine("Connectio string: " + connectionString);

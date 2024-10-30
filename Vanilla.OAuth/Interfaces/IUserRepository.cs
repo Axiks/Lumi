@@ -6,7 +6,7 @@ namespace Vanilla.OAuth.Interfaces
     {
         public Task<BasicUserModel> GetUserAsync(Guid userId);
         public Task<BasicUserModel> CreateUserAsync(UserCreateRequestModel createUser);
-        public Task<BasicUserModel> UpdateUserAsync(UserUpdateRequestModel updateUser);
+        public Task<BasicUserModel> UpdateUserAsync(Guid userId, UserUpdateRequestModel updateUser);
         public void DeleteUser(Guid userId);
 
     }

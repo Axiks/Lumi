@@ -4,7 +4,7 @@
     {
         public required Guid Id { get; init; }
         public string? About { get; set; }
-        List<string>? Links { get; set; }
+        public List<string>? Links { get; set; }
         public bool IsRadyForOrders { get; set; } = false;
     }
 }

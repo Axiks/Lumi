@@ -122,6 +122,11 @@ namespace Vanilla.TelegramBot.Services.Bot
                                 currentUserContext.BotProjectUpdater.EnterPoint(update);
                                 continue;
                             }
+                            else if (currentUserContext.BotUserCreator is not null)
+                            {
+                                currentUserContext.BotUserCreator.EnterPoint(update);
+                                continue;
+                            }
 
                             if (update.Message is not null) { }
                             else if (update.CallbackQuery is not null)
@@ -279,7 +284,7 @@ namespace Vanilla.TelegramBot.Services.Bot
         private bool BotInlineComandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
         {
             if (update.Message is null) return false;
-            bool isUserHaveRunTask = userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null;
+            bool isUserHaveRunTask = userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null || userContext.UpdateUserContext is not null;
 
             var chatId = userContext.User.TelegramId; //also fix
 
@@ -322,6 +327,14 @@ namespace Vanilla.TelegramBot.Services.Bot
                     OpenMainMenu(userContext);
                     //_botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
                 }
+                else if (userContext.BotUserCreator is not null)
+                {
+                    userContext.BotUserCreator.ClearMessages();
+                    userContext.BotUserCreator = null;
+                    userContext.UpdateUserContext = null;
+
+                    OpenMainMenu(userContext);
+                }
                 else
                 {
                     OpenMainMenu(userContext);
@@ -336,6 +349,7 @@ namespace Vanilla.TelegramBot.Services.Bot
         {
             userContext.CreateProjectContext = null;
             userContext.BotProjectCreator = null;
+            userContext.BotUserCreator = null;
         }
         public void OnUpdated(UserContextModel userContext)
         {
@@ -474,6 +488,19 @@ namespace Vanilla.TelegramBot.Services.Bot
             DeleteMessage(userContext.User.TelegramId, messageId);
         }
 
+        private void ToUpdateUser(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
+        {
+            if (userContext.BotUserCreator is null)
+            {
+                userContext.BotUserCreator = new BotUserCreator(userContext, _botClient, _userService, _logger);
+                userContext.BotUserCreator.UpdateSuccessEvent += OnUpdated;
+            }
+            else _logger.WriteLog("User have no closed user context", LogType.Error);
+
+            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
+            DeleteMessage(userContext.User.TelegramId, messageId);
+        }
+
         private bool BotSleshCommandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
         {
             if (update.Message is null) return false;
@@ -495,7 +522,15 @@ namespace Vanilla.TelegramBot.Services.Bot
                 userContext.BotProjectUpdater = null;
                 userContext.UpdateProjectContext = null;
                 _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
-            };
+            }
+    /*        else if (userContext.BotUserCreator is not null)
+            {
+                userContext.BotUserCreator.ClearMessages();
+                userContext.BotUserCreator = null;
+                userContext.UpdateUserContext = null;
+                _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
+            }*/
+
             if (update.Message.Text == "/menu")
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
@@ -612,6 +647,11 @@ namespace Vanilla.TelegramBot.Services.Bot
                 }*/
 
 
+            }
+            else if(update.Message.Text == "/update")
+            {
+                ToUpdateUser(update, userContext);
+                return true;
             }
             else
             {

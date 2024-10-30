@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Vanilla.TelegramBot.Models
+{
+    public class BotUpdateUserModel
+    {
+        public String? Nickname { get; set; }
+        public String? About { get; set; }
+        public List<string>? Links { get; set; }
+        public bool? IsRadyForOrders { get; set; }
+
+        //General
+        public List<int> SendedMessages { get; set; } = new List<int>();
+    }
+}

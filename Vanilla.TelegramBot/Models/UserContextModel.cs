@@ -14,8 +14,11 @@ namespace Vanilla.TelegramBot.Models
         public ResourceManager ResourceManager { get { return _resourceManager; } }
         public BotCreateProjectModel? CreateProjectContext { get; set; }
         public BotUpdateProjectModel? UpdateProjectContext { get; set; }
+        public BotUpdateUserModel? UpdateUserContext { get; set; }
+
         public BotProjectCreator? BotProjectCreator { get; set; }
         public BotProjectUpdate? BotProjectUpdater { get; set; }
+        public BotUserCreator? BotUserCreator { get; set; }
 
         public UserContextModel(UserModel user)
         {

@@ -13,7 +13,7 @@ namespace Vanilla.OAuth
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
             var settings = new ConfigurationMeneger().Settings;
-            var connectionString = settings.TgBotDatabaseConfiguration.ConnectionString;
+            var connectionString = settings.OAuthDatabaseConfiguration.ConnectionString;
 
             optionsBuilder.UseNpgsql(connectionString);
 

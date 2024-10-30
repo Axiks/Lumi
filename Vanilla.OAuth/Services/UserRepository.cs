@@ -18,7 +18,7 @@ namespace Vanilla.OAuth.Services
         {
             var userEntity = new UserEntity
             {
-                Nickname = createUser.Username
+                Nickname = createUser.NickName
             };
             await _dbContext.Users.AddAsync(userEntity);
             await _dbContext.SaveChangesAsync();
@@ -38,10 +38,10 @@ namespace Vanilla.OAuth.Services
             return MappingHelper.UserEntityToBasicUserModel(userEntity);
         }
 
-        public async Task<BasicUserModel> UpdateUserAsync(UserUpdateRequestModel updateUser)
+        public async Task<BasicUserModel> UpdateUserAsync(Guid userId, UserUpdateRequestModel updateUser)
         {
-            var userEntity = await _dbContext.Users.FirstAsync(x => x.Id == updateUser.UserId);
-            if (updateUser.Username is not null) userEntity.Nickname = updateUser.Username;
+            var userEntity = await _dbContext.Users.FirstAsync(x => x.Id == userId);
+            if (updateUser.NickName is not null) userEntity.Nickname = updateUser.NickName;
             await _dbContext.SaveChangesAsync();
 
             return MappingHelper.UserEntityToBasicUserModel(userEntity);
