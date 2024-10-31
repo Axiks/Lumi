@@ -1,4 +1,6 @@
 ﻿using System.Resources;
+using Vanilla.TelegramBot.Abstract;
+using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Resources.Texts;
 using Vanilla.TelegramBot.Services.Bot;
 
@@ -19,6 +21,9 @@ namespace Vanilla.TelegramBot.Models
         public BotProjectCreator? BotProjectCreator { get; set; }
         public BotProjectUpdate? BotProjectUpdater { get; set; }
         public BotUserCreator? BotUserCreator { get; set; }
+
+
+        public IFolder Folder { get; set; }
 
         public UserContextModel(UserModel user)
         {

@@ -2,7 +2,7 @@
 {
     public class UserModel
     {
-        public required Guid UserId { get; set; }
+        public required Guid UserId { get; init; }
         public required string Token { get; set; }
         public required long TelegramId { get; set; }
         public string? Username { get; set; }

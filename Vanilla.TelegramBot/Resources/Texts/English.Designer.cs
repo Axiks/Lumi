@@ -272,6 +272,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        internal static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find this project.
         /// </summary>
         internal static string FindThisProjectBtn {
@@ -422,6 +431,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string ThiIsMyMessageValidationMess {
             get {
                 return ResourceManager.GetString("ThiIsMyMessageValidationMess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to True.
+        /// </summary>
+        internal static string True {
+            get {
+                return ResourceManager.GetString("True", resourceCulture);
             }
         }
         

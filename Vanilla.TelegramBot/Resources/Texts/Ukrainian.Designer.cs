@@ -271,6 +271,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Редагувати.
+        /// </summary>
+        internal static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Знайти через inline пошук.
         /// </summary>
         internal static string FindThisProjectBtn {
@@ -437,6 +446,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string ThiIsMyMessageValidationMess {
             get {
                 return ResourceManager.GetString("ThiIsMyMessageValidationMess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Вірно.
+        /// </summary>
+        internal static string True {
+            get {
+                return ResourceManager.GetString("True", resourceCulture);
             }
         }
         

@@ -202,6 +202,9 @@ The name must not exceed 64 characters</value>
   <data name="Developed" xml:space="preserve">
     <value>Developed</value>
   </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
   <data name="FindThisProjectBtn" xml:space="preserve">
     <value>Find this project</value>
   </data>
@@ -260,6 +263,9 @@ This is my message!!!
 &lt;b&gt;I won't miss it&lt;/b&gt;
 
 Write it yourself</value>
+  </data>
+  <data name="True" xml:space="preserve">
+    <value>True</value>
   </data>
   <data name="UnexpectedInput" xml:space="preserve">
     <value>Unexpected input</value>

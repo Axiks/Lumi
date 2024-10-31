@@ -164,6 +164,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 UnexpectedInput();
                 return false;
             }
+
             if (message.ViaBot != null && message.ViaBot.Id == _botClient.GetMe().Id)
             {
                 var mess = _botClient.SendMessage(message.Chat.Id, _userContext.ResourceManager.GetString("ThiIsMyMessageValidationMess"), parseMode: "HTML");

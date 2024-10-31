@@ -42,7 +42,8 @@ namespace Vanilla.OAuth.Services
         {
             var userEntity = await _dbContext.Users.FirstAsync(x => x.Id == userId);
             if (updateUser.NickName is not null) userEntity.Nickname = updateUser.NickName;
-            await _dbContext.SaveChangesAsync();
+            _dbContext.Update(userEntity);
+           await  _dbContext.SaveChangesAsync();
 
             return MappingHelper.UserEntityToBasicUserModel(userEntity);
         }

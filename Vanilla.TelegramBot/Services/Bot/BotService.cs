@@ -12,6 +12,7 @@ using Vanilla.TelegramBot.Entityes;
 using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.Pages.UpdateUser;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
@@ -126,6 +127,10 @@ namespace Vanilla.TelegramBot.Services.Bot
                             {
                                 currentUserContext.BotUserCreator.EnterPoint(update);
                                 continue;
+                            }
+                            else if (currentUserContext.Folder is not null)
+                            {
+                                currentUserContext.Folder.EnterPoint(update);
                             }
 
                             if (update.Message is not null) { }
@@ -490,13 +495,13 @@ namespace Vanilla.TelegramBot.Services.Bot
 
         private void ToUpdateUser(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
         {
-            if (userContext.BotUserCreator is null)
+            if(userContext.Folder is null)
             {
-                userContext.BotUserCreator = new BotUserCreator(userContext, _botClient, _userService, _logger);
-                userContext.BotUserCreator.UpdateSuccessEvent += OnUpdated;
+                userContext.Folder = new UpdateUserFolderNew(_botClient, userContext, _userService, _logger);
             }
-            else _logger.WriteLog("User have no closed user context", LogType.Error);
+            else _logger.WriteLog("User have no closed folder context", LogType.Error);
 
+            // Delete slesh message
             int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
             DeleteMessage(userContext.User.TelegramId, messageId);
         }

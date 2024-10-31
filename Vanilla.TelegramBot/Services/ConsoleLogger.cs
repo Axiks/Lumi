@@ -42,7 +42,7 @@ namespace Vanilla.TelegramBot.Services
 
             using (StreamWriter sw = File.AppendText(logFolderPath + "/" + "log.txt"))
             {
-                sw.WriteLine(logType + " & " + message);
+                sw.WriteLine(log.Id + " - " + logType + " & " + message);
             }
 
             return log.Id;

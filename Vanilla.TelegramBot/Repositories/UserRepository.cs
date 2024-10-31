@@ -67,6 +67,13 @@ namespace Vanilla.TelegramBot.Repositories
         {
             var userEntity = await _dbContext.Users.FirstAsync(x => x.UserId == user.UserId);
             if (user.Username is not null) userEntity.Username = user.Username;
+            if (user.LanguageCode is not null) userEntity.LanguageCode = user.LanguageCode;
+            if (user.Username is not null) userEntity.Username = user.Username;
+            if (user.FirstName is not null) userEntity.FirstName = user.FirstName;
+            if (user.LastName is not null) userEntity.LastName = user.LastName;
+
+
+            _dbContext.Update(userEntity);
             await _dbContext.SaveChangesAsync();
             return MapperHelper.UserEntityToUserCreateResponseModel(userEntity);
         }

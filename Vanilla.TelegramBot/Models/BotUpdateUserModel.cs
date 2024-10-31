@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Vanilla.TelegramBot.Models
 {
-    public class BotUpdateUserModel
+    public class BotUpdateUserModel : BasicFolderModel
     {
         public String? Nickname { get; set; }
         public String? About { get; set; }

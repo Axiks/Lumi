@@ -48,13 +48,14 @@ namespace Vanilla_App.Repository
 
         public UserEntity Update(Guid userId, UserUpdateRequestModel update)
         {
-            if (_dbContext.Users.Any(x => x.Id == userId)) throw new Exception("User with this ID exist");
+            if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
 
             var user = _dbContext.Users.First(x => x.Id == userId);
             user.About = update.About ?? user.About;
             user.Links = update.Links ?? user.Links;
             user.IsRadyForOrders = update.IsRadyForOrders ?? user.IsRadyForOrders;
 
+            _dbContext.Update(user);
             _dbContext.SaveChanges();
             return user;
         }
