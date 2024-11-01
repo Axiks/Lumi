@@ -128,7 +128,7 @@ namespace Vanilla.TelegramBot.Abstract
 
         void MessageSendHelper(string text)
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text);
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, parseMode: "HTML");
             _sendMessages.Add(mess.MessageId);
         }
 

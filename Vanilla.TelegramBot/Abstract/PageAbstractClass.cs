@@ -16,6 +16,10 @@ namespace Vanilla.TelegramBot.Abstract
         readonly UserContextModel _userContext;
         readonly List<int> _sendMessages;
         T _dataContext;
+
+        public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
+        public event CompliteHandler? CompliteEvent;
+
         public PageAbstractClass(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages, T dataContext)
         {
             _botClient = botClient;

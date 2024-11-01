@@ -9,6 +9,9 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
     internal class UpdateSeccessUserPage : IPage
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
+        public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
+        public event CompliteHandler? CompliteEvent;
+
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly List<int> _sendMessages;
@@ -24,7 +27,10 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             _dataContext = dataContext;
         }
 
-        void IPage.SendInitMessage() => MessageSendHelper(InitMessage);
+        void IPage.SendInitMessage(){
+            MessageSendHelper(InitMessage);
+            CompliteEvent.Invoke();
+        }
 
         void IPage.InputHendler(Update update)
         {
@@ -33,8 +39,9 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         void MessageSendHelper(string text)
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text);
-            _sendMessages.Add(mess.MessageId);
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, parseMode: "HTML");
+
+            //_sendMessages.Add(mess.MessageId);
         }
     }
 }

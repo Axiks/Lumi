@@ -9,12 +9,16 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
     internal class UpdateUserAboutPage : IPage
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
+        public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
+        public event CompliteHandler? CompliteEvent;
+
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly List<int> _sendMessages;
         BotUpdateUserModel _dataContext;
 
-        readonly string InitMessage = "Розкажіть більше про себе. Чим займаєтесь? Що полюбляєте?";
+        //readonly string InitMessage = "Розкажіть більше про себе. Чим займаєтесь? Що полюбляєте?";
+        readonly string InitMessage = "Розкажіть про себе\n\n<i>Це можуть бути ваші захоплення, цінності, навички, мрії, цілі так і будь яка інша інформація про себе, про яку ви хотіли би розказати</i>";
 
         public UpdateUserAboutPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages, BotUpdateUserModel dataContext)
         {
@@ -31,7 +35,11 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             if (!ValidateInputType(update)) return;
             if (!ValidateInputData(update)) return;
 
+            _sendMessages.Add(update.Message.MessageId);
+
             Action(update);
+
+            CompliteEvent.Invoke();
         }
         bool ValidateInputType(Update update)
         {
@@ -57,7 +65,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         void MessageSendHelper(string text)
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text);
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, parseMode: "HTML");
             _sendMessages.Add(mess.MessageId);
         }
 

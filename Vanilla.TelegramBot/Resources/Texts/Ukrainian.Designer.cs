@@ -85,6 +85,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Про мене.
+        /// </summary>
+        internal static string AboutKey {
+            get {
+                return ResourceManager.GetString("AboutKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Підтвердити.
         /// </summary>
         internal static string Accept {
@@ -108,6 +117,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string AddProject {
             get {
                 return ResourceManager.GetString("AddProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Вернутись.
+        /// </summary>
+        internal static string Back {
+            get {
+                return ResourceManager.GetString("Back", resourceCulture);
             }
         }
         
@@ -307,11 +325,38 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ✨ Приймаю замовлення.
+        /// </summary>
+        internal static string IAcceptOrders {
+            get {
+                return ResourceManager.GetString("IAcceptOrders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Зображення.
+        /// </summary>
+        internal static string Images {
+            get {
+                return ResourceManager.GetString("Images", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to У розробці.
         /// </summary>
         internal static string InDevelopment {
             get {
                 return ResourceManager.GetString("InDevelopment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Готовність до співпраці.
+        /// </summary>
+        internal static string IsRedyToWork {
+            get {
+                return ResourceManager.GetString("IsRedyToWork", resourceCulture);
             }
         }
         
@@ -361,11 +406,29 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Нікнейм.
+        /// </summary>
+        internal static string Nickname {
+            get {
+                return ResourceManager.GetString("Nickname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ні.
         /// </summary>
         internal static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Пропустити.
+        /// </summary>
+        internal static string Pass {
+            get {
+                return ResourceManager.GetString("Pass", resourceCulture);
             }
         }
         
@@ -406,12 +469,12 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Оуу
+        ///   Looks up a localized string similar to &lt;b&gt;Ой-йой.. 500&lt;/b&gt;
+        ///Виникла внутрішня помилка серверу
         ///
-        ///Відбулась внутрішня помилка серверу
-        ///Якщо бот, надалі, не працюватиме належним чином, зв&apos;яжіться з {0}
+        ///Якщо Лумі, надалі, не працюватиме належним чином, повідомте про це у наш топік проекту (https://t.me/c/2378034660/2)
         ///
-        ///Error ID: &lt;b&gt;{1}&lt;/b&gt;.
+        ///Error ID: &lt;code&gt;{1}&lt;/code&gt;.
         /// </summary>
         internal static string ServerError {
             get {

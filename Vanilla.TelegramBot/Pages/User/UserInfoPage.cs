@@ -9,6 +9,9 @@ namespace Vanilla.TelegramBot.Pages.User
     internal class UserInfoPage : IPage
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
+        public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
+        public event CompliteHandler? CompliteEvent;
+
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly UserModel _userInfo;

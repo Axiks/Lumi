@@ -10,6 +10,8 @@ using Vanilla.TelegramBot.Services.Bot;
 
 namespace Vanilla.TelegramBot.Interfaces
 {
+
+    public delegate void CloseFolderEventHandler();
     public interface IFolder
     {
         internal void EnterPoint(Update update);
@@ -20,8 +22,6 @@ namespace Vanilla.TelegramBot.Interfaces
         internal short CurrentPageIndex { get; }
         internal short NumberOfPages {  get; }
 
-        internal event CloseFolderEventHandler CloseFolderEvent;
+        public event CloseFolderEventHandler? CloseFolderEvent;
     }
-
-    internal delegate void CloseFolderEventHandler();
 }

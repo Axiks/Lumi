@@ -19,6 +19,9 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
     internal class UpdateIsRedyToWorkPage : IPage
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
+        public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
+        public event CompliteHandler? CompliteEvent;
+
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly List<int> _sendMessages;
@@ -40,6 +43,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             pollArgs.IsAnonymous = false;
 
             var sendedMessage = _botClient.SendPoll(pollArgs);
+            _sendMessages.Add(sendedMessage.MessageId);
         }
 
         void IPage.InputHendler(Update update)
@@ -48,6 +52,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             if (!ValidateInputData(update)) return;
 
             Action(update);
+
+            CompliteEvent.Invoke();
         }
 
         bool ValidateInputType(Update update)

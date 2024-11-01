@@ -11,6 +11,7 @@ namespace Vanilla.TelegramBot.Models
         public String? Nickname { get; set; }
         public String? About { get; set; }
         public List<string>? Links { get; set; }
+        public List<string>? ImagesId { get; set; }
         public bool? IsRadyForOrders { get; set; }
 
         //General

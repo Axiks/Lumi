@@ -57,5 +57,22 @@ namespace Vanilla.TelegramBot.UI
             );
             return replyMarkuppp;
         }
+
+        public static InlineKeyboardMarkup GetPassKeypoard(UserContextModel userContext)
+        {
+            var passBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Pass"));
+            passBtn.CallbackData = "pass";
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        passBtn
+                    },
+                }
+            );
+
+            return replyMarkuppp;
+        }
     }
 }

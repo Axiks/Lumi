@@ -12,6 +12,7 @@ using Vanilla.TelegramBot.Entityes;
 using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.Pages;
 using Vanilla.TelegramBot.Pages.UpdateUser;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
@@ -65,6 +66,8 @@ namespace Vanilla.TelegramBot.Services.Bot
             _logger.WriteLog("Init bot service", LogType.Information);
         }
 
+        private void DestroyUserCreator(UserContextModel currentUserContext) => currentUserContext.BotUserCreator = null;
+
         public async Task StartListening()
         {
             //var x = _botClient.GetWebhookInfo;
@@ -94,6 +97,9 @@ namespace Vanilla.TelegramBot.Services.Bot
                         var currentUserContext = GetUserContext(update);
                         //_botClient.AnswerCallbackQuery();
 
+                        //currentUserContext.UpdateLoadPhotoTimer();
+                        if(update.Message is not null && update.Message.Photo is not null && update.Message.Photo.Count() > 0) currentUserContext.UpdateLoadPhotoTimer();
+
                         try
                         {
                             if (update.InlineQuery is not null)
@@ -116,6 +122,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                             if (currentUserContext.BotProjectCreator is not null)
                             {
                                 currentUserContext.BotProjectCreator.EnterPoint(update);
+
                                 continue;
                             }
                             else if (currentUserContext.BotProjectUpdater is not null)
@@ -289,7 +296,7 @@ namespace Vanilla.TelegramBot.Services.Bot
         private bool BotInlineComandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
         {
             if (update.Message is null) return false;
-            bool isUserHaveRunTask = userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null || userContext.UpdateUserContext is not null;
+            bool isUserHaveRunTask = userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null || userContext.Folder is not null;
 
             var chatId = userContext.User.TelegramId; //also fix
 
@@ -495,9 +502,16 @@ namespace Vanilla.TelegramBot.Services.Bot
 
         private void ToUpdateUser(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
         {
-            if(userContext.Folder is null)
+            void destroyFolderContext()
+            {
+                userContext.Folder.CloseFolderEvent -= destroyFolderContext;
+                userContext.Folder = null;
+            }
+
+            if (userContext.Folder is null)
             {
                 userContext.Folder = new UpdateUserFolderNew(_botClient, userContext, _userService, _logger);
+                userContext.Folder.CloseFolderEvent += destroyFolderContext;
             }
             else _logger.WriteLog("User have no closed folder context", LogType.Error);
 

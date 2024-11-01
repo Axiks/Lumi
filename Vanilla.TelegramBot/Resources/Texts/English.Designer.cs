@@ -85,6 +85,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        internal static string AboutKey {
+            get {
+                return ResourceManager.GetString("AboutKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept.
         /// </summary>
         internal static string Accept {
@@ -108,6 +117,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string AddProject {
             get {
                 return ResourceManager.GetString("AddProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back.
+        /// </summary>
+        internal static string Back {
+            get {
+                return ResourceManager.GetString("Back", resourceCulture);
             }
         }
         
@@ -299,11 +317,38 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I accept orders.
+        /// </summary>
+        internal static string IAcceptOrders {
+            get {
+                return ResourceManager.GetString("IAcceptOrders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Images.
+        /// </summary>
+        internal static string Images {
+            get {
+                return ResourceManager.GetString("Images", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In development.
         /// </summary>
         internal static string InDevelopment {
             get {
                 return ResourceManager.GetString("InDevelopment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IsRedyToWork.
+        /// </summary>
+        internal static string IsRedyToWork {
+            get {
+                return ResourceManager.GetString("IsRedyToWork", resourceCulture);
             }
         }
         
@@ -353,11 +398,29 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nickname.
+        /// </summary>
+        internal static string Nickname {
+            get {
+                return ResourceManager.GetString("Nickname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
         internal static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pass.
+        /// </summary>
+        internal static string Pass {
+            get {
+                return ResourceManager.GetString("Pass", resourceCulture);
             }
         }
         

@@ -9,12 +9,15 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
     internal class UpdateUserNicknamePage : IPage
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
+        public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
+        public event CompliteHandler? CompliteEvent;
+
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly List<int> _sendMessages;
         BotUpdateUserModel _dataContext;
 
-        readonly string InitMessage = "Як вас звати? Це може бути як реальне ім'я, так і нікнейм";
+        readonly string InitMessage = "Як вас звати?\n<i>Це може бути як реальне ім'я, так і нікнейм</i>";
         public UpdateUserNicknamePage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages, BotUpdateUserModel dataContext)
         {
             _botClient = botClient;
@@ -30,7 +33,11 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             if(!ValidateInputType(update)) return;
             if(!ValidateInputData(update)) return;
 
+            _sendMessages.Add(update.Message.MessageId);
+
             Action(update);
+
+            CompliteEvent.Invoke();
         }
         bool ValidateInputType(Update update)
         {
@@ -56,7 +63,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         void MessageSendHelper(string text)
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text);
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, parseMode: "HTML");
+
             _sendMessages.Add(mess.MessageId);
         }
 

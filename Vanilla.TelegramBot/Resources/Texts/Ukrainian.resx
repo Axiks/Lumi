@@ -129,6 +129,9 @@
 Створено учасником спільноти &lt;a href="https://t.me/include_anime"&gt;Програмісти і печеньки&lt;/a&gt;
 Ви можете зв'язатися з автором тут: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&lt;/a&gt;</value>
   </data>
+  <data name="AboutKey" xml:space="preserve">
+    <value>Про мене</value>
+  </data>
   <data name="Accept" xml:space="preserve">
     <value>Підтвердити</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="AddProject" xml:space="preserve">
     <value>Додати проект</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Вернутись</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Відмінити</value>
@@ -213,8 +219,17 @@
   <data name="GetBonus" xml:space="preserve">
     <value>Отримати бонус</value>
   </data>
+  <data name="IAcceptOrders" xml:space="preserve">
+    <value>✨ Приймаю замовлення</value>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>Зображення</value>
+  </data>
   <data name="InDevelopment" xml:space="preserve">
     <value>У розробці</value>
+  </data>
+  <data name="IsRedyToWork" xml:space="preserve">
+    <value>Готовність до співпраці</value>
   </data>
   <data name="Links" xml:space="preserve">
     <value>Посилання</value>
@@ -231,8 +246,14 @@
   <data name="Name" xml:space="preserve">
     <value>Ім'я</value>
   </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Нікнейм</value>
+  </data>
   <data name="No" xml:space="preserve">
     <value>Ні</value>
+  </data>
+  <data name="Pass" xml:space="preserve">
+    <value>Пропустити</value>
   </data>
   <data name="PlannedToDevelop" xml:space="preserve">
     <value>В планах</value>
@@ -247,12 +268,12 @@
     <value>Пошук проектів</value>
   </data>
   <data name="ServerError" xml:space="preserve">
-    <value>Оуу
+    <value>&lt;b&gt;Ой-йой.. 500&lt;/b&gt;
+Виникла внутрішня помилка серверу
 
-Відбулась внутрішня помилка серверу
-Якщо бот, надалі, не працюватиме належним чином, зв'яжіться з {0}
+Якщо Лумі, надалі, не працюватиме належним чином, повідомте про це у наш топік проекту (https://t.me/c/2378034660/2)
 
-Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
+Error ID: &lt;code&gt;{1}&lt;/code&gt;</value>
   </data>
   <data name="Spend" xml:space="preserve">
     <value>Витратити</value>

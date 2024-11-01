@@ -129,6 +129,9 @@ Also thank people who helped to develop this bot
 Created by a community member &lt;a href="https://t.me/include_anime"&gt;Programmers &amp; Cookies&lt;/a&gt;
 You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&lt;/a&gt;</value>
   </data>
+  <data name="AboutKey" xml:space="preserve">
+    <value>About</value>
+  </data>
   <data name="Accept" xml:space="preserve">
     <value>Accept</value>
   </data>
@@ -137,6 +140,9 @@ You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&l
   </data>
   <data name="AddProject" xml:space="preserve">
     <value>Add project</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
@@ -211,8 +217,17 @@ The name must not exceed 64 characters</value>
   <data name="GetBonus" xml:space="preserve">
     <value>Get bonus</value>
   </data>
+  <data name="IAcceptOrders" xml:space="preserve">
+    <value>I accept orders</value>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>Images</value>
+  </data>
   <data name="InDevelopment" xml:space="preserve">
     <value>In development</value>
+  </data>
+  <data name="IsRedyToWork" xml:space="preserve">
+    <value>IsRedyToWork</value>
   </data>
   <data name="Links" xml:space="preserve">
     <value>Links</value>
@@ -229,8 +244,14 @@ The name must not exceed 64 characters</value>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Nickname</value>
+  </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
+  </data>
+  <data name="Pass" xml:space="preserve">
+    <value>Pass</value>
   </data>
   <data name="PlannedToDevelop" xml:space="preserve">
     <value>Planned to develop</value>
