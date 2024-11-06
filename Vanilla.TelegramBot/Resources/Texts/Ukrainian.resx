@@ -135,6 +135,9 @@
   <data name="Accept" xml:space="preserve">
     <value>Підтвердити</value>
   </data>
+  <data name="ActivatedBonusesLabel" xml:space="preserve">
+    <value>Активовані бонуси ({0}) 🔭</value>
+  </data>
   <data name="AddOwnProject" xml:space="preserve">
     <value>Додати власний проект</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="Back" xml:space="preserve">
     <value>Вернутись</value>
+  </data>
+  <data name="BonusSytemBtn" xml:space="preserve">
+    <value>Система бонусів</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Відмінити</value>

@@ -103,6 +103,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activated bonuses ({0}) 🔭.
+        /// </summary>
+        internal static string ActivatedBonusesLabel {
+            get {
+                return ResourceManager.GetString("ActivatedBonusesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add own project.
         /// </summary>
         internal static string AddOwnProject {
@@ -126,6 +135,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string Back {
             get {
                 return ResourceManager.GetString("Back", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bonus system.
+        /// </summary>
+        internal static string BonusSytemBtn {
+            get {
+                return ResourceManager.GetString("BonusSytemBtn", resourceCulture);
             }
         }
         
@@ -507,6 +525,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string Status {
             get {
                 return ResourceManager.GetString("Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         

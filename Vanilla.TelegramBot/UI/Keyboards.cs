@@ -11,11 +11,14 @@ namespace Vanilla.TelegramBot.UI
             KeyboardButton[][] mainMenuKeyboardButtons = new KeyboardButton[][]{
                                         new KeyboardButton[]{
                                             new KeyboardButton(userContext.ResourceManager.GetString("AddProject")),
-                                            },// column 1
+                                         },// column 1
                                          new KeyboardButton[]{
                                              new KeyboardButton(userContext.ResourceManager.GetString("ViewOwnProjects")),
                                              new KeyboardButton(userContext.ResourceManager.GetString("MyProfile"))
-                                             }
+                                          },
+                                         new KeyboardButton[]{
+                                            new KeyboardButton(userContext.ResourceManager.GetString("BonusSytemBtn")),
+                                         },
       
                                     };
             var replyMarkup = new ReplyKeyboardMarkup(mainMenuKeyboardButtons);
