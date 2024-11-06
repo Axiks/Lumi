@@ -241,6 +241,12 @@ The name must not exceed 64 characters</value>
   <data name="MainMenuSendMes" xml:space="preserve">
     <value>Choose an action from the menu</value>
   </data>
+  <data name="MyProfile" xml:space="preserve">
+    <value>My Profile</value>
+  </data>
+  <data name="MyProfileUpdate" xml:space="preserve">
+    <value>Update Profile</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>
@@ -258,6 +264,9 @@ The name must not exceed 64 characters</value>
   </data>
   <data name="PoolDescription" xml:space="preserve">
     <value>Select the completion project status</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profile</value>
   </data>
   <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
     <value>The project has been deleted</value>

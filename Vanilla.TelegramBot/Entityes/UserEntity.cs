@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Vanilla.TelegramBot.Models;
 
 namespace Vanilla.TelegramBot.Entityes
 {
@@ -11,6 +12,7 @@ namespace Vanilla.TelegramBot.Entityes
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? LanguageCode { get; set; }
+        public List<ImagesEntity>? Images { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

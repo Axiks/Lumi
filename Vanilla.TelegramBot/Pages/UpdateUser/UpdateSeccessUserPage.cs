@@ -15,16 +15,14 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly List<int> _sendMessages;
-        BotUpdateUserModel _dataContext;
 
         readonly string InitMessage = "Твої дані були успішно оновленні!";
 
-        public UpdateSeccessUserPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages, BotUpdateUserModel dataContext)
+        public UpdateSeccessUserPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages)
         {
             _botClient = botClient;
             _userContext = userContext;
             _sendMessages = sendMessages;
-            _dataContext = dataContext;
         }
 
         void IPage.SendInitMessage(){

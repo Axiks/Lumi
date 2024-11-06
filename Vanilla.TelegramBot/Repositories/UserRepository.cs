@@ -40,7 +40,7 @@ namespace Vanilla.TelegramBot.Repositories
 
         public async Task<UserCreateResponseModel?> GetUserAsync(long telegramId)
         {
-            var userEntity = await _dbContext.Users.FirstOrDefaultAsync(x => x.TelegramId == telegramId);
+            var userEntity = await _dbContext.Users.Include(x => x.Images).FirstOrDefaultAsync(x => x.TelegramId == telegramId);
             if (userEntity is null) return null;
             return MapperHelper.UserEntityToUserCreateResponseModel(userEntity);
         }
@@ -72,6 +72,14 @@ namespace Vanilla.TelegramBot.Repositories
             if (user.FirstName is not null) userEntity.FirstName = user.FirstName;
             if (user.LastName is not null) userEntity.LastName = user.LastName;
 
+            if (user.Images is not null)
+            {
+                userEntity.Images = new List<ImagesEntity>();
+                foreach (var image in user.Images)
+                {
+                    userEntity.Images.Add(new ImagesEntity { TgMediaId = image.TgMediaId, TgUrl = image.TgUrl });
+                }
+            } 
 
             _dbContext.Update(userEntity);
             await _dbContext.SaveChangesAsync();

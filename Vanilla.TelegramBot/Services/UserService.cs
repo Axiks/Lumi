@@ -187,6 +187,7 @@ namespace Vanilla.TelegramBot.Services
                 FirstName = localUser.FirstName,
                 LastName = localUser.LastName,
                 LanguageCode = localUser.LanguageCode,
+                Images = user.Images,
             });
 
             return EntityesToObjectMapperHelper(uplocalUser, upcoreUser, upauthUser);
@@ -198,11 +199,13 @@ namespace Vanilla.TelegramBot.Services
                 Token = _authService.GenerateToken(oauthUser),
                 TelegramId = localUser.TelegramId,
                 Username = localUser.Username,
+                Nickname = oauthUser.Nickname,
                 FirstName = localUser.FirstName,
                 LastName = localUser.LastName,
                 About = coreUser.About,
                 Links = coreUser.Links,
                 IsRadyForOrders = coreUser.IsRadyForOrders,
+                Images = localUser.Images,
                 RegisterInServiceAt = localUser.CreatedAt,
                 RegisterInSystemAt = oauthUser.CreatedAt
         };

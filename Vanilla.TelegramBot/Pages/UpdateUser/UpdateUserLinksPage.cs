@@ -18,19 +18,17 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly List<int> _sendMessages;
-        BotUpdateUserModel _dataContext;
 
         readonly string InitMessage = "Залиш декілька посилань\n\nЦе можуть бути посилання на соц мережі, блоги, чи сторінки з твоїми проектами.\r\nМожна залишити декілька посилань, розділяючи їх через кому \",\"";
 
-        public UpdateUserLinksPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages, BotUpdateUserModel dataContext)
+        public UpdateUserLinksPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages)
         {
             _botClient = botClient;
             _userContext = userContext;
             _sendMessages = sendMessages;
-            _dataContext = dataContext;
         }
 
-        void IPage.SendInitMessage() => MessageSendHelper(InitMessage);
+        void IPage.SendInitMessage() => MessageSendHelper(InitMessage, _userContext.User.Links);
 
         void IPage.InputHendler(Update update)
         {
@@ -59,6 +57,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
         {
             if (update.CallbackQuery is not null && update.CallbackQuery.Data is not null) return true;
 
+            if(ValidatorHelpers.InlineBtnActionValidate(update, _userContext.ResourceManager.GetString("Pass"))) return true;
+
             if (update.Message!.Text!.Length > 4000)
             {
                 ValidationErrorEvent.Invoke("Ойй ой ой\n\n Посилання, у сумні, не можуть бути таке довше за 4000 символи.");
@@ -84,18 +84,38 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         void Action(Update update)
         {
-            if (update.Message is not null && update.Message.Text is not null)
+            if (ValidatorHelpers.CallbackBtnActionValidate(update, "pass"))
             {
-                _dataContext.Links = new List<string>(FormationHelper.Links(update.Message!.Text!, _userContext));
+                CompliteEvent.Invoke();
+                return;
+            }
+            else if (ValidatorHelpers.InlineBtnActionValidate(update, _userContext.ResourceManager.GetString("Pass")))
+            {
+                CompliteEvent.Invoke();
+                return;
+            }
+            else if (update.Message is not null && update.Message.Text is not null)
+            {
+                _userContext.User.Links = new List<string>(FormationHelper.Links(update.Message!.Text!, _userContext));
                 CompliteEvent.Invoke();
             }
-            else CompliteEvent.Invoke();
+            else ValidationErrorEvent.Invoke("action not recognized");
         }
 
-        void MessageSendHelper(string text)
+        void MessageSendHelper(string text, List<string>? links = null)
         {
+            string? myLinksStr = null;
+
+            if (links is not null && links.Count() > 0)
+            {
+                myLinksStr = links[0];
+
+                for (int i = 1; i < links.Count(); i++) myLinksStr += links[i];
+            }
+
             var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.GetPassKeypoard(_userContext), parseMode: "HTML");
             _sendMessages.Add(mess.MessageId);
         }
+
     }
 }

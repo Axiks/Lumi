@@ -14,13 +14,14 @@ namespace Vanilla.TelegramBot.Interfaces
     public delegate void CloseFolderEventHandler();
     public interface IFolder
     {
-        internal void EnterPoint(Update update);
-        public void NextPage();
-        internal void PreviousPage();
-        internal void GoToPage(short index);
-        internal void CloseFolder();
-        internal short CurrentPageIndex { get; }
-        internal short NumberOfPages {  get; }
+        public void Run();
+        public void EnterPoint(Update update);
+        //public void NextPage();
+        //internal void PreviousPage();
+        //internal void GoToPage(short index);
+        public void CloseFolder();
+        //internal short CurrentPageIndex { get; }
+        //internal short NumberOfPages {  get; }
 
         public event CloseFolderEventHandler? CloseFolderEvent;
     }

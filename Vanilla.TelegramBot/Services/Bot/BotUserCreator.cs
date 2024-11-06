@@ -186,6 +186,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 Links = _updateDataModel.Links,
                 About = _updateDataModel.About,
                 IsRadyForOrders = _updateDataModel.IsRadyForOrders,
+                Images = _updateDataModel.Images,
             });
 
 

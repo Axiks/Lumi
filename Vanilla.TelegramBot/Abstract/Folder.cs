@@ -34,8 +34,8 @@ namespace Vanilla.TelegramBot.Abstract
 
             ApplayPage();
         }
-        short IFolder.CurrentPageIndex => _index;
-        short IFolder.NumberOfPages => (short) _pages.Count();
+        //short IFolder.CurrentPageIndex => _index;
+        //short IFolder.NumberOfPages => (short) _pages.Count();
 
         event CloseFolderEventHandler IFolder.CloseFolderEvent
         {
@@ -50,16 +50,16 @@ namespace Vanilla.TelegramBot.Abstract
             }
         }
 
-        void IFolder.CloseFolder()
+    /*    void IFolder.CloseFolder()
         {
             throw new NotImplementedException();
-        }
+        }*/
 
-        void IFolder.GoToPage(short index)
+      /*  void IFolder.GoToPage(short index)
         {
             if(index < (short)_pages.Count()) _index = index;
             ApplayPage();
-        }
+        }*/
 
         public void NextPage()
         {
@@ -67,11 +67,11 @@ namespace Vanilla.TelegramBot.Abstract
             ApplayPage();
         }
 
-        void IFolder.PreviousPage()
+    /*    void IFolder.PreviousPage()
         {
             if (_index > 0) _index--;
             ApplayPage();
-        }
+        }*/
 
         void ApplayPage()
         {
@@ -138,5 +138,15 @@ namespace Vanilla.TelegramBot.Abstract
         }*/
 
         void ClearMessages() => _botClient.DeleteMessages(_userContext.User.TelegramId, _sendMessages);
+
+        public void Run()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CloseFolder()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

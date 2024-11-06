@@ -11,6 +11,7 @@
         public string? Nickname { get; set; }
         public string? About { get; set; }
         public List<string>? Links { get; set; }
+        public List<ImageModel>? Images { get; set; }
         public bool IsRadyForOrders { get; set; }
         public string? LanguageCode { get; set; }
         public required DateTime RegisterInSystemAt { get; set; }

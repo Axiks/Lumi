@@ -13,16 +13,58 @@ namespace Vanilla.TelegramBot.UI
                                             new KeyboardButton(userContext.ResourceManager.GetString("AddProject")),
                                             },// column 1
                                          new KeyboardButton[]{
-                                             new KeyboardButton(userContext.ResourceManager.GetString("ViewOwnProjects"))
+                                             new KeyboardButton(userContext.ResourceManager.GetString("ViewOwnProjects")),
+                                             new KeyboardButton(userContext.ResourceManager.GetString("MyProfile"))
                                              }
+      
+                                    };
+            var replyMarkup = new ReplyKeyboardMarkup(mainMenuKeyboardButtons);
+            //replyMarkup.IsPersistent = true;
+
+            return replyMarkup;
+        }
+
+        public static ReplyKeyboardMarkup ProfileKeyboard(UserContextModel userContext)
+        {
+            KeyboardButton[][] mainMenuKeyboardButtons = new KeyboardButton[][]{
+                                         new KeyboardButton[]{
+                                             new KeyboardButton(userContext.ResourceManager.GetString("MyProfileUpdate"))
+                                             },
+                                         new KeyboardButton[]{
+                                                new KeyboardButton(userContext.ResourceManager.GetString("Back")),
+                                            }
                                     };
 
-            return new(mainMenuKeyboardButtons);
+            var replyMarkup = new ReplyKeyboardMarkup(mainMenuKeyboardButtons);
+            replyMarkup.ResizeKeyboard = true;
+            replyMarkup.IsPersistent = true;
+            //replyMarkup.OneTimeKeyboard = true;
+
+            return replyMarkup;
         }
 
         public static ReplyKeyboardMarkup CannelKeyboard(UserContextModel userContext, String placeholder = null)
         {
             var cannelKeyboardButtons = new KeyboardButton[][]{
+                                            new KeyboardButton[]{
+                                                new KeyboardButton(userContext.ResourceManager.GetString("Cannel")),
+                                            }
+                                        };
+            var replyMarkup = new ReplyKeyboardMarkup(cannelKeyboardButtons);
+            replyMarkup.ResizeKeyboard = true;
+            //replyMarkup.OneTimeKeyboard = true;
+            replyMarkup.IsPersistent = true;
+            if (placeholder != null)
+                replyMarkup.InputFieldPlaceholder = placeholder;
+            return replyMarkup;
+        }
+
+        public static ReplyKeyboardMarkup PassAndCannelKeyboard(UserContextModel userContext, String placeholder = null)
+        {
+            var cannelKeyboardButtons = new KeyboardButton[][]{
+                new KeyboardButton[]{
+                                                new KeyboardButton(userContext.ResourceManager.GetString("Pass")),
+                                            },
                                             new KeyboardButton[]{
                                                 new KeyboardButton(userContext.ResourceManager.GetString("Cannel")),
                                             }

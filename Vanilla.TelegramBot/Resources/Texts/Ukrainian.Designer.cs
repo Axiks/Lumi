@@ -397,6 +397,24 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Мій профіль.
+        /// </summary>
+        internal static string MyProfile {
+            get {
+                return ResourceManager.GetString("MyProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Оновити профіль.
+        /// </summary>
+        internal static string MyProfileUpdate {
+            get {
+                return ResourceManager.GetString("MyProfileUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ім&apos;я.
         /// </summary>
         internal static string Name {
@@ -447,6 +465,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string PoolDescription {
             get {
                 return ResourceManager.GetString("PoolDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Профіль.
+        /// </summary>
+        internal static string Profile {
+            get {
+                return ResourceManager.GetString("Profile", resourceCulture);
             }
         }
         

@@ -2,6 +2,7 @@
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
+using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
@@ -17,16 +18,14 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly List<int> _sendMessages;
-        BotUpdateUserModel _dataContext;
 
         readonly string InitMessage = "Покажи декілька світлин\n\n<i>Це можуть бути як і твої роботи, так і будь-які інші світлини котрі можна показати</i>";
 
-        public UpdateUserImagesPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages, BotUpdateUserModel dataContext)
+        public UpdateUserImagesPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages)
         {
             _botClient = botClient;
             _userContext = userContext;
             _sendMessages = sendMessages;
-            _dataContext = dataContext;
         }
 
         void IPage.SendInitMessage()
@@ -44,7 +43,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         void ReinitObj()
         {
-            _dataContext.ImagesId = new List<string>();
+            //_dataContext.ImagesId = new List<string>();
+            _userContext.User.Images = new List<ImageModel>();
             _userContext.FinishUploadingPhotosEvent += ToNextPage;
         }
 
@@ -79,10 +79,9 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         void AddImageId(Update update)
         {
-
             var imagesData = update.Message.Photo.GroupBy(x => x.FileUniqueId).Last();
             var id = imagesData.First().FileId;
-            _dataContext.ImagesId.Add(id);
+            _userContext.User.Images.Add(new ImageModel { TgMediaId = id });
 
             /*foreach (var image in imagesData)
             {
@@ -93,7 +92,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
        void MessageSendHelper(string text, InlineKeyboardMarkup? keyboard = null)
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, parseMode: "HTML", replyMarkup: keyboard);
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.GetPassKeypoard(_userContext), parseMode: "HTML");
             _sendMessages.Add(mess.MessageId);
         }
 

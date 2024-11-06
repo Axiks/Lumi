@@ -19,7 +19,7 @@ namespace Vanilla.TelegramBot.Models
         {
             timer.Dispose();
 
-            timer = new(interval: 1000);
+            timer = new(interval: 2000); // fix
             timer.AutoReset = false;
             timer.Elapsed += (sender, e) => FinishUploadingPhotosEvent.Invoke();
             timer.Elapsed += (sender, e) => timer.Dispose();

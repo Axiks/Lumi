@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Vanilla.TelegramBot;
@@ -11,9 +12,11 @@ using Vanilla.TelegramBot;
 namespace Vanilla.TelegramBot.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241105131222_addeUserImages")]
+    partial class addeUserImages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace Vanilla.TelegramBot.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Vanilla.TelegramBot.Entityes.ImagesEntity", b =>
+            modelBuilder.Entity("Vanilla.TelegramBot.Entityes.ImageEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,7 +46,7 @@ namespace Vanilla.TelegramBot.Migrations
 
                     b.HasIndex("UserEntityUserId");
 
-                    b.ToTable("ImagesEntity");
+                    b.ToTable("ImageEntity");
                 });
 
             modelBuilder.Entity("Vanilla.TelegramBot.Entityes.UserEntity", b =>
@@ -75,7 +78,7 @@ namespace Vanilla.TelegramBot.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Vanilla.TelegramBot.Entityes.ImagesEntity", b =>
+            modelBuilder.Entity("Vanilla.TelegramBot.Entityes.ImageEntity", b =>
                 {
                     b.HasOne("Vanilla.TelegramBot.Entityes.UserEntity", null)
                         .WithMany("Images")

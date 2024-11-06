@@ -1,95 +1,126 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
-using Telegram.BotAPI;
+﻿using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
-using Vanilla.TelegramBot.Pages.UpdateUser;
-using Vanilla_App.Models;
+using Vanilla.TelegramBot.UI;
 
 namespace Vanilla.TelegramBot.Pages
 {
-    public class UpdateUserFolderNew : IFolder
+    public abstract class AbstractFolder : IFolder
     {
-
         readonly ILogger _logger;
 
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly IUserService _userService;
 
-        readonly List<IPage> _pagesCatalog;
+        List<IPage> _pagesCatalog;
+        //public abstract List<IPage> _pagesCatalog { get; }
 
         List<(short, short, List<IPage>)> _pagesVolumes;
-        List<int> _sendMessages;
+        internal List<int> _sendMessages;
 
         short _previousIndex; // can be event bug
         short _index;
         List<IPage> _pages;
-        //private bool _isReadyMoveToNextPage;
-
 
         private readonly BotUpdateUserModel _userModel;
 
-        public event CloseFolderEventHandler CloseFolderEvent;
+        public event CloseFolderEventHandler? CloseFolderEvent;
 
-        public UpdateUserFolderNew(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger)
+        int? _catalogInitMessageId;
+
+
+        public AbstractFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger)
         {
             _logger = logger;
             _userContext = userContext;
             _botClient = botClient;
             _userService = userService;
 
-
-            _previousIndex = 0;
+            _index = 0;
             _sendMessages = new List<int>();
-            //_isReadyMoveToNextPage = true;
 
             _userContext.UpdateUserContext = _userContext.UpdateUserContext is null ? new BotUpdateUserModel() : _userContext.UpdateUserContext;
             _userModel = _userContext.UpdateUserContext;
 
-            _pagesCatalog = new List<IPage>
+      /*      _pagesCatalog = new List<IPage>
             {
-                new UpdateUserNicknamePage(_botClient, userContext, _sendMessages),
-                new UpdateUserAboutPage(_botClient, userContext, _sendMessages),
-                new UpdateUserLinksPage(_botClient, userContext, _sendMessages),
-                new UpdateIsRedyToWorkPage(_botClient, userContext, _sendMessages),
-                new UpdateUserImagesPage(_botClient, userContext, _sendMessages),
-                new UpdateUserComplitePage(_botClient, userContext, _sendMessages, _userService),
-                new UpdateSeccessUserPage(_botClient, userContext, _sendMessages),
-            };
+                new UpdateUserNicknamePage(_botClient, _userContext, _sendMessages, _userModel),
+                new UpdateUserAboutPage(_botClient, _userContext, _sendMessages, _userModel),
+                new UpdateUserLinksPage(_botClient, _userContext, _sendMessages, _userModel),
+                new UpdateIsRedyToWorkPage(_botClient, _userContext, _sendMessages, _userModel),
+                new UpdateUserImagesPage(_botClient, _userContext, _sendMessages, _userModel),
+                new UpdateUserComplitePage(_botClient, _userContext, _sendMessages, _userModel, _userService),
+                new UpdateSeccessUserPage(_botClient, _userContext, _sendMessages, _userModel),
+            };*/
+
+            /*_pagesVolumes = new List<(short, short, List<IPage>)>
+            {
+                new (0, 0, new List<IPage>(_pagesCatalog))
+            };*/
+
+        }
+
+        public void InitPagesCatalog(List<IPage> pagesCatalog)
+        {
+            _pagesCatalog = pagesCatalog;
+        }
+
+        public void InitPages(List<IPage> pages)
+        {
+            var initPages = new List<IPage>();
+
+            foreach(var page in pages)
+            {
+                //_pagesCatalog.First(x => x == page);
+                initPages.Add(_pagesCatalog.First(x => x == page));
+            }
 
             _pagesVolumes = new List<(short, short, List<IPage>)>
             {
-                new (0, 0, new List<IPage>(_pagesCatalog))
+                new (0, 0, new List<IPage>(initPages))
             };
 
+
             LoadVolume();
+            //ApplayPage();
+        }
+
+        public void Run()
+        {
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Run task", replyMarkup: Keyboards.CannelKeyboard(_userContext), parseMode: "HTML");
+            _catalogInitMessageId = mess.MessageId;
+            //_sendMessages.Add(mess.MessageId);
+
             ApplayPage();
         }
-        //short IFolder.CurrentPageIndex => _index;
-        //short IFolder.NumberOfPages => (short)_pages.Count();
-
-
-       /* void IFolder.CloseFolder()
-        {
-            throw new NotImplementedException();
-        }*/
-
-    /*    void IFolder.GoToPage(short index)
-        {
-            if (index < (short)_pages.Count()) _index = index;
-            ApplayPage();
-        }*/
 
         void PageNotifiedComplite() => NextPage();
+        public virtual void EnterPoint(Update update) => _pages[_index].InputHendler(update);
+
+        internal void ApplayPage()
+        {
+            ClearMessages();
+            UnubscribePageEvents();
+            SubscribePageEvents();
+            try
+            {
+                _pages[_index].SendInitMessage();
+            }
+            catch (Exception ex)
+            {
+                InternallException(ex);
+            }
+
+            _previousIndex = _index;
+        }
+
         public void NextPage()
         {
-            //if (!_isReadyMoveToNextPage) return;
-
             if (_index < (short)_pages.Count() - 1)
             {
                 _index++;
@@ -98,7 +129,7 @@ namespace Vanilla.TelegramBot.Pages
             else
             {
                 // Try change volume
-                if(_pagesVolumes.Count() > 1)
+                if (_pagesVolumes.Count() > 1)
                 {
                     _pagesVolumes.Remove(_pagesVolumes.Last());
                     LoadVolume(); // Load next volume
@@ -115,55 +146,13 @@ namespace Vanilla.TelegramBot.Pages
 
         }
 
-        void ExitFromFolder()
-        {
-            ClearMessages();
-            CloseFolderEvent.Invoke();
-            Console.WriteLine("Success exit from folder");
-        }
-
-      /*  void IFolder.PreviousPage()
-        {
-            if (_index > 0) _index--;
-        }*/
-
-        void ApplayPage()
-        {
-            UnubscribePageEvents();
-            SubscribePageEvents();
-            try
-            {
-                _pages[_index].SendInitMessage();
-            }
-            catch (Exception ex)
-            {
-                InternallException(ex);
-            }
-
-            _previousIndex = _index;
-
-        }
-        void IFolder.EnterPoint(Update update)
-        {
-            //_isReadyMoveToNextPage = true;
-            try
-            {
-                _pages[_index].InputHendler(update);
-                //NextPage();
-            }
-            catch (Exception ex)
-            {
-                InternallException(ex);
-            }
-        }
-
         void PutPagesToFlow(List<string> pagesRoute)
         {
             UnubscribePageEvents(); //Fix
 
-            List <IPage> newLists = new List <IPage>();
+            List<IPage> newLists = new List<IPage>();
 
-            for (int i = 0; i < pagesRoute.Count() ; i++)
+            for (int i = 0; i < pagesRoute.Count(); i++)
             {
                 var page = _pagesCatalog.First(x => x.GetType().Name == pagesRoute[i]);
                 newLists.Add(page);
@@ -185,20 +174,15 @@ namespace Vanilla.TelegramBot.Pages
             ApplayPage();
         }
 
-        void ValidationErrorEvent(string text)
-        {
-            //_isReadyMoveToNextPage = false;
-            MessageSendHelper("Validation Error\n\n" + text);
-        }
+        void ValidationErrorEvent(string text) => MessageSendHelper("Validation Error\n\n" + text);
         void InternallException(Exception ex)
         {
-            //_isReadyMoveToNextPage = false;
 
             var exeptionId = _logger.WriteLog(ex.Message, LogType.Error);
 
             var errorMessage = string.Format(_userContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
-            MessageSendHelper(errorMessage);
         }
+           
         void SubscribePageEvents()
         {
             _pages[_index].CompliteEvent += PageNotifiedComplite;
@@ -221,20 +205,21 @@ namespace Vanilla.TelegramBot.Pages
 
         void ClearMessages()
         {
+            if (_sendMessages.Count() <= 0) return;
             _botClient.DeleteMessages(_userContext.User.TelegramId, _sendMessages);
             _sendMessages.Clear();
         }
 
         void LoadVolume() => (_index, _previousIndex, _pages) = _pagesVolumes.Last();
 
-        public void Run()
+        void ExitFromFolder()
         {
-            throw new NotImplementedException();
+            ClearMessages();
+            if(_catalogInitMessageId is not null) _botClient.DeleteMessage(_userContext.User.TelegramId, _catalogInitMessageId ?? 0);
+            CloseFolderEvent.Invoke();
+            Console.WriteLine("Success exit from folder");
         }
 
-        public void CloseFolder()
-        {
-            throw new NotImplementedException();
-        }
+        public void CloseFolder() => ExitFromFolder();
     }
 }

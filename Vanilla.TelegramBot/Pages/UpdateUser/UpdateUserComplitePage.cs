@@ -1,10 +1,13 @@
-﻿using Telegram.BotAPI;
+﻿using System.Data;
+using System.Text.Json;
+using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.UI.Widgets;
 namespace Vanilla.TelegramBot.Pages.UpdateUser
 {
     internal class UpdateUserComplitePage : IPage
@@ -16,33 +19,35 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly List<int> _sendMessages;
-        BotUpdateUserModel _dataContext;
+        //BotUpdateUserModel _dataContext;
         private readonly IUserService _userService;
 
         readonly string InitMessage = "<b>{0}</b>\n{1}\n{2}\n\nЗнайти мене можеш тут\n{3}";
 
-        public UpdateUserComplitePage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages, BotUpdateUserModel dataContext, IUserService userService)
+        public UpdateUserComplitePage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages, IUserService userService)
         {
             _botClient = botClient;
             _userContext = userContext;
             _sendMessages = sendMessages;
-            _dataContext = dataContext;
             _userService = userService;
         }
         
         string _basicMessage
         {
             get {
-                var links = new List<string>();
-                if(_dataContext.Links is not null) links.AddRange(_dataContext.Links);
-                if(_userContext.User.Username is not null) links.Add("@" + _userContext.User.Username);
-                var linkStr = String.Join(", ", links);
+                //UserModel userModel =  (UserModel)UserModel.User.
+                //var userModel = JsonSerializer.Deserialize<UserModel>(JsonSerializer.Serialize(_userContext.User));
+                //userModel.Nickname = _dataContext.Nickname ?? userModel.Nickname;
+                //userModel.About = _dataContext.About ?? userModel.About;
+                //userModel.Links = _dataContext.Links ?? userModel.Links;
+                //userModel.IsRadyForOrders = _dataContext.IsRadyForOrders ?? userModel.IsRadyForOrders;
 
-                return string.Format(InitMessage, _dataContext.Nickname, _dataContext.About, _dataContext.IsRadyForOrders == true ? _userContext.ResourceManager.GetString("IAcceptOrders") : "" , linkStr);
+                //return Widjets.AboutUser(_userContext.ResourceManager, userModel);
+                return Widjets.AboutUser(_userContext.ResourceManager, _userContext.User);
             }
         }
 
-        void IPage.SendInitMessage() => MessageSendHelper(_basicMessage, _dataContext.ImagesId);
+        void IPage.SendInitMessage() => MessageSendHelper(_basicMessage, _userContext.User.Images);
 
         void IPage.InputHendler(Update update)
         {
@@ -84,37 +89,36 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         void InitAction(Update update)
         {
-            if (_dataContext.ImagesId is not null && _dataContext.ImagesId.Count() > 0) SaveImages(update);
+            if (_userContext.User.Images is not null && _userContext.User.Images.Count() > 0) SaveImages(update);
 
             _userService.UpdateUser(_userContext.User.TelegramId, new Models.UserUpdateRequestModel
             {
-                Nickname = _dataContext.Nickname,
-                Links = _dataContext.Links,
-                About = _dataContext.About,
-                IsRadyForOrders = _dataContext.IsRadyForOrders,
+                Nickname = _userContext.User.Nickname,
+                Links = _userContext.User.Links,
+                About = _userContext.User.About,
+                IsRadyForOrders = _userContext.User.IsRadyForOrders,
+                Images = _userContext.User.Images,
             });
         }
 
-        List<string> SaveImages(Update update)
+        void SaveImages(Update update)
         {
             _botClient.SendChatAction(_userContext.User.TelegramId, "upload_document");
-            var imagesUrl = new List<string>();
 
-            foreach (var imageId in _dataContext.ImagesId)
+            foreach (var image in _userContext.User.Images)
             {
-                var file = _botClient.GetFile(imageId);
-                imagesUrl.Add(file.FilePath);
+                var file = _botClient.GetFile(image.TgMediaId);
+                image.TgUrl = file.FilePath;
             }
-            return imagesUrl;
         }
 
         void BackKeyboardAction(Update update)
         {
-            _botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: _basicMessage, replyMarkup: GetBasicKeypoard(), parseMode: "HTML");
+            _botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: "Чи усе заповнено вірно?", replyMarkup: GetBasicKeypoard(), parseMode: "HTML");
         }
         void UpdateKeyboardAction(Update update)
         {
-            _botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: _basicMessage, replyMarkup: GetSwitchPageKeypoard(), parseMode: "HTML");
+            _botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: "Що саме оновити?", replyMarkup: GetSwitchPageKeypoard(), parseMode: "HTML");
         }
 
         void ReturnToPage(string pageName)
@@ -127,19 +131,19 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             //CompliteEvent.Invoke();
         }
 
-        void MessageSendHelper(string text, List<string>? imagesIdList = null)
+        void MessageSendHelper(string text, List<ImageModel>? imagesIist = null)
         {
             var mediaList = new List<InputMedia>();
 
-            if(imagesIdList is not null)
+            if(imagesIist is not null)
             {
-                foreach (var imgId in imagesIdList)
+                foreach (var img in imagesIist)
                 {
-                    var inputPhoto = new InputMediaPhoto(imgId);
+                    var inputPhoto = new InputMediaPhoto(img.TgMediaId);
                     mediaList.Add(inputPhoto);
                 }
 
-                if (imagesIdList.Count() > 0)
+                if (imagesIist.Count() > 0)
                 {
                     mediaList.First().Caption = text;
                     mediaList.First().ParseMode = "HTML";
@@ -161,7 +165,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             }
             else
             {
-                var textPrefix = "Бачу що усі дані було заповнено:3\nНа останок хочу переконатись що усе вірно запам'ятала\n\n";
+                var textPrefix = _userContext.User is not null ? "Бачу що усі дані було заповнено :3\nНа останок хочу переконатись що усе вірно запам'ятала\n\n" : "Чи усе заповнено вірно?\n\n";
                 var mess = _botClient.SendMessage(_userContext.User.TelegramId, textPrefix + text, replyMarkup: GetBasicKeypoard(), parseMode: "HTML");
                 _sendMessages.Add(mess.MessageId);
             }
