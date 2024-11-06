@@ -116,5 +116,23 @@ namespace Vanilla.TelegramBot.UI
 
             return replyMarkuppp;
         }
+
+        public static InlineKeyboardMarkup GetErrorKeypoard(UserContextModel userContext)
+        {
+            var passBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Pass"));
+            passBtn.Text = "Топік з багами";
+            passBtn.Url = "https://t.me/c/2378034660/2";
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        passBtn
+                    },
+                }
+            );
+
+            return replyMarkuppp;
+        }
     }
 }

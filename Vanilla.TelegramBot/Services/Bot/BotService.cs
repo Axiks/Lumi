@@ -165,7 +165,8 @@ namespace Vanilla.TelegramBot.Services.Bot
                         {
                             Guid exeptionId = Guid.NewGuid();
                             var mess = String.Format(currentUserContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
-                            _botClient.SendMessage(chatId: currentUserContext.User.TelegramId, mess, parseMode: "HTML");
+                            
+                            _botClient.SendMessage(chatId: currentUserContext.User.TelegramId, replyMarkup: Keyboards.GetErrorKeypoard(currentUserContext), text: mess, parseMode: "HTML");
                             _logger.WriteLog(ex.Message + "; Exeption ID: " + exeptionId, LogType.Error);
                         }
                     }
@@ -858,6 +859,13 @@ namespace Vanilla.TelegramBot.Services.Bot
             int toIndex = index + 1 + maxProjects <= projects.Count ? index + 1 + maxProjects : projects.Count;
 
             var offsetProjectId = toIndex < projects.Count ? toIndex.ToString() : null;
+
+            // Test
+   /*         var b = new InlineKeyboardButton
+            {
+                Text = "Testtt"
+            };
+            res.Add(b);*/
 
 
             while (index < toIndex)
