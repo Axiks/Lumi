@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Text.Json;
-using Telegram.BotAPI;
+﻿using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
@@ -10,11 +8,12 @@ using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI.Widgets;
 namespace Vanilla.TelegramBot.Pages.UpdateUser
 {
-    internal class UpdateUserComplitePage : IPage
+    internal class UpdateUserComplitePage : IPage, IPageKeyboardExtension
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
         public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
         public event CompliteHandler? CompliteEvent;
+        public event ChangeInlineKeyboardHandler? ChangeInlineKeyboardEvent;
 
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
@@ -22,7 +21,11 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
         //BotUpdateUserModel _dataContext;
         private readonly IUserService _userService;
 
+        private int _initMessageId;
+
         readonly string InitMessage = "<b>{0}</b>\n{1}\n{2}\n\nЗнайти мене можеш тут\n{3}";
+
+        private bool _backBtnIntercept = true;
 
         public UpdateUserComplitePage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages, IUserService userService)
         {
@@ -47,6 +50,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             }
         }
 
+        public bool BackBtnIntercept => _backBtnIntercept;
+
         void IPage.SendInitMessage() => MessageSendHelper(_basicMessage, _userContext.User.Images);
 
         void IPage.InputHendler(Update update)
@@ -57,17 +62,25 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         bool ValidateInputType(Update update)
         {
-            if (update.CallbackQuery is null)
+            if (update.CallbackQuery is not null)
             {
-                ValidationErrorEvent.Invoke("Не те що очікувала. Обери дію з кнопки!");
-                return false;
+                return true;
             }
-            return true;
+            else if (Helpers.ValidatorHelpers.InlineBtnActionValidate(update, _userContext.ResourceManager.GetString("Back"))) return true;
+
+            ValidationErrorEvent.Invoke("Не те що очікувала. Обери дію з кнопки!");
+            return false;
         }
 
         void Router(Update update)
         {
-            if (update.CallbackQuery.Data == "true")
+            if (Helpers.ValidatorHelpers.InlineBtnActionValidate(update, _userContext.ResourceManager.GetString("Back")))
+            {
+                _backBtnIntercept = false;
+                BackKeyboardAction(update);
+                return;
+            }
+            else if (update.CallbackQuery.Data == "true")
             {
                 InitAction(update);
                 CompliteEvent.Invoke();
@@ -83,6 +96,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             {
                 throw new Exception("Неочікувана дія");
             }
+
             //Action(update);
             //UpdateKeyboard(update);
         }
@@ -114,11 +128,13 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         void BackKeyboardAction(Update update)
         {
-            _botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: "Чи усе заповнено вірно?", replyMarkup: GetBasicKeypoard(), parseMode: "HTML");
+            _botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: _initMessageId, text: "Чи усе заповнено вірно?", replyMarkup: GetBasicKeypoard(), parseMode: "HTML");
+            _backBtnIntercept = false;
         }
         void UpdateKeyboardAction(Update update)
         {
             _botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: "Що саме оновити?", replyMarkup: GetSwitchPageKeypoard(), parseMode: "HTML");
+            _backBtnIntercept = true;
         }
 
         void ReturnToPage(string pageName)
@@ -128,6 +144,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
                 //"UpdateUserComplitePage"
             };
             ChangePagesFlowPagesEvent.Invoke(putFlow);
+            _backBtnIntercept = false;
             //CompliteEvent.Invoke();
         }
 
@@ -162,12 +179,14 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
                 var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Чи усе заповнено вірно?", replyMarkup: GetBasicKeypoard(), parseMode: "HTML");
                 _sendMessages.Add(mess.MessageId);
+                _initMessageId = mess.MessageId;
             }
             else
             {
                 var textPrefix = _userContext.User is not null ? "Бачу що усі дані було заповнено :3\nНа останок хочу переконатись що усе вірно запам'ятала\n\n" : "Чи усе заповнено вірно?\n\n";
                 var mess = _botClient.SendMessage(_userContext.User.TelegramId, textPrefix + text, replyMarkup: GetBasicKeypoard(), parseMode: "HTML");
                 _sendMessages.Add(mess.MessageId);
+                _initMessageId = mess.MessageId;
             }
 
 
@@ -234,9 +253,9 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
                     new InlineKeyboardButton[]{
                         isRedy
                     },
-                    new InlineKeyboardButton[]{
+              /*      new InlineKeyboardButton[]{
                         back
-                    },
+                    },*/
                 }
             );
 

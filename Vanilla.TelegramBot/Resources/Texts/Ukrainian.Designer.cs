@@ -139,7 +139,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Система бонусів.
+        ///   Looks up a localized string similar to Мої бонуси.
         /// </summary>
         internal static string BonusSytemBtn {
             get {

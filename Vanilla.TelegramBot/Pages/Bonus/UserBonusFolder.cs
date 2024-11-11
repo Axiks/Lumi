@@ -15,7 +15,7 @@ namespace Vanilla.TelegramBot.Pages.Bonus
     {
         public UserBonusFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger, IBonusService bonusService) : base(botClient, userContext, userService, logger)
         {
-            var userBonusPage = new UserBonusPage(botClient, userContext, _sendMessages, bonusService);
+            var userBonusPage = new UserBonusPage(botClient, userContext, _sendMessages, bonusService, _sendedMessages);
 
             var PagesCatalog = new List<IPage>
             {

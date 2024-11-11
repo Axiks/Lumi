@@ -14,7 +14,6 @@ using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Pages;
 using Vanilla.TelegramBot.Pages.Bonus;
-using Vanilla.TelegramBot.Pages.UpdateUser;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
@@ -193,7 +192,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 ToCreateProject(update, userContext);
                 return true;
             }
-            else if (command.Contains("bonus" + _deliver + "ok"))
+/*            else if (command.Contains("bonus" + _deliver + "ok"))
             {
                 int bonusId = Convert.ToInt32(command.Split(_deliver).Last());
                 //var bonus = _bonusService.GetBonus(bonusId).Value;
@@ -223,8 +222,8 @@ namespace Vanilla.TelegramBot.Services.Bot
 
 
                 return true;
-            }
-            else if (command.Contains("bonus" + _deliver))
+            }*/
+/*            else if (command.Contains("bonus" + _deliver))
             {
                 int bonusId = Convert.ToInt32(command.Split(_deliver).Last());
 
@@ -249,12 +248,12 @@ namespace Vanilla.TelegramBot.Services.Bot
 
 
                 return true;
-            }
+            }*/
 
             return false;
         }
 
-        private void SendMessageAboutBonus(UserContextModel userContext, int bonusId)
+/*        private void SendMessageAboutBonus(UserContextModel userContext, int bonusId)
         {
             var bonus = _bonusService.GetBonus(bonusId).Value;
 
@@ -292,7 +291,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             var messageObj = _botClient.SendMessage(message);
             userContext.SendMessages.Add(messageObj.MessageId);
-        }
+        }*/
 
         private string _deliver = " mya~ ";
         private bool BotInlineComandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
@@ -344,7 +343,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 ToUpdateUser(update, userContext);
                 return true;
             }
-            else if (update.Message.Text == userContext.ResourceManager.GetString("Back"))
+/*            else if (update.Message.Text == userContext.ResourceManager.GetString("Back"))
             {
                 if (userContext.Folder is not null) userContext.Folder.CloseFolder();
 
@@ -355,7 +354,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 DeleteAllMesssages(userContext);
                 OpenMainMenu(userContext);
                 return true;
-            }
+            }*/
             else if (update.Message.Text == userContext.ResourceManager.GetString("Cannel"))
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
@@ -714,7 +713,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 ToCreateProject(update, userContext);
                 return true;
             }
-            else if (update.Message.Text == "/about")
+            else if (update.Message.Text == "/info")
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
                 DeleteAllMesssages(userContext);
@@ -733,7 +732,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 throw new Exception("test exeption");
             }
-            else if (update.Message.Text == "/bonus")
+           /* else if (update.Message.Text == "/bonus")
             {
                 Console.WriteLine("Print user bonuses");
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
@@ -778,7 +777,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 var messageObj = _botClient.SendMessage(message);
                 userContext.SendMessages.Add(messageObj.MessageId);
 
-                /*
+                *//*
                 var getBonusBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("GetBonus"));
 
                 var replyMarkuppp = new InlineKeyboardMarkup
@@ -802,10 +801,10 @@ namespace Vanilla.TelegramBot.Services.Bot
 
                     var messageObj = _botClient.SendMessage(message);
                     userContext.SendMessages.Add(messageObj.MessageId);
-                }*/
+                }*//*
 
 
-            }
+            }*/
             else if(update.Message.Text == "/update")
             {
                 ToUpdateUser(update, userContext);

@@ -62,6 +62,22 @@ namespace Vanilla.TelegramBot.UI
             return replyMarkup;
         }
 
+        public static ReplyKeyboardMarkup BackKeyboard(UserContextModel userContext, String placeholder = null)
+        {
+            var cannelKeyboardButtons = new KeyboardButton[][]{
+                                            new KeyboardButton[]{
+                                                new KeyboardButton(userContext.ResourceManager.GetString("Back")),
+                                            }
+                                        };
+            var replyMarkup = new ReplyKeyboardMarkup(cannelKeyboardButtons);
+            replyMarkup.ResizeKeyboard = true;
+            //replyMarkup.OneTimeKeyboard = true;
+            replyMarkup.IsPersistent = true;
+            if (placeholder != null)
+                replyMarkup.InputFieldPlaceholder = placeholder;
+            return replyMarkup;
+        }
+
         public static ReplyKeyboardMarkup PassAndCannelKeyboard(UserContextModel userContext, String placeholder = null)
         {
             var cannelKeyboardButtons = new KeyboardButton[][]{

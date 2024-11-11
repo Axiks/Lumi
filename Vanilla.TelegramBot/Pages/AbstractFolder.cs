@@ -1,5 +1,6 @@
 ﻿using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
+using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common.Enums;
@@ -31,7 +32,9 @@ namespace Vanilla.TelegramBot.Pages
 
         public event CloseFolderEventHandler? CloseFolderEvent;
 
-        int? _catalogInitMessageId;
+        public int? _catalogInitMessageId;
+
+        public List<SendedMessageModel> _sendedMessages;
 
 
         public AbstractFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger)
@@ -43,6 +46,7 @@ namespace Vanilla.TelegramBot.Pages
 
             _index = 0;
             _sendMessages = new List<int>();
+            _sendedMessages = new List<SendedMessageModel>();
 
             _userContext.UpdateUserContext = _userContext.UpdateUserContext is null ? new BotUpdateUserModel() : _userContext.UpdateUserContext;
             _userModel = _userContext.UpdateUserContext;
@@ -92,18 +96,49 @@ namespace Vanilla.TelegramBot.Pages
 
         public void Run()
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Run task", replyMarkup: Keyboards.CannelKeyboard(_userContext), parseMode: "HTML");
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Run task", replyMarkup: Keyboards.BackKeyboard(_userContext), parseMode: "HTML");
             _catalogInitMessageId = mess.MessageId;
             //_sendMessages.Add(mess.MessageId);
+
+            //var respnse = _botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: mess.MessageId, text: "EditrdMessage", replyMarkup: Keyboards.CannelKeyboard(_userContext));
 
             ApplayPage();
         }
 
         void PageNotifiedComplite() => NextPage();
-        public virtual void EnterPoint(Update update) => _pages[_index].InputHendler(update);
+        public virtual void EnterPoint(Update update)
+        {
+            if (Helpers.ValidatorHelpers.InlineBtnActionValidate(update, _userContext.ResourceManager.GetString("Back")))
+            {
+                var myCastedObject = _pages[_index] as IPageKeyboardExtension;
+                if (myCastedObject != null)
+                {
+                    var changeFlowExtension = (IPageKeyboardExtension)_pages[_index];
+                    if (changeFlowExtension.BackBtnIntercept is false)
+                    {
+                        _sendMessages.Add(update.Message.MessageId);
+                        BackPage();
+                        return;
+                    }
+                    else
+                    {
+                        _botClient.DeleteMessage(_userContext.User.TelegramId, update.Message.MessageId);
+                    }
+                }
+                else
+                {
+                    _sendMessages.Add(update.Message.MessageId);
+                    BackPage();
+                    return;
+                }
+
+            }
+            _pages[_index].InputHendler(update);
+        }
 
         internal void ApplayPage()
         {
+            AutoRemoveMessagesFromPage();
             ClearMessages();
             UnubscribePageEvents();
             SubscribePageEvents();
@@ -121,6 +156,7 @@ namespace Vanilla.TelegramBot.Pages
 
         public void NextPage()
         {
+            AutoRemoveNextMessages();
             if (_index < (short)_pages.Count() - 1)
             {
                 _index++;
@@ -146,6 +182,32 @@ namespace Vanilla.TelegramBot.Pages
 
         }
 
+        void BackPage()
+        {
+            if (_index > 0)
+            {
+                _index--;
+                ApplayPage();
+            }
+            else
+            {
+                // Try change volume
+                if (_pagesVolumes.Count() > 1)
+                {
+                    _pagesVolumes.Remove(_pagesVolumes.Last());
+                    LoadVolume(); // Load next volume
+                    ApplayPage();
+                }
+                else
+                {
+                    // Exit from folder
+                    // Maybe call event?
+                    ExitFromFolder();
+                    return;
+                }
+            }
+        }
+
         void PutPagesToFlow(List<string> pagesRoute)
         {
             UnubscribePageEvents(); //Fix
@@ -157,6 +219,28 @@ namespace Vanilla.TelegramBot.Pages
                 var page = _pagesCatalog.First(x => x.GetType().Name == pagesRoute[i]);
                 newLists.Add(page);
             }
+
+            // Save current index state
+            var current = _pagesVolumes.Last();
+            current.Item1 = _index;
+            current.Item1 = _previousIndex;
+
+            var lastIndex = _pagesVolumes.Count() - 1;
+
+            _pagesVolumes[lastIndex] = current;
+
+            (short, short, List<IPage>) newVolume = (0, 0, newLists);
+            _pagesVolumes.Add(newVolume);
+
+            LoadVolume();
+            ApplayPage();
+        }
+
+        void PutPagesToFlow(List<IPage> pages)
+        {
+            UnubscribePageEvents(); //Fix
+
+            List<IPage> newLists = pages;
 
             // Save current index state
             var current = _pagesVolumes.Last();
@@ -188,6 +272,24 @@ namespace Vanilla.TelegramBot.Pages
             _pages[_index].CompliteEvent += PageNotifiedComplite;
             _pages[_index].ValidationErrorEvent += ValidationErrorEvent;
             _pages[_index].ChangePagesFlowPagesEvent += PutPagesToFlow;
+
+            var myCastedObject = _pages[_index] as IPageChangeFlowExtension;
+            if (myCastedObject != null)
+            {
+                var changeFlowExtension = (IPageChangeFlowExtension)_pages[_index];
+                changeFlowExtension.ChangePagesFlowByPagesPagesEvent += PutPagesToFlow;
+            }
+
+            var myCastedObject2 = _pages[_index] as IPageKeyboardExtension;
+            if (myCastedObject2 != null)
+            {
+                var changeFlowExtension = (IPageKeyboardExtension)_pages[_index];
+                changeFlowExtension.ChangeInlineKeyboardEvent += ChangeInitKeyboard;
+                /*changeFlowExtension.ChangeInlineKeyboardEvent += async (keyboard) =>
+                {
+                    await ChangeInitKeyboard(keyboard);
+                };*/
+            }
         }
 
         void UnubscribePageEvents()
@@ -195,6 +297,24 @@ namespace Vanilla.TelegramBot.Pages
             _pages[_previousIndex].CompliteEvent -= PageNotifiedComplite;
             _pages[_previousIndex].ValidationErrorEvent -= ValidationErrorEvent;
             _pages[_previousIndex].ChangePagesFlowPagesEvent -= PutPagesToFlow;
+
+            var myCastedObject = _pages[_index] as IPageChangeFlowExtension;
+            if (myCastedObject != null)
+            {
+                var changeFlowExtension = (IPageChangeFlowExtension)_pages[_index];
+                changeFlowExtension.ChangePagesFlowByPagesPagesEvent -= PutPagesToFlow;
+            }
+
+            var myCastedObject2 = _pages[_index] as IPageKeyboardExtension;
+            if (myCastedObject2 != null)
+            {
+                var changeFlowExtension = (IPageKeyboardExtension)_pages[_index];
+                changeFlowExtension.ChangeInlineKeyboardEvent -= ChangeInitKeyboard;
+               /* changeFlowExtension.ChangeInlineKeyboardEvent -= async (keyboard) =>
+                {
+                    await ChangeInitKeyboard(keyboard);
+                };*/
+            }
         }
 
         void MessageSendHelper(string text)
@@ -212,12 +332,40 @@ namespace Vanilla.TelegramBot.Pages
 
         void LoadVolume() => (_index, _previousIndex, _pages) = _pagesVolumes.Last();
 
+        void ChangeInitKeyboard(ReplyKeyboardMarkup replyKeyboardMarkup) {
+            //var respnse = _botClient.EditMessageReplyMarkup(chatId: _userContext.User.TelegramId, messageId: _catalogInitMessageId ?? 0, replyMarkup: Keyboards.BackKeyboard(_userContext));    
+        }
+
+        void AutoRemoveNextMessages()
+        {
+            if (_sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.NextMessage).Count() > 0)
+            {
+                var messagesToRemove = _sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.NextMessage).Select(x => x.messageId);
+                _botClient.DeleteMessages(_userContext.User.TelegramId, messagesToRemove);
+            }
+        }
+
+        void AutoRemoveMessagesFromPage()
+        {
+            if (_sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.ClosePage).Count() > 0)
+            {
+                var messagesToRemove = _sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.ClosePage).Select(x => x.messageId);
+                _botClient.DeleteMessages(_userContext.User.TelegramId, messagesToRemove);
+            }
+        }
+
+
         void ExitFromFolder()
         {
+            if (_sendedMessages.Select(x => x.method == DeleteMessageMethodEnum.ExitFolder).Count() > 0)
+            {
+                _botClient.DeleteMessages(_userContext.User.TelegramId, _sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.ExitFolder).Select(x => x.messageId));
+            }
+
             ClearMessages();
             if(_catalogInitMessageId is not null) _botClient.DeleteMessage(_userContext.User.TelegramId, _catalogInitMessageId ?? 0);
             CloseFolderEvent.Invoke();
-            Console.WriteLine("Success exit from folder");
+            _logger.WriteLog("Success exit from folder", LogType.Information);
         }
 
         public void CloseFolder() => ExitFromFolder();
