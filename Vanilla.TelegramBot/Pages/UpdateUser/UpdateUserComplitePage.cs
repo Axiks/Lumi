@@ -82,7 +82,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             }
             else if (update.CallbackQuery.Data == "true")
             {
-                InitAction(update);
+                SaveUserAction(update);
                 CompliteEvent.Invoke();
             }
             else if (update.CallbackQuery.Data == "edit") UpdateKeyboardAction(update);
@@ -101,7 +101,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             //UpdateKeyboard(update);
         }
 
-        void InitAction(Update update)
+        void SaveUserAction(Update update)
         {
             if (_userContext.User.Images is not null && _userContext.User.Images.Count() > 0) SaveImages(update);
 
@@ -112,6 +112,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
                 About = _userContext.User.About,
                 IsRadyForOrders = _userContext.User.IsRadyForOrders,
                 Images = _userContext.User.Images,
+                IsHasProfile = true
             });
         }
 

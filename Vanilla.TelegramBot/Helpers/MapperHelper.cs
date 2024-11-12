@@ -16,6 +16,7 @@ namespace Vanilla.TelegramBot.Helpers
                 LastName = userEnity.LastName,
                 CreatedAt = userEnity.CreatedAt,
                 Images = ImageEntityesToUserImages(userEnity.Images),
+                IsHasProfile = userEnity.IsHasProfile,
             };
 
             return userModel;

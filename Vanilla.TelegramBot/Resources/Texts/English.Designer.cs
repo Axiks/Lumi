@@ -193,6 +193,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create profile.
+        /// </summary>
+        internal static string CreateProfile {
+            get {
+                return ResourceManager.GetString("CreateProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to What is the name of your wonderful project?.
         /// </summary>
         internal static string CreateProjectInitMess {

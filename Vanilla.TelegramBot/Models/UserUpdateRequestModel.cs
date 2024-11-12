@@ -17,6 +17,7 @@ namespace Vanilla.TelegramBot.Models
         public List<ImageModel>? Images { get; set; }
         public List<string>? Links { get; set; }
         public bool? IsRadyForOrders { get; set; }
+        public bool IsHasProfile { get; set; }
 
     }
 }

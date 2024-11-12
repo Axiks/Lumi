@@ -7,6 +7,7 @@ using Telegram.BotAPI;
 using Telegram.BotAPI.GettingUpdates;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.Pages.CreateUser;
 using Vanilla.TelegramBot.Pages.UpdateUser;
 using Vanilla_App.Models;
 
@@ -20,6 +21,7 @@ namespace Vanilla.TelegramBot.Pages
 
             var PagesCatalog = new List<IPage>
             {
+                new CreateUserWelcomePage(botClient, userContext, this._sendMessages),
                 new UpdateUserNicknamePage(botClient, userContext, this._sendMessages),
                 new UpdateUserAboutPage(botClient, userContext, _sendMessages),
                 new UpdateUserLinksPage(botClient, userContext, _sendMessages),

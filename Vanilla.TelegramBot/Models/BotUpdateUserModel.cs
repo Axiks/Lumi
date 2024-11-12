@@ -13,6 +13,7 @@ namespace Vanilla.TelegramBot.Models
         public List<string>? Links { get; set; }
         public List<ImageModel>? Images { get; set; }
         public bool? IsRadyForOrders { get; set; }
+        public bool IsHasProfile { get; set; }
 
         //General
         public List<int> SendedMessages { get; set; } = new List<int>();

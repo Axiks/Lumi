@@ -97,8 +97,11 @@ namespace Vanilla.TelegramBot.Services.Bot
                         var currentUserContext = GetUserContext(update);
                         //_botClient.AnswerCallbackQuery();
 
+                        // Check is have profile
+                        bool isUserHasProfile = currentUserContext.User.IsHasProfile;
+
                         //currentUserContext.UpdateLoadPhotoTimer();
-                        if(update.Message is not null && update.Message.Photo is not null && update.Message.Photo.Count() > 0) currentUserContext.UpdateLoadPhotoTimer();
+                        if (update.Message is not null && update.Message.Photo is not null && update.Message.Photo.Count() > 0) currentUserContext.UpdateLoadPhotoTimer();
 
                         try
                         {
@@ -113,6 +116,21 @@ namespace Vanilla.TelegramBot.Services.Bot
                             {
                                 _botClient.AnswerCallbackQuery(update.CallbackQuery.Id);
                                 if (BotCallBackComandHendler(update, currentUserContext)) continue;
+                            }
+
+                            if(isUserHasProfile is false)
+                            {
+                                // Registration process
+                                if (currentUserContext.Folder is not null)
+                                {
+                                    currentUserContext.Folder.EnterPoint(update);
+                                }
+                                else
+                                {
+                                    ToInitUser(update, currentUserContext);
+                                }
+
+                                continue;
                             }
 
                             if (BotInlineComandHendler(update, currentUserContext)) continue;
@@ -165,7 +183,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                         {
                             Guid exeptionId = Guid.NewGuid();
                             var mess = String.Format(currentUserContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
-                            
+
                             _botClient.SendMessage(chatId: currentUserContext.User.TelegramId, replyMarkup: Keyboards.GetErrorKeypoard(currentUserContext), text: mess, parseMode: "HTML");
                             _logger.WriteLog(ex.Message + "; Exeption ID: " + exeptionId, LogType.Error);
                         }
@@ -192,106 +210,9 @@ namespace Vanilla.TelegramBot.Services.Bot
                 ToCreateProject(update, userContext);
                 return true;
             }
-/*            else if (command.Contains("bonus" + _deliver + "ok"))
-            {
-                int bonusId = Convert.ToInt32(command.Split(_deliver).Last());
-                //var bonus = _bonusService.GetBonus(bonusId).Value;
-
-                var curentUserBonuses = _bonusService.GetUserBonuses(userContext.User.TelegramId);
-                var bonus = curentUserBonuses.FirstOrDefault(x => x.BonusId == bonusId);
-
-                //bool isUserBonus = bonus.TgId == userContext.User.TelegramId;
-                bool isUserBonus = curentUserBonuses.Any(x => x.BonusId == bonusId && x.IsUsed == false);
-
-                if (isUserBonus)
-                {
-                    if (!bonus.IsUsed)
-                    {
-                        _bonusService.TakeBonus(bonusId);
-                        Console.WriteLine("Taked bonus id: " + bonusId);
-
-                        var message = string.Format("Bonus {0} has been successfully spent!", bonus.Title);
-                        _botClient.EditMessageText(chatId: userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: message, parseMode: "HTML");
-
-                    }
-                    else Console.WriteLine("It is`nt user bonus");
-
-
-                }
-                else Console.WriteLine("It is`nt user bonus");
-
-
-                return true;
-            }*/
-/*            else if (command.Contains("bonus" + _deliver))
-            {
-                int bonusId = Convert.ToInt32(command.Split(_deliver).Last());
-
-                var curentUserTgId = userContext.User.TelegramId;
-                var curentUserBonuses = _bonusService.GetUserBonuses(curentUserTgId);
-
-                bool isCanBonusUse = curentUserBonuses.Any(x => x.BonusId == bonusId && x.IsUsed == false);
-
-                if (isCanBonusUse)
-                {
-                    //_bonusService.TakeBonus(bonusId);
-                    //Console.WriteLine("Taked bonus id: " + bonusId);
-
-                }
-                else
-                {
-                    Console.WriteLine("It is`nt user bonus");
-                }
-
-                // Info about bonus
-                SendMessageAboutBonus(userContext, bonusId);
-
-
-                return true;
-            }*/
 
             return false;
         }
-
-/*        private void SendMessageAboutBonus(UserContextModel userContext, int bonusId)
-        {
-            var bonus = _bonusService.GetBonus(bonusId).Value;
-
-            var yesBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Spend"));
-            var noBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("No"));
-
-            var replyMarkuppp = new InlineKeyboardMarkup
-            (
-                new InlineKeyboardButton[][]{
-                        new InlineKeyboardButton[]{
-                            yesBtn,
-                            //noBtn
-                         }
-                }
-            );
-
-            yesBtn.CallbackData = "bonus" + _deliver + "ok" + _deliver + bonus.BonusId.ToString();
-            //noBtn.CallbackData = userContext.ResourceManager.GetString("Cannel"); // don`t work
-
-            string mes = "";
-
-            SendMessageArgs message = new SendMessageArgs(userContext.User.TelegramId, mes) { ParseMode = "HTML" };
-
-            if (!bonus.IsUsed)
-            {
-                //message.Text = string.Format("Ти хочеш витратити {0}?\n\n{1}", bonus.Title, bonus.Description, bonus.DateOfRegistration.ToString("dd.MM.yyyy"));
-                message.Text = string.Format("{0} \n\n{1}", bonus.Title, bonus.Description, bonus.DateOfRegistration.ToString("dd.MM.yyyy"));
-                message.ReplyMarkup = replyMarkuppp;
-            }
-            else
-            {
-                message.Text = string.Format("Бонус {0} було використано: {1}", bonus.Title, bonus.DateOfUsed?.ToString("dd.MM.yyyy hh:mm"));
-            }
-
-
-            var messageObj = _botClient.SendMessage(message);
-            userContext.SendMessages.Add(messageObj.MessageId);
-        }*/
 
         private string _deliver = " mya~ ";
         private bool BotInlineComandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
@@ -343,18 +264,18 @@ namespace Vanilla.TelegramBot.Services.Bot
                 ToUpdateUser(update, userContext);
                 return true;
             }
-/*            else if (update.Message.Text == userContext.ResourceManager.GetString("Back"))
-            {
-                if (userContext.Folder is not null) userContext.Folder.CloseFolder();
+            /*            else if (update.Message.Text == userContext.ResourceManager.GetString("Back"))
+                        {
+                            if (userContext.Folder is not null) userContext.Folder.CloseFolder();
 
-                // Delete slesh message
-                int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
-                DeleteMessage(userContext.User.TelegramId, messageId);
+                            // Delete slesh message
+                            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
+                            DeleteMessage(userContext.User.TelegramId, messageId);
 
-                DeleteAllMesssages(userContext);
-                OpenMainMenu(userContext);
-                return true;
-            }*/
+                            DeleteAllMesssages(userContext);
+                            OpenMainMenu(userContext);
+                            return true;
+                        }*/
             else if (update.Message.Text == userContext.ResourceManager.GetString("Cannel"))
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
@@ -521,20 +442,9 @@ namespace Vanilla.TelegramBot.Services.Bot
         }
         private void OpenMainMenu(UserContextModel userContext)
         {
-            /*     if (userContext.SendMessages is not null || userContext.SendMessages.Count() != 0)
-                 {
-                     _botClient.EditMessageReplyMarkup(userContext.User.TelegramId, userContext.SendMessages.Last(), replyMarkup: Keyboards.MainMenu(userContext));
-                 }
-                 else*/
             var message_obj = _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
             userContext.SendMessages.Add(message_obj.MessageId);
         }
-
-       /* private void OpenMainProfile(UserContextModel userContext)
-        {
-            var message_obj = _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.ProfileKeyboard(userContext));
-            userContext.SendMessages.Add(message_obj.MessageId);
-        }*/
 
 
         private void ToCreateProject(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
@@ -680,13 +590,13 @@ namespace Vanilla.TelegramBot.Services.Bot
                 userContext.UpdateProjectContext = null;
                 _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
             }
-    /*        else if (userContext.BotUserCreator is not null)
-            {
-                userContext.BotUserCreator.ClearMessages();
-                userContext.BotUserCreator = null;
-                userContext.UpdateUserContext = null;
-                _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
-            }*/
+            /*        else if (userContext.BotUserCreator is not null)
+                    {
+                        userContext.BotUserCreator.ClearMessages();
+                        userContext.BotUserCreator = null;
+                        userContext.UpdateUserContext = null;
+                        _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
+                    }*/
 
             if (update.Message.Text == "/menu")
             {
@@ -732,85 +642,12 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 throw new Exception("test exeption");
             }
-           /* else if (update.Message.Text == "/bonus")
-            {
-                Console.WriteLine("Print user bonuses");
-                DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
-                DeleteAllMesssages(userContext);
-
-                var userBonuses = _bonusService.GetUserBonuses(userContext.User.TelegramId);
-
-                string initMs = userBonuses is not null
-                    ? string.Format("You have {0} unused bonuses from ProVision", userBonuses.Count().ToString())
-                    : "You don`t have bonuses";
-
-                //SendMessageArgs initMessage = new SendMessageArgs(update.Message.Chat.Id, initMs) { ParseMode = "HTML" };
-                //var initMessageObj = _botClient.SendMessage(initMessage);
-                // userContext.SendMessages.Add(initMessageObj.MessageId);
-
-
-                List<List<InlineKeyboardButton>> rowWithKeysBonus = new List<List<InlineKeyboardButton>>();
-                List<InlineKeyboardButton> keysWithBonus = new List<InlineKeyboardButton>();
-
-                foreach (var bonus in userBonuses)
-                {
-                    var btn = new InlineKeyboardButton(text: bonus.ShortTitle ?? "not data");
-                    btn.CallbackData = "bonus" + _deliver + bonus.BonusId.ToString();
-
-                    if (keysWithBonus.Count >= 2)
-                    {
-                        rowWithKeysBonus.Add(keysWithBonus);
-                        keysWithBonus = new List<InlineKeyboardButton>();
-                    }
-                    keysWithBonus.Add(btn);
-                }
-                if (keysWithBonus is not null) rowWithKeysBonus.Add(keysWithBonus);
-
-                var replyMarkuppp = new InlineKeyboardMarkup
-                (
-                    rowWithKeysBonus.ToArray()
-                );
-
-                //var mes = "ProVision bonus";
-                SendMessageArgs message = new SendMessageArgs(update.Message.Chat.Id, initMs) { ParseMode = "HTML", ReplyMarkup = replyMarkuppp };
-
-                var messageObj = _botClient.SendMessage(message);
-                userContext.SendMessages.Add(messageObj.MessageId);
-
-                *//*
-                var getBonusBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("GetBonus"));
-
-                var replyMarkuppp = new InlineKeyboardMarkup
-                (
-                    new InlineKeyboardButton[][]{
-                        new InlineKeyboardButton[]{
-                            getBonusBtn
-                         }
-                    }
-                );
-
-                foreach (var bonus in userBonuses)
-                {
-                    var mes = string.Format("{0}\n{1}\nRegistration date: {2}", bonus.Title, bonus.Description, bonus.DateOfRegistration.ToString("dd.MM.yyyy"));
-                    if (bonus.IsUsed) mes += string.Format("\nUsed date: {0}", bonus.DateOfUsed?.ToString("dd.MM.yyyy"));
-                    getBonusBtn.CallbackData = bonus.BonusId.ToString();
-
-
-                    SendMessageArgs message = new SendMessageArgs(update.Message.Chat.Id, mes) { ParseMode = "HTML"};
-                    if (!bonus.IsUsed) message.ReplyMarkup = replyMarkuppp;
-
-                    var messageObj = _botClient.SendMessage(message);
-                    userContext.SendMessages.Add(messageObj.MessageId);
-                }*//*
-
-
-            }*/
-            else if(update.Message.Text == "/update")
+            else if (update.Message.Text == "/update")
             {
                 ToUpdateUser(update, userContext);
                 return true;
             }
-            else if(update.Message.Text == "/get")
+            else if (update.Message.Text == "/get")
             {
                 ToInfoUserToInfoUser(update, userContext);
                 return true;
@@ -891,13 +728,6 @@ namespace Vanilla.TelegramBot.Services.Bot
             int toIndex = index + 1 + maxProjects <= projects.Count ? index + 1 + maxProjects : projects.Count;
 
             var offsetProjectId = toIndex < projects.Count ? toIndex.ToString() : null;
-
-            // Test
-   /*         var b = new InlineKeyboardButton
-            {
-                Text = "Testtt"
-            };
-            res.Add(b);*/
 
 
             while (index < toIndex)
@@ -1061,6 +891,21 @@ namespace Vanilla.TelegramBot.Services.Bot
             userContext = _usersContext.First(x => x.User.UserId == user.UserId);
             return userContext;
         }
+
+/*        void FindUserContext()
+        {
+
+        }
+
+        void UserRegistrationProcess(Telegram.BotAPI.GettingUpdates.Update update, UserRegisterModel userRegisterModel)
+        {
+
+            //init
+            var user = ToInitUser(update, userRegisterModel);
+
+            // Save info to db
+
+        }*/
 
         private void ViewUpdateMenu(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext, ProjectModel projectModel)
         {

@@ -165,6 +165,9 @@ You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&l
   <data name="Create" xml:space="preserve">
     <value>Create</value>
   </data>
+  <data name="CreateProfile" xml:space="preserve">
+    <value>Create profile</value>
+  </data>
   <data name="CreateProjectInitMess" xml:space="preserve">
     <value>What is the name of your wonderful project?</value>
   </data>

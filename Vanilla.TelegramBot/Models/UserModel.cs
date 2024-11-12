@@ -16,6 +16,6 @@
         public string? LanguageCode { get; set; }
         public required DateTime RegisterInSystemAt { get; set; }
         public required DateTime RegisterInServiceAt { get; set; }
-
+        public bool IsHasProfile { get; set; }
     }
 }

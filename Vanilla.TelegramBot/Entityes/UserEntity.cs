@@ -14,5 +14,6 @@ namespace Vanilla.TelegramBot.Entityes
         public string? LanguageCode { get; set; }
         public List<ImagesEntity>? Images { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsHasProfile { get; set; } = false;
     }
 }

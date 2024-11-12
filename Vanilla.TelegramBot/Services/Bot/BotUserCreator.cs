@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
-using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Entityes;
@@ -14,9 +8,6 @@ using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
-using Vanilla_App.Interfaces;
-using Vanilla_App.Models;
-using Vanilla_App.Services;
 
 namespace Vanilla.TelegramBot.Services.Bot
 {
@@ -187,6 +178,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 About = _updateDataModel.About,
                 IsRadyForOrders = _updateDataModel.IsRadyForOrders,
                 Images = _updateDataModel.Images,
+                IsHasProfile = _updateDataModel.IsHasProfile,
             });
 
 

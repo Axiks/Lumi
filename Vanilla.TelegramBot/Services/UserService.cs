@@ -188,6 +188,7 @@ namespace Vanilla.TelegramBot.Services
                 LastName = localUser.LastName,
                 LanguageCode = localUser.LanguageCode,
                 Images = user.Images,
+                IsHasProfile = user.IsHasProfile,
             });
 
             return EntityesToObjectMapperHelper(uplocalUser, upcoreUser, upauthUser);
@@ -207,7 +208,8 @@ namespace Vanilla.TelegramBot.Services
                 IsRadyForOrders = coreUser.IsRadyForOrders,
                 Images = localUser.Images,
                 RegisterInServiceAt = localUser.CreatedAt,
-                RegisterInSystemAt = oauthUser.CreatedAt
+                RegisterInSystemAt = oauthUser.CreatedAt,
+                IsHasProfile = localUser.IsHasProfile
         };
 
     }

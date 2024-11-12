@@ -9,5 +9,6 @@
         public string? LastName { get; set; }
         public string? LanguageCode { get; set; }
         public List<ImageModel>? Images { get; set; }
+        public bool IsHasProfile { get; set; }
     }
 }

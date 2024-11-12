@@ -165,6 +165,9 @@
   <data name="Create" xml:space="preserve">
     <value>Створити</value>
   </data>
+  <data name="CreateProfile" xml:space="preserve">
+    <value>Створити профіль</value>
+  </data>
   <data name="CreateProjectInitMess" xml:space="preserve">
     <value>Як називається твій проект?</value>
   </data>
