@@ -72,6 +72,7 @@ namespace Vanilla.TelegramBot.Repositories
             if (user.Username is not null) userEntity.Username = user.Username;
             if (user.FirstName is not null) userEntity.FirstName = user.FirstName;
             if (user.LastName is not null) userEntity.LastName = user.LastName;
+            userEntity.IsHasProfile = user.IsHasProfile;
 
             if (user.Images is not null)
             {

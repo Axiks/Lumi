@@ -466,6 +466,8 @@ namespace Vanilla.TelegramBot.Services.Bot
         {
             void destroyFolderContext()
             {
+                OpenMainMenu(userContext);
+
                 userContext.Folder.CloseFolderEvent -= destroyFolderContext;
                 userContext.Folder = null;
             }
@@ -495,6 +497,8 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 userContext.Folder.CloseFolderEvent -= destroyFolderContext;
                 userContext.Folder = null;
+
+                OpenMainMenu(userContext);
             }
 
             if (userContext.Folder is null)
@@ -522,6 +526,8 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 userContext.Folder.CloseFolderEvent -= destroyFolderContext;
                 userContext.Folder = null;
+
+                OpenMainMenu(userContext);
             }
 
             if (userContext.Folder is null)
@@ -548,6 +554,8 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 userContext.Folder.CloseFolderEvent -= destroyFolderContext;
                 userContext.Folder = null;
+
+                OpenMainMenu(userContext);
             }
 
             if (userContext.Folder is null)

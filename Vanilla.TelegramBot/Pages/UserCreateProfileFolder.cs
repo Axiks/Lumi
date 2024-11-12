@@ -15,13 +15,13 @@ namespace Vanilla.TelegramBot.Pages
 {
     internal class UserCreateProfileFolder : AbstractFolder, IFolder
     {
-        public UserCreateProfileFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger) : base(botClient, userContext, userService, logger)
+        public UserCreateProfileFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger) : base(botClient, userContext, userService, logger, isWithCannelButton: false)
         {
             var userModel = userContext.UpdateUserContext;
 
             var PagesCatalog = new List<IPage>
             {
-                new CreateUserWelcomePage(botClient, userContext, this._sendMessages),
+                new CreateUserWelcomePage(botClient, userContext, this._sendedMessages),
                 new UpdateUserNicknamePage(botClient, userContext, this._sendMessages),
                 new UpdateUserAboutPage(botClient, userContext, _sendMessages),
                 new UpdateUserLinksPage(botClient, userContext, _sendMessages),

@@ -101,18 +101,20 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             //UpdateKeyboard(update);
         }
 
-        void SaveUserAction(Update update)
+        async void SaveUserAction(Update update)
         {
             if (_userContext.User.Images is not null && _userContext.User.Images.Count() > 0) SaveImages(update);
 
-            _userService.UpdateUser(_userContext.User.TelegramId, new Models.UserUpdateRequestModel
+            _userContext.User.IsHasProfile = true;
+
+            var userModel = await _userService.UpdateUser(_userContext.User.TelegramId, new Models.UserUpdateRequestModel
             {
                 Nickname = _userContext.User.Nickname,
                 Links = _userContext.User.Links,
                 About = _userContext.User.About,
                 IsRadyForOrders = _userContext.User.IsRadyForOrders,
                 Images = _userContext.User.Images,
-                IsHasProfile = true
+                IsHasProfile = _userContext.User.IsHasProfile
             });
         }
 

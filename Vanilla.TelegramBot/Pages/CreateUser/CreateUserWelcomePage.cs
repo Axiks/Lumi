@@ -16,15 +16,15 @@ namespace Vanilla.TelegramBot.Pages.CreateUser
 
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
-        readonly List<int> _sendMessages;
+        List<SendedMessageModel> _sendedMessages;
 
         readonly string InitMessage = "Перед тим як почати використовувати бота, вам необхідно створити профіль!";
 
-        public CreateUserWelcomePage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages)
+        public CreateUserWelcomePage(TelegramBotClient botClient, UserContextModel userContext, List<SendedMessageModel> sendedMessages)
         {
             _botClient = botClient;
             _userContext = userContext;
-            _sendMessages = sendMessages;
+            _sendedMessages = sendedMessages;
         }
 
         void IPage.SendInitMessage()
@@ -44,7 +44,11 @@ namespace Vanilla.TelegramBot.Pages.CreateUser
         bool ValidateInputType(Update update)
         {
             if (update.CallbackQuery is not null && update.CallbackQuery.Data is not null) return true;
-            else ValidationErrorEvent.Invoke("Не те що очікувала. Обери дію з кнопки");
+            else
+            {
+                _sendedMessages.Add(new SendedMessageModel(update.Message.MessageId, Common.Enums.DeleteMessageMethodEnum.NextMessage));
+                ValidationErrorEvent.Invoke("Не те що очікувала. Обери дію з кнопки");
+            }
 
             return false;
         }
@@ -64,8 +68,7 @@ namespace Vanilla.TelegramBot.Pages.CreateUser
         void MessageSendHelper(string text)
         {
             var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.GetCreateProfileKeypoard(_userContext), parseMode: "HTML");
-
-            //_sendMessages.Add(mess.MessageId);
+            _sendedMessages.Add(new SendedMessageModel(mess.MessageId, Common.Enums.DeleteMessageMethodEnum.ClosePage));
         }
     }
 }

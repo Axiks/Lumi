@@ -36,13 +36,16 @@ namespace Vanilla.TelegramBot.Pages
 
         public List<SendedMessageModel> _sendedMessages;
 
+        bool _isWithCannelButton;
 
-        public AbstractFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger)
+
+        public AbstractFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger, bool isWithCannelButton = true)
         {
             _logger = logger;
             _userContext = userContext;
             _botClient = botClient;
             _userService = userService;
+            _isWithCannelButton = isWithCannelButton;
 
             _index = 0;
             _sendMessages = new List<int>();
@@ -96,7 +99,10 @@ namespace Vanilla.TelegramBot.Pages
 
         public void Run()
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Run task", replyMarkup: Keyboards.BackKeyboard(_userContext), parseMode: "HTML");
+            ReplyKeyboardMarkup replyKeyboard = null;
+            if (_isWithCannelButton is true) replyKeyboard = Keyboards.BackKeyboard(_userContext);
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Run task", replyMarkup: replyKeyboard, parseMode: "HTML");
+            
             _catalogInitMessageId = mess.MessageId;
             //_sendMessages.Add(mess.MessageId);
 
@@ -357,7 +363,7 @@ namespace Vanilla.TelegramBot.Pages
 
         void ExitFromFolder()
         {
-            if (_sendedMessages.Select(x => x.method == DeleteMessageMethodEnum.ExitFolder).Count() > 0)
+            if (_sendedMessages.Exists(x => x.method == DeleteMessageMethodEnum.ExitFolder))
             {
                 _botClient.DeleteMessages(_userContext.User.TelegramId, _sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.ExitFolder).Select(x => x.messageId));
             }
