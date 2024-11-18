@@ -16,6 +16,7 @@ namespace Vanilla.TelegramBot.Interfaces
 /*      public event NextPageEventHandler? NextPageEvent;
         public event PreviousPageEventHandler? PreviousPageEvent;*/
         internal void SendInitMessage();
+        //internal void SendInitMessage(Update update);
         internal void InputHendler(Update update);
     }
 }

@@ -35,6 +35,35 @@ namespace Vanilla.TelegramBot.Entityes
             return messageContent;
         }
 
+        public static string AboutProject(BotCreateProjectModel project, Models.UserModel user, UserContextModel userContext)
+        {
+            string links = "";
+            if(project.Links is not null)
+            {
+                foreach (var link in project.Links)
+                {
+                    Uri linkUri = new Uri(link);
+                    //links += "<a href=\"" + FavionParser(linkUri.OriginalString) + "\">" + linkUri.Host.ToString()  + "</a>" + "\n";
+                    links += String.Format("<a href=\"{0}\">&#128279 {1}</a>", linkUri.OriginalString, linkUri.Host.ToString());
+                    links += " ";
+                }
+            }
+
+            var username = user.Username is not null ? "@" + user.Username : user.FirstName;
+            string developStatusEmoji = FormationHelper.GetEmojiStatus(project.DevelopmentStatus ?? DevelopmentStatusEnum.Abandoned); // with fix
+
+
+            var messageContent = string.Format("<b>{0}</b> \n\n{1} \n\n{2}\n{3} {4}",
+                                        project.Name,
+                                        project.Description,
+
+                                        links,
+                                        developStatusEmoji + " <i>" + userContext.ResourceManager.GetString(project.DevelopmentStatus.ToString()) + "</i>",
+                                        username
+                                );
+            return messageContent;
+        }
+
         public static string AboutUser(Models.UserModel user)
         {
             string links = "";

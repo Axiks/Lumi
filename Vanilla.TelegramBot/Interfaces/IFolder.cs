@@ -18,7 +18,7 @@ namespace Vanilla.TelegramBot.Interfaces
         public void EnterPoint(Update update);
         //public void NextPage();
         //internal void PreviousPage();
-        //internal void GoToPage(short index);
+        //public void GoToPage(string path);
         public void CloseFolder();
         //internal short CurrentPageIndex { get; }
         //internal short NumberOfPages {  get; }

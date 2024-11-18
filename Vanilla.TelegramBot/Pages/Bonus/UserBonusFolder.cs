@@ -8,6 +8,7 @@ using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Pages.Bonus.Pages;
 using Vanilla_App.Interfaces;
+using Vanilla_App.Models;
 
 namespace Vanilla.TelegramBot.Pages.Bonus
 {
@@ -15,6 +16,7 @@ namespace Vanilla.TelegramBot.Pages.Bonus
     {
         public UserBonusFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger, IBonusService bonusService) : base(botClient, userContext, userService, logger)
         {
+
             var userBonusPage = new UserBonusPage(botClient, userContext, _sendMessages, bonusService, _sendedMessages);
 
             var PagesCatalog = new List<IPage>

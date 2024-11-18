@@ -115,7 +115,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                             if (update.CallbackQuery is not null)
                             {
                                 _botClient.AnswerCallbackQuery(update.CallbackQuery.Id);
-                                if (BotCallBackComandHendler(update, currentUserContext)) continue;
+                                //if (BotCallBackComandHendler(update, currentUserContext)) continue;
                             }
 
                             if(isUserHasProfile is false)
@@ -137,23 +137,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                             if (BotSleshCommandHendler(update, currentUserContext)) continue;
 
 
-                            if (currentUserContext.BotProjectCreator is not null)
-                            {
-                                currentUserContext.BotProjectCreator.EnterPoint(update);
-
-                                continue;
-                            }
-                            else if (currentUserContext.BotProjectUpdater is not null)
-                            {
-                                currentUserContext.BotProjectUpdater.EnterPoint(update);
-                                continue;
-                            }
-                            else if (currentUserContext.BotUserCreator is not null)
-                            {
-                                currentUserContext.BotUserCreator.EnterPoint(update);
-                                continue;
-                            }
-                            else if (currentUserContext.Folder is not null)
+                            if (currentUserContext.Folder is not null)
                             {
                                 currentUserContext.Folder.EnterPoint(update);
                             }
@@ -164,7 +148,8 @@ namespace Vanilla.TelegramBot.Services.Bot
                                 var messageText = update.CallbackQuery.Data;
                                 if (messageText == "AddProject")
                                 {
-                                    ToCreateProject(update, currentUserContext);
+                                    //ToCreateProject(update, currentUserContext);
+                                    ToAddProjects(update, currentUserContext);
                                     continue;
                                 }
                                 else if (messageText == "MainMenu")
@@ -173,8 +158,8 @@ namespace Vanilla.TelegramBot.Services.Bot
                                     OpenMainMenu(currentUserContext);
                                     continue;
                                 }
-                                var userContext = GetUserContext(update);
-                                ToUpdateProject(update, userContext);
+                       /*         var userContext = GetUserContext(update);
+                                ToUpdateProject(update, userContext);*/
 
                             }
                             else if (update.PollAnswer is not null) { }
@@ -202,17 +187,6 @@ namespace Vanilla.TelegramBot.Services.Bot
             Console.ReadLine();
         }
 
-        private bool BotCallBackComandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
-        {
-            var command = update.CallbackQuery.Data;
-            if (command == userContext.ResourceManager.GetString("AddProject"))
-            {
-                ToCreateProject(update, userContext);
-                return true;
-            }
-
-            return false;
-        }
 
         private string _deliver = " mya~ ";
         private bool BotInlineComandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
@@ -222,19 +196,22 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             var chatId = userContext.User.TelegramId; //also fix
 
-            if (!isUserHaveRunTask && update.Message.Text == userContext.ResourceManager.GetString("AddProject"))
+            if (userContext.Folder is null && update.Message.Text == userContext.ResourceManager.GetString("AddProject"))
             {
-                //DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
                 DeleteAllMesssages(userContext);
-                ToCreateProject(update, userContext);
+                ToAddProjects(update, userContext);
                 return true;
             }
-            else if (!isUserHaveRunTask && update.Message.Text == userContext.ResourceManager.GetString("ViewOwnProjects"))
+            //else if (!isUserHaveRunTask && update.Message.Text == userContext.ResourceManager.GetString("ViewOwnProjects"))
+            else if (userContext.Folder is null && update.Message.Text == userContext.ResourceManager.GetString("ViewOwnProjects"))
             {
                 //DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
 
                 DeleteAllMesssages(userContext);
-                ToViewUserProjets(update, userContext);
+
+                //ToViewUserProjets(update, userContext);
+                ToUpdateProjects(update, userContext);
+
                 return true;
             }
             else if (userContext.Folder is null && update.Message.Text == userContext.ResourceManager.GetString("MyProfile")) {
@@ -324,122 +301,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             return false;
 
         }
-        public void OnCreated(UserContextModel userContext)
-        {
-            userContext.CreateProjectContext = null;
-            userContext.BotProjectCreator = null;
-            userContext.BotUserCreator = null;
-        }
-        public void OnUpdated(UserContextModel userContext)
-        {
-            var messageToUpdate = userContext.BotProjectUpdater.updateMessageId;
 
-            var projectId = userContext.BotProjectUpdater.projectModel.Id;
-            var project = _projectService.ProjectGetAsync(projectId).Result;
-            var message = MessageWidgets.AboutProject(project, userContext.User, userContext);
-            var replyMarkuppp = GetProjectItemMenu(project, userContext);
-            _botClient.EditMessageText(chatId: userContext.User.TelegramId, messageId: messageToUpdate, text: message, replyMarkup: replyMarkuppp, parseMode: "HTML");
-
-            userContext.UpdateProjectContext = null;
-            userContext.BotProjectUpdater = null;
-        }
-
-        private void ToViewUserProjets(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
-        {
-            var chatId = update.Message.Chat.Id;
-            // temp fix
-            var userProjects = _projectService.ProjectGetAllAsync().Result.Where(x => x.OwnerId == userContext.User.UserId).OrderBy(x => x.Created);
-
-            var makeNewProjectBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("AddProject"));
-            makeNewProjectBtn.CallbackData = userContext.ResourceManager.GetString("AddProject");
-
-            var replyNoProjectMarkup = new InlineKeyboardMarkup
-            (
-                new InlineKeyboardButton[][]{
-                                            new InlineKeyboardButton[]{
-                                                makeNewProjectBtn
-                                            }
-                }
-            );
-
-            if (userProjects == null || userProjects.Count() == 0) _botClient.SendMessage(chatId, userContext.ResourceManager.GetString("UserDontHaveProjectsMess"), replyMarkup: replyNoProjectMarkup);
-
-
-            foreach (var project in userProjects)
-            {
-                string deliver = " mya~ ";
-
-                var replyMarkuppp = GetProjectItemMenu(project, userContext);
-
-                var messageObj = _botClient.SendMessage(chatId, MessageWidgets.AboutProject(project, userContext.User, userContext),
-                    replyMarkup: replyMarkuppp, parseMode: "HTML");
-
-                userContext.SendMessages.Add(messageObj.MessageId);
-            }
-
-            try
-            {
-                _botClient.DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
-            }
-            catch (Exception ex)
-            {
-                _logger.WriteLog(ex.Message, LogType.Error);
-            }
-        }
-
-        private void ToUpdateProject(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
-        {
-            var message = update.CallbackQuery.Data;
-            var x = message.Split(_deliver).First().Split(" ");
-            var y = message.Split(_deliver).Length == 2;
-            var z = message.Split(_deliver).First().Split(" ").First() == "update";
-
-            if (message.Split(_deliver).Length == 2 && message.Split(_deliver).First() == "update" && message.Split(_deliver).First().Split(" ").Length == 1)
-            {
-
-                var projectId = Guid.Parse(message.Split(_deliver).Last());
-                var projectModel = _projectService.ProjectGetAsync(projectId).Result;
-                ViewUpdateMenu(update, userContext, projectModel);
-            }
-            else if (message.Split(_deliver).Length == 2 && message.Split(_deliver).First().Split(" ").First() == "update" && message.Split(_deliver).First().Split(" ").Length == 2)
-            {
-                var stringCommand = message.Split(_deliver).First().Split(" ").Last();
-                Command command = Command.name;
-                try
-                {
-                    Enum.TryParse(stringCommand, out command);
-                }
-                catch (Exception ex)
-                {
-                    _logger.WriteLog(ex.Message, LogType.Error);
-                };
-
-                var callMessageId = update.CallbackQuery.Message.MessageId;
-                userContext.BotProjectUpdater = new BotProjectUpdate(userContext, _botClient, _projectService, update, Guid.Parse(message.Split(_deliver).Last()), command, _logger, callMessageId);
-                userContext.BotProjectUpdater.UpdatedSuccessEvent += OnUpdated;
-            }
-            else if (message.Split(_deliver).Length == 2 && message.Split(_deliver).First() == "delete")
-            {
-                var projectId = Guid.Parse(message.Split(_deliver).Last());
-                var projectModel = _projectService.ProjectGetAsync(projectId).Result;
-                if (projectModel.OwnerId == userContext.User.UserId)
-                {
-                    _projectService.ProjectDelete(projectModel.Id);
-                    if (update.CallbackQuery.Message is not null)
-                    {
-                        _botClient.EditMessageText(userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: userContext.ResourceManager.GetString("ProjectHasBeenDeletedMes"));
-                    }
-                    else
-                    {
-                        _botClient.SendMessage(userContext.User.TelegramId, text: userContext.ResourceManager.GetString("ProjectHasBeenDeletedMes"));
-                    }
-                }
-                else
-                {
-                    _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("DenialOfAccess"));
-                }
-            }
-        }
         private void OpenMainMenu(UserContextModel userContext)
         {
             var message_obj = _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
@@ -447,17 +309,60 @@ namespace Vanilla.TelegramBot.Services.Bot
         }
 
 
-        private void ToCreateProject(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
+        private void ToAddProjects(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
         {
-            if (userContext.BotProjectCreator is null)
+            void destroyFolderContext()
             {
-                //userContext.CreateProjectContext = new BotCreateProjectModel(userContext.User.UserId, userContext.User.TelegramId);
+                OpenMainMenu(userContext);
 
-                userContext.BotProjectCreator = new BotProjectCreator(userContext, _botClient, _projectService, _logger);
-                userContext.BotProjectCreator.CreatedSuccessEvent += OnCreated;
+                userContext.Folder.CloseFolderEvent -= destroyFolderContext;
+                userContext.Folder = null;
             }
-            else _logger.WriteLog("User have no closed project context", LogType.Error);
 
+            if (userContext.Folder is null)
+            {
+                userContext.Folder = new CreateProjectFolder(_botClient, userContext, _userService, _logger, true, _projectService);
+                userContext.Folder.CloseFolderEvent += destroyFolderContext;
+                userContext.Folder.Run();
+            }
+            //else _logger.WriteLog("User have no closed folder context", LogType.Error);
+            else
+            {
+                _logger.WriteLog("User have no closed folder context", LogType.Error);
+                destroyFolderContext();
+                ToInitUser(update, userContext);
+            }
+
+            // Delete slesh message
+            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
+            DeleteMessage(userContext.User.TelegramId, messageId);
+        }
+
+        private void ToUpdateProjects(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
+        {
+            void destroyFolderContext()
+            {
+                OpenMainMenu(userContext);
+
+                userContext.Folder.CloseFolderEvent -= destroyFolderContext;
+                userContext.Folder = null;
+            }
+
+            if (userContext.Folder is null)
+            {
+                userContext.Folder = new AboutProjectFolder(_botClient, userContext, _userService, _logger, true, _projectService);
+                userContext.Folder.CloseFolderEvent += destroyFolderContext;
+                userContext.Folder.Run();
+            }
+            //else _logger.WriteLog("User have no closed folder context", LogType.Error);
+            else
+            {
+                _logger.WriteLog("User have no closed folder context", LogType.Error);
+                destroyFolderContext();
+                ToInitUser(update, userContext);
+            }
+
+            // Delete slesh message
             int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
             DeleteMessage(userContext.User.TelegramId, messageId);
         }
@@ -598,13 +503,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 userContext.UpdateProjectContext = null;
                 _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
             }
-            /*        else if (userContext.BotUserCreator is not null)
-                    {
-                        userContext.BotUserCreator.ClearMessages();
-                        userContext.BotUserCreator = null;
-                        userContext.UpdateUserContext = null;
-                        _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
-                    }*/
+
 
             if (update.Message.Text == "/menu")
             {
@@ -628,7 +527,8 @@ namespace Vanilla.TelegramBot.Services.Bot
             }
             else if (update.Message.Text == "/start addProject")
             {
-                ToCreateProject(update, userContext);
+                //ToCreateProject(update, userContext);
+                ToAddProjects(update, userContext);
                 return true;
             }
             else if (update.Message.Text == "/info")
@@ -653,11 +553,6 @@ namespace Vanilla.TelegramBot.Services.Bot
             else if (update.Message.Text == "/update")
             {
                 ToUpdateUser(update, userContext);
-                return true;
-            }
-            else if (update.Message.Text == "/get")
-            {
-                ToInfoUserToInfoUser(update, userContext);
                 return true;
             }
             else if (update.Message.Text == "/init")
@@ -900,63 +795,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             return userContext;
         }
 
-/*        void FindUserContext()
-        {
 
-        }
-
-        void UserRegistrationProcess(Telegram.BotAPI.GettingUpdates.Update update, UserRegisterModel userRegisterModel)
-        {
-
-            //init
-            var user = ToInitUser(update, userRegisterModel);
-
-            // Save info to db
-
-        }*/
-
-        private void ViewUpdateMenu(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext, ProjectModel projectModel)
-        {
-            var replyMarkuppp = GetUpdateKeyboard(userContext, projectModel);
-
-            var message = MessageWidgets.AboutProject(projectModel, userContext.User, userContext);
-            message += "\n\n" + userContext.ResourceManager.GetString("UpdateProjectInitMessasge");
-
-            if (update.CallbackQuery.Message is not null)
-            {
-                _botClient.EditMessageText(chatId: userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: message, replyMarkup: replyMarkuppp, parseMode: "HTML");
-            }
-            else
-            {
-                _botClient.SendMessage(chatId: userContext.User.TelegramId, text: message, replyMarkup: replyMarkuppp, parseMode: "HTML");
-            }
-        }
-
-        private InlineKeyboardMarkup GetUpdateKeyboard(UserContextModel userContext, ProjectModel projectModel)
-        {
-            var nameBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Name"));
-            var descriptionBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Description"));
-            var devStatusBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Status"));
-            var linksBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Links"));
-            nameBtn.CallbackData = _punktsMenu[0] + _deliver + projectModel.Id;
-            descriptionBtn.CallbackData = _punktsMenu[1] + _deliver + projectModel.Id;
-            devStatusBtn.CallbackData = _punktsMenu[2] + _deliver + projectModel.Id;
-            linksBtn.CallbackData = _punktsMenu[3] + _deliver + projectModel.Id;
-
-            var replyMarkuppp = new InlineKeyboardMarkup
-            (
-                new InlineKeyboardButton[][]{
-                    new InlineKeyboardButton[]{
-                                                nameBtn,
-                                                descriptionBtn,
-                                                devStatusBtn,
-                                                linksBtn,
-                                            }
-                }
-            );
-
-            return replyMarkuppp;
-        }
 
         private void DeleteAllMesssages(UserContextModel userContext)
         {
@@ -977,25 +816,6 @@ namespace Vanilla.TelegramBot.Services.Bot
             userContext.SendMessages.Clear();
         }
 
-        private InlineKeyboardMarkup GetProjectItemMenu(ProjectModel project, UserContextModel userContext)
-        {
-            string deliver = " mya~ ";
 
-            var updateBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("UpdateBtn"));
-            var deleteBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("DeleteBtn"));
-            updateBtn.CallbackData = "update" + deliver + project.Id;
-            deleteBtn.CallbackData = "delete" + deliver + project.Id;
-
-            var replyMarkuppp = new InlineKeyboardMarkup
-            (
-                new InlineKeyboardButton[][]{
-                                            new InlineKeyboardButton[]{
-                                                updateBtn,
-                                                deleteBtn
-                                            }
-                }
-            );
-            return replyMarkuppp;
-        }
     }
 }

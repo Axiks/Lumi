@@ -202,6 +202,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create project.
+        /// </summary>
+        internal static string CreateProject {
+            get {
+                return ResourceManager.GetString("CreateProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to What is the name of your wonderful project?.
         /// </summary>
         internal static string CreateProjectInitMess {
@@ -502,6 +511,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string ProjectHasBeenDeletedMes {
             get {
                 return ResourceManager.GetString("ProjectHasBeenDeletedMes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save project.
+        /// </summary>
+        internal static string SaveProject {
+            get {
+                return ResourceManager.GetString("SaveProject", resourceCulture);
             }
         }
         

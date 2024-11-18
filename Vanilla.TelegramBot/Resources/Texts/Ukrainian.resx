@@ -168,6 +168,9 @@
   <data name="CreateProfile" xml:space="preserve">
     <value>Створити профіль</value>
   </data>
+  <data name="CreateProject" xml:space="preserve">
+    <value>Створити проект</value>
+  </data>
   <data name="CreateProjectInitMess" xml:space="preserve">
     <value>Як називається твій проект?</value>
   </data>
@@ -200,7 +203,8 @@
   <data name="CreateProkectSuccessMessage" xml:space="preserve">
     <value>
 
-&lt;b&gt;Я успішно записала ваш неймовірний проект&lt;/b&gt;
+&lt;b&gt;Я успішно зберегла ваш неймовірний проект&lt;/b&gt;
+
 🔎 Тепер будь-хто зможе його знайти через inline пошук
 </value>
   </data>
@@ -281,6 +285,9 @@
   </data>
   <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
     <value>Проект було видалено</value>
+  </data>
+  <data name="SaveProject" xml:space="preserve">
+    <value>Зберегти проект</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Пошук проектів</value>

@@ -1,5 +1,6 @@
 ﻿using Telegram.BotAPI.AvailableTypes;
 using Vanilla.TelegramBot.Models;
+using Vanilla_App.Models;
 
 namespace Vanilla.TelegramBot.UI
 {
@@ -170,5 +171,210 @@ namespace Vanilla.TelegramBot.UI
 
             return replyMarkuppp;
         }
+
+
+        public static InlineKeyboardMarkup GetCreateProjectKeypoard(UserContextModel userContext)
+        {
+            var passBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("SaveProject"));
+            passBtn.CallbackData = "SaveProject";
+
+            var updateBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("UpdateBtn"));
+            updateBtn.CallbackData = "update";
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        passBtn
+                    },
+                    new InlineKeyboardButton[]{
+                        updateBtn
+                    },
+                }
+            );
+
+            return replyMarkuppp;
+        }
+
+        public static InlineKeyboardMarkup GetInlineSearchProjectKeypoard(UserContextModel userContext, ProjectModel projectModel)
+        {
+            var SearchProjectBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("FindThisProjectBtn"));
+            SearchProjectBtn.SwitchInlineQueryCurrentChat = projectModel.Name;
+
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        SearchProjectBtn
+                    },
+                }
+            );
+
+            return replyMarkuppp;
+        }
+
+        public static InlineKeyboardMarkup InlineKeyboardConstructor(UserContextModel userContext, (string, string) button)
+        {
+            var btn = new InlineKeyboardButton(text: button.Item1);
+            btn.CallbackData = button.Item2;
+
+            var replyMarkup = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        btn
+                    },
+                }
+            );
+
+            return replyMarkup;
+        }
+
+        public static InlineKeyboardMarkup GetProjectInlineKeyboard(UserContextModel userContext, Guid projectId)
+        {
+            /*var SearchProjectBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("FindThisProjectBtn"));
+            SearchProjectBtn.SwitchInlineQueryCurrentChat = projectModel.Name;*/
+
+            string deliver = " mya~ ";
+
+            var updateBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("UpdateBtn"));
+            var deleteBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("DeleteBtn"));
+
+            //updateBtn.CallbackData = "UpdateProjectFolder/UpdateProjectPage" + deliver + projectId;
+            updateBtn.CallbackData = "update" + deliver + projectId.ToString();
+            deleteBtn.CallbackData = "delete" + deliver + projectId.ToString();
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        updateBtn,
+                        deleteBtn
+                    },
+               /*     new InlineKeyboardButton[]{
+                        SearchProjectBtn
+                    },*/
+                }
+            );
+
+            return replyMarkuppp;
+        }
+
+        public static InlineKeyboardMarkup GetCreateProjectInlineKeyboard(UserContextModel userContext)
+        {
+            var makeNewProjectBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("AddProject"));
+            makeNewProjectBtn.CallbackData = userContext.ResourceManager.GetString("AddProject");
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        makeNewProjectBtn
+                    },
+                }
+            );
+
+            return replyMarkuppp;
+        }
+
+        public static InlineKeyboardMarkup GetProjectUpdateItemsKeyboard(UserContextModel userContext)
+        {
+            List<string> _punktsMenu = new List<string>
+                            {
+                                "name",
+                                "description",
+                                "status",
+                                "links",
+                            };
+
+            var nameBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Name"));
+            var descriptionBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Description"));
+            var devStatusBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Status"));
+            var linksBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Links"));
+            nameBtn.CallbackData = _punktsMenu[0];
+            descriptionBtn.CallbackData = _punktsMenu[1];
+            devStatusBtn.CallbackData = _punktsMenu[2];
+            linksBtn.CallbackData = _punktsMenu[3];
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        nameBtn,
+                    },
+                    new InlineKeyboardButton[]{
+                        descriptionBtn,
+                    },
+                    new InlineKeyboardButton[]{
+                        devStatusBtn,
+                    },
+                    new InlineKeyboardButton[]{
+                        linksBtn,
+                    }
+                }
+            );
+
+            return replyMarkuppp;
+        }
+
+        public static InlineKeyboardMarkup GetProjectUpdateItemsKeyboard(UserContextModel userContext, Guid projectId)
+        {
+            List<string> _punktsMenu = new List<string>
+                            {
+                                "name",
+                                "description",
+                                "status",
+                                "links",
+                            };
+
+            string _deliver = " mya~ ";
+
+
+            var nameBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Name"));
+            var descriptionBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Description"));
+            var devStatusBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Status"));
+            var linksBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Links"));
+            nameBtn.CallbackData = _punktsMenu[0] + _deliver + projectId.ToString();
+            descriptionBtn.CallbackData = _punktsMenu[1] + _deliver + projectId.ToString();
+            devStatusBtn.CallbackData = _punktsMenu[2] + _deliver + projectId.ToString();
+            linksBtn.CallbackData = _punktsMenu[3] + _deliver + projectId.ToString();
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                                                nameBtn,
+                                                descriptionBtn,
+                                                devStatusBtn,
+                                                linksBtn,
+                                            }
+                }
+            );
+
+            return replyMarkuppp;
+        }
+
+
+        /*        public static InlineKeyboardMarkup InlineKeyboardConstructor(UserContextModel userContext, List<(string, string)> buttons)
+                {
+                    List<List<InlineKeyboardButton>> rowWithKeysBonus = new List<List<InlineKeyboardButton>>();
+
+                    foreach (var button in buttons)
+                    {
+
+                        var btn = new InlineKeyboardButton(text: button.Item1);
+                        btn.CallbackData = button.Item2;
+
+                        var btnRow = new List<InlineKeyboardButton> { btn };
+                        rowWithKeysBonus.Add(btnRow);
+                    }
+
+                    return new InlineKeyboardMarkup
+                    (
+                        rowWithKeysBonus.ToArray()
+                    );
+                }*/
+
     }
 }

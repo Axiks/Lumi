@@ -81,6 +81,8 @@ namespace Vanilla.TelegramBot.Services.Bot
 
                     userProject.Description = messageText;
 
+
+
                     var pollArgs = MessageWidgets.GeneratePull(chatId, _userContext);
                     var sendedMessage = _botClient.SendPoll(pollArgs);
 
@@ -91,7 +93,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                     return;
                 }
 
-                if (userProject.DevelopStatus is null)
+                if (userProject.DevelopmentStatus is null)
                 {
                     var messValidation = _botClient.SendMessage(chatId, _userContext.ResourceManager.GetString("CreateProkectDevelopStatusValidationMess"), parseMode: "HTML");
                     userProject.SendedMessages.Add(messValidation.MessageId);
@@ -174,7 +176,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             if (update.PollAnswer is null) return;
 
             var userProject = _userContext.CreateProjectContext;
-            if (userProject.DevelopStatus is not null) return;
+            if (userProject.DevelopmentStatus is not null) return;
 
             var poll = update.PollAnswer;
 
@@ -183,7 +185,10 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             var selectedOption = statusAsList[optionIndex];
 
-            userProject.DevelopStatus = selectedOption;
+            userProject.DevelopmentStatus = selectedOption;
+
+
+
             var messPoll = _botClient.SendMessage(poll.User.Id, _userContext.ResourceManager.GetString("CreateProkectDevelopStatusMess"), parseMode: "HTML", linkPreviewOptions: new LinkPreviewOptions() { IsDisabled = true });
             userProject.SendedMessages.Add(messPoll.MessageId);
             return;
@@ -197,7 +202,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             {
                 Name = userProject.Name,
                 Description = userProject.Description,
-                DevelopStatus = (DevelopmentStatusEnum)userProject.DevelopStatus,
+                DevelopStatus = (DevelopmentStatusEnum)userProject.DevelopmentStatus,
                 Links = userProject.Links
             }).Result;
 

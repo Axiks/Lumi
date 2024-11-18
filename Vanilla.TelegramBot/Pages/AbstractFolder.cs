@@ -38,6 +38,8 @@ namespace Vanilla.TelegramBot.Pages
 
         bool _isWithCannelButton;
 
+        readonly string _deliver = " mya~ ";
+
 
         public AbstractFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger, bool isWithCannelButton = true)
         {
@@ -53,22 +55,6 @@ namespace Vanilla.TelegramBot.Pages
 
             _userContext.UpdateUserContext = _userContext.UpdateUserContext is null ? new BotUpdateUserModel() : _userContext.UpdateUserContext;
             _userModel = _userContext.UpdateUserContext;
-
-      /*      _pagesCatalog = new List<IPage>
-            {
-                new UpdateUserNicknamePage(_botClient, _userContext, _sendMessages, _userModel),
-                new UpdateUserAboutPage(_botClient, _userContext, _sendMessages, _userModel),
-                new UpdateUserLinksPage(_botClient, _userContext, _sendMessages, _userModel),
-                new UpdateIsRedyToWorkPage(_botClient, _userContext, _sendMessages, _userModel),
-                new UpdateUserImagesPage(_botClient, _userContext, _sendMessages, _userModel),
-                new UpdateUserComplitePage(_botClient, _userContext, _sendMessages, _userModel, _userService),
-                new UpdateSeccessUserPage(_botClient, _userContext, _sendMessages, _userModel),
-            };*/
-
-            /*_pagesVolumes = new List<(short, short, List<IPage>)>
-            {
-                new (0, 0, new List<IPage>(_pagesCatalog))
-            };*/
 
         }
 
@@ -363,9 +349,9 @@ namespace Vanilla.TelegramBot.Pages
 
         void ExitFromFolder()
         {
-            if (_sendedMessages.Exists(x => x.method == DeleteMessageMethodEnum.ExitFolder))
+            if (_sendedMessages.Exists(x => x.method != DeleteMessageMethodEnum.None))
             {
-                _botClient.DeleteMessages(_userContext.User.TelegramId, _sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.ExitFolder).Select(x => x.messageId));
+                _botClient.DeleteMessages(_userContext.User.TelegramId, _sendedMessages.Where(x => x.method != DeleteMessageMethodEnum.None).Select(x => x.messageId));
             }
 
             ClearMessages();
@@ -375,5 +361,19 @@ namespace Vanilla.TelegramBot.Pages
         }
 
         public void CloseFolder() => ExitFromFolder();
+
+/*        public void GoToPage(string path)
+        {
+            var pageName = path.Split(_deliver).First();
+            var page = _pagesCatalog.First(x => x.GetType().Name == pageName);
+
+            List<IPage> newLists = new List<IPage>();
+
+            for (int i = 0; i < pagesRoute.Count(); i++)
+            {
+                var page = _pagesCatalog.First(x => x.GetType().Name == pagesRoute[i]);
+                newLists.Add(page);
+            }
+        }*/
     }
 }

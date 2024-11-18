@@ -20,10 +20,14 @@ namespace Vanilla_App.Repository
         {
             var projectEntity = new ProjectEntity { Name = projectRequest.Name, Description = projectRequest.Description, DevelopStatus = projectRequest.DevelopStatus, OwnerId = ownerId };
 
-            foreach (var url in projectRequest.Links)
+            if(projectRequest.Links is not null)
             {
-                projectEntity.Links.Add(new LinkEntity { Url = url });
+                foreach (var url in projectRequest.Links)
+                {
+                    projectEntity.Links.Add(new LinkEntity { Url = url });
+                }
             }
+
 
             await _dbContext.AddAsync(projectEntity);
             await _dbContext.SaveChangesAsync();

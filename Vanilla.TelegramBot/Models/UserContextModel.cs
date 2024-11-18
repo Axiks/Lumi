@@ -21,7 +21,7 @@ namespace Vanilla.TelegramBot.Models
 
             timer = new(interval: 2000); // fix
             timer.AutoReset = false;
-            timer.Elapsed += (sender, e) => FinishUploadingPhotosEvent.Invoke();
+            if(FinishUploadingPhotosEvent is not null) timer.Elapsed += (sender, e) => FinishUploadingPhotosEvent.Invoke();
             timer.Elapsed += (sender, e) => timer.Dispose();
             timer.Start();
 

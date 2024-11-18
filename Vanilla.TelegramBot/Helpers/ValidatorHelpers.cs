@@ -9,6 +9,12 @@ namespace Vanilla.TelegramBot.Helpers
 {
     public static class ValidatorHelpers
     {
+        public static bool TextValidate(Update update)
+        {
+            if (update.Message is not null && update.Message.Text is not null) return true;
+            return false;
+        }
+
         public static bool InlineBtnActionValidate(Update update, string command) {
             if (update.Message is not null && update.Message.Text is not null)
             {
@@ -24,6 +30,12 @@ namespace Vanilla.TelegramBot.Helpers
                 return update.CallbackQuery.Data == command;
             }
             else return false;
+        }
+
+        public static bool PoolAnswerValidate(Update update)
+        {
+            if (update.PollAnswer is not null) return true;
+            return false;
         }
     }
 }

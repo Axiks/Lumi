@@ -168,6 +168,9 @@ You can contact the author here: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&l
   <data name="CreateProfile" xml:space="preserve">
     <value>Create profile</value>
   </data>
+  <data name="CreateProject" xml:space="preserve">
+    <value>Create project</value>
+  </data>
   <data name="CreateProjectInitMess" xml:space="preserve">
     <value>What is the name of your wonderful project?</value>
   </data>
@@ -280,6 +283,9 @@ The name must not exceed 64 characters</value>
   <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
     <value>The project has been deleted</value>
     <comment>Mes</comment>
+  </data>
+  <data name="SaveProject" xml:space="preserve">
+    <value>Save project</value>
   </data>
   <data name="ServerError" xml:space="preserve">
     <value>Oooh
