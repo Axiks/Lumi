@@ -5,9 +5,9 @@ using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
 
-namespace Vanilla.TelegramBot.Pages.UpdateUser
+namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 {
-    internal class UpdateUserAboutPage : IPage
+    internal class UpdateUserNicknamePage : IPage
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
         public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
@@ -17,10 +17,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
         readonly UserContextModel _userContext;
         readonly List<int> _sendMessages;
 
-        //readonly string InitMessage = "Розкажіть більше про себе. Чим займаєтесь? Що полюбляєте?";
-        readonly string InitMessage = "Розкажіть про себе\n\n<i>Це можуть бути ваші захоплення, цінності, навички, мрії, цілі так і будь яка інша інформація про себе, про яку ви хотіли би розказати</i>";
-
-        public UpdateUserAboutPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages)
+        readonly string InitMessage = "Як вас звати?\n<i>Це може бути як реальне ім'я, так і нікнейм</i>";
+        public UpdateUserNicknamePage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages)
         {
             _botClient = botClient;
             _userContext = userContext;
@@ -52,20 +50,21 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         bool ValidateInputData(Update update)
         {
-            if (update.Message!.Text!.Length >= 4000)
+            if (update.Message!.Text!.Length >= 64)
             {
-                ValidationErrorEvent.Invoke("Ойй ой ой\n\n Опис не може бути таке довше за 4000 символи.");
+                ValidationErrorEvent.Invoke("Ойй ой ой\n\n Нікнейм не може бути таке довше за 64 символи.");
                 return false;
             }
             return true;
         }
 
-        void Action(Update update) => _userContext.User.About = update.Message!.Text!;
+        void Action(Update update) => _userContext.User.Nickname = update.Message!.Text!;
 
         void MessageSendHelper(string text)
         {
-            //var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.CannelKeyboard(_userContext, placeholder: _userContext.User.About), parseMode: "HTML");
+            //var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.CannelKeyboard(_userContext, placeholder: _userContext.User.Nickname), parseMode: "HTML");
             var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, parseMode: "HTML");
+
             _sendMessages.Add(mess.MessageId);
         }
 

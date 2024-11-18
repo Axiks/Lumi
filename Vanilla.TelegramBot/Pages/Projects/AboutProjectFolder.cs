@@ -1,5 +1,6 @@
 ﻿
 using Telegram.BotAPI;
+using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Pages.Projects.Create;
@@ -7,7 +8,7 @@ using Vanilla.TelegramBot.Pages.Projects.Update;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
 
-namespace Vanilla.TelegramBot.Pages
+namespace Vanilla.TelegramBot.Pages.Projects
 {
     internal class AboutProjectFolder : AbstractFolder, IFolder
     {
@@ -20,7 +21,7 @@ namespace Vanilla.TelegramBot.Pages
 
             var PagesCatalog = new List<IPage>
             {
-                new ProjectsListPage(botClient, userContext, this._sendedMessages, projectService),
+                new ProjectsListPage(botClient, userContext, _sendedMessages, projectService),
                 //new ProjectInfoPage(botClient, userContext, this._sendedMessages, project),
                 /*new CreateProjectTitlePage(botClient, userContext, this._sendedMessages, projectCreateModel),
                 new CreateProjectDescriptionPage(botClient, userContext, this._sendedMessages, projectCreateModel),
@@ -29,8 +30,8 @@ namespace Vanilla.TelegramBot.Pages
                 new CreateProjectCompilePage(botClient, userContext, this._sendedMessages, projectCreateModel, projectService),*/
             };
 
-            this.InitPagesCatalog(PagesCatalog);
-            this.InitPages(PagesCatalog);
+            InitPagesCatalog(PagesCatalog);
+            InitPages(PagesCatalog);
         }
     }
 }

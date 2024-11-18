@@ -6,7 +6,7 @@ using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI.Widgets;
-namespace Vanilla.TelegramBot.Pages.UpdateUser
+namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 {
     internal class UpdateUserComplitePage : IPage, IPageKeyboardExtension
     {
@@ -34,10 +34,11 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             _sendMessages = sendMessages;
             _userService = userService;
         }
-        
+
         string _basicMessage
         {
-            get {
+            get
+            {
                 //UserModel userModel =  (UserModel)UserModel.User.
                 //var userModel = JsonSerializer.Deserialize<UserModel>(JsonSerializer.Serialize(_userContext.User));
                 //userModel.Nickname = _dataContext.Nickname ?? userModel.Nickname;
@@ -86,12 +87,12 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
                 CompliteEvent.Invoke();
             }
             else if (update.CallbackQuery.Data == "edit") UpdateKeyboardAction(update);
-            else if ((update.CallbackQuery.Data == "back")) BackKeyboardAction(update);
-            else if ((update.CallbackQuery.Data == "nickname")) ReturnToPage("UpdateUserNicknamePage");
-            else if ((update.CallbackQuery.Data == "about")) ReturnToPage("UpdateUserAboutPage");
-            else if ((update.CallbackQuery.Data == "isRedyToWork")) ReturnToPage("UpdateIsRedyToWorkPage");
-            else if ((update.CallbackQuery.Data == "links")) ReturnToPage("UpdateUserLinksPage");
-            else if ((update.CallbackQuery.Data == "images")) ReturnToPage("UpdateUserImagesPage");
+            else if (update.CallbackQuery.Data == "back") BackKeyboardAction(update);
+            else if (update.CallbackQuery.Data == "nickname") ReturnToPage("UpdateUserNicknamePage");
+            else if (update.CallbackQuery.Data == "about") ReturnToPage("UpdateUserAboutPage");
+            else if (update.CallbackQuery.Data == "isRedyToWork") ReturnToPage("UpdateIsRedyToWorkPage");
+            else if (update.CallbackQuery.Data == "links") ReturnToPage("UpdateUserLinksPage");
+            else if (update.CallbackQuery.Data == "images") ReturnToPage("UpdateUserImagesPage");
             else
             {
                 throw new Exception("Неочікувана дія");
@@ -107,7 +108,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
             _userContext.User.IsHasProfile = true;
 
-            var userModel = await _userService.UpdateUser(_userContext.User.TelegramId, new Models.UserUpdateRequestModel
+            var userModel = await _userService.UpdateUser(_userContext.User.TelegramId, new UserUpdateRequestModel
             {
                 Nickname = _userContext.User.Nickname,
                 Links = _userContext.User.Links,
@@ -155,7 +156,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
         {
             var mediaList = new List<InputMedia>();
 
-            if(imagesIist is not null)
+            if (imagesIist is not null)
             {
                 foreach (var img in imagesIist)
                 {
@@ -247,7 +248,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
                 new InlineKeyboardButton[][]{
                     new InlineKeyboardButton[]{
                         nickname,
-                        about,              
+                        about,
                     },
                     new InlineKeyboardButton[]{
                         links,

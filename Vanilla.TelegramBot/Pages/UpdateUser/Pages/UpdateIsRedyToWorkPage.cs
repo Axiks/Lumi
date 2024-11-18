@@ -16,7 +16,7 @@ using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
 
-namespace Vanilla.TelegramBot.Pages.UpdateUser
+namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 {
     internal class UpdateIsRedyToWorkPage : IPage
     {
@@ -37,7 +37,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             _sendMessages = sendMessages;
         }
 
-        void IPage.SendInitMessage() {
+        void IPage.SendInitMessage()
+        {
             var pullOptions = GetPollOptions();
             var pollArgs = new SendPollArgs(_userContext.User.TelegramId, InitMessage, pullOptions);
             pollArgs.IsAnonymous = false;

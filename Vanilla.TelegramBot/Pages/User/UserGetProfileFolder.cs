@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.BotAPI;
+using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Pages.UpdateUser;
-using Vanilla.TelegramBot.Pages.User;
 
-namespace Vanilla.TelegramBot.Pages
+namespace Vanilla.TelegramBot.Pages.User
 {
     internal class UserGetProfileFolder : AbstractFolder, IFolder
     {
@@ -17,15 +17,15 @@ namespace Vanilla.TelegramBot.Pages
         {
             UserModel userModel = userContext.User;
 
-            var infoPage = new UserInfoPage(botClient, userContext, userModel, this._sendMessages);
+            var infoPage = new UserInfoPage(botClient, userContext, userModel, _sendMessages);
 
             var PagesCatalog = new List<IPage>
             {
                 infoPage
             };
 
-            this.InitPagesCatalog(PagesCatalog);
-            this.InitPages(PagesCatalog);
+            InitPagesCatalog(PagesCatalog);
+            InitPages(PagesCatalog);
         }
     }
 }

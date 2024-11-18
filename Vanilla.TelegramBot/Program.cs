@@ -4,7 +4,6 @@ using Vanilla.Common;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Services;
-using Vanilla.TelegramBot.Services.Bot;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Services;
 
@@ -77,7 +76,7 @@ namespace Vanilla.TelegramBot
             services.AddTransient<IBonusService, BonusService>();
             services.AddTransient<IUserService, Services.UserService>();
             services.AddSingleton<IBotService, BotService>();
-            services.AddTransient<ILogger, ConsoleLogger>();
+            services.AddTransient<ILogger, ConsoleLoggerService>();
 
             services.AddTransient<Vanilla.OAuth.Services.UserRepository>();
             services.AddTransient<AuthService>(provider => new AuthService(settings.TokenConfiguration));

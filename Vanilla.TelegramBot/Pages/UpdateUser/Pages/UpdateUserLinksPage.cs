@@ -7,7 +7,7 @@ using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
 
-namespace Vanilla.TelegramBot.Pages.UpdateUser
+namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 {
     internal class UpdateUserLinksPage : IPage
     {
@@ -57,7 +57,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
         {
             if (update.CallbackQuery is not null && update.CallbackQuery.Data is not null) return true;
 
-            if(ValidatorHelpers.InlineBtnActionValidate(update, _userContext.ResourceManager.GetString("Pass"))) return true;
+            if (ValidatorHelpers.InlineBtnActionValidate(update, _userContext.ResourceManager.GetString("Pass"))) return true;
 
             if (update.Message!.Text!.Length > 4000)
             {

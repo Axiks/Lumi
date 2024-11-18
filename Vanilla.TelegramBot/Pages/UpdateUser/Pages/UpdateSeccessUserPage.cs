@@ -4,7 +4,7 @@ using Telegram.BotAPI.GettingUpdates;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 
-namespace Vanilla.TelegramBot.Pages.UpdateUser
+namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 {
     internal class UpdateSeccessUserPage : IPage
     {
@@ -25,7 +25,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             _sendMessages = sendMessages;
         }
 
-        void IPage.SendInitMessage(){
+        void IPage.SendInitMessage()
+        {
             MessageSendHelper(InitMessage);
             CompliteEvent.Invoke();
         }

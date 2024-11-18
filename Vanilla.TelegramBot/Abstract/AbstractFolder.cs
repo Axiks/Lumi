@@ -8,7 +8,7 @@ using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
 
-namespace Vanilla.TelegramBot.Pages
+namespace Vanilla.TelegramBot.Abstract
 {
     public abstract class AbstractFolder : IFolder
     {
@@ -67,7 +67,7 @@ namespace Vanilla.TelegramBot.Pages
         {
             var initPages = new List<IPage>();
 
-            foreach(var page in pages)
+            foreach (var page in pages)
             {
                 //_pagesCatalog.First(x => x == page);
                 initPages.Add(_pagesCatalog.First(x => x == page));
@@ -88,7 +88,7 @@ namespace Vanilla.TelegramBot.Pages
             ReplyKeyboardMarkup replyKeyboard = null;
             if (_isWithCannelButton is true) replyKeyboard = Keyboards.BackKeyboard(_userContext);
             var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Run task", replyMarkup: replyKeyboard, parseMode: "HTML");
-            
+
             _catalogInitMessageId = mess.MessageId;
             //_sendMessages.Add(mess.MessageId);
 
@@ -258,7 +258,7 @@ namespace Vanilla.TelegramBot.Pages
 
             var errorMessage = string.Format(_userContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
         }
-           
+
         void SubscribePageEvents()
         {
             _pages[_index].CompliteEvent += PageNotifiedComplite;
@@ -302,10 +302,10 @@ namespace Vanilla.TelegramBot.Pages
             {
                 var changeFlowExtension = (IPageKeyboardExtension)_pages[_index];
                 changeFlowExtension.ChangeInlineKeyboardEvent -= ChangeInitKeyboard;
-               /* changeFlowExtension.ChangeInlineKeyboardEvent -= async (keyboard) =>
-                {
-                    await ChangeInitKeyboard(keyboard);
-                };*/
+                /* changeFlowExtension.ChangeInlineKeyboardEvent -= async (keyboard) =>
+                 {
+                     await ChangeInitKeyboard(keyboard);
+                 };*/
             }
         }
 
@@ -324,7 +324,8 @@ namespace Vanilla.TelegramBot.Pages
 
         void LoadVolume() => (_index, _previousIndex, _pages) = _pagesVolumes.Last();
 
-        void ChangeInitKeyboard(ReplyKeyboardMarkup replyKeyboardMarkup) {
+        void ChangeInitKeyboard(ReplyKeyboardMarkup replyKeyboardMarkup)
+        {
             //var respnse = _botClient.EditMessageReplyMarkup(chatId: _userContext.User.TelegramId, messageId: _catalogInitMessageId ?? 0, replyMarkup: Keyboards.BackKeyboard(_userContext));    
         }
 
@@ -355,25 +356,25 @@ namespace Vanilla.TelegramBot.Pages
             }
 
             ClearMessages();
-            if(_catalogInitMessageId is not null) _botClient.DeleteMessage(_userContext.User.TelegramId, _catalogInitMessageId ?? 0);
+            if (_catalogInitMessageId is not null) _botClient.DeleteMessage(_userContext.User.TelegramId, _catalogInitMessageId ?? 0);
             CloseFolderEvent.Invoke();
             _logger.WriteLog("Success exit from folder", LogType.Information);
         }
 
         public void CloseFolder() => ExitFromFolder();
 
-/*        public void GoToPage(string path)
-        {
-            var pageName = path.Split(_deliver).First();
-            var page = _pagesCatalog.First(x => x.GetType().Name == pageName);
+        /*        public void GoToPage(string path)
+                {
+                    var pageName = path.Split(_deliver).First();
+                    var page = _pagesCatalog.First(x => x.GetType().Name == pageName);
 
-            List<IPage> newLists = new List<IPage>();
+                    List<IPage> newLists = new List<IPage>();
 
-            for (int i = 0; i < pagesRoute.Count(); i++)
-            {
-                var page = _pagesCatalog.First(x => x.GetType().Name == pagesRoute[i]);
-                newLists.Add(page);
-            }
-        }*/
+                    for (int i = 0; i < pagesRoute.Count(); i++)
+                    {
+                        var page = _pagesCatalog.First(x => x.GetType().Name == pagesRoute[i]);
+                        newLists.Add(page);
+                    }
+                }*/
     }
 }

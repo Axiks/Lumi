@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.BotAPI;
 using Telegram.BotAPI.GettingUpdates;
+using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
-using Vanilla.TelegramBot.Pages.CreateUser;
-using Vanilla.TelegramBot.Pages.UpdateUser;
+using Vanilla.TelegramBot.Pages.UpdateUser.Pages;
 using Vanilla_App.Models;
 
-namespace Vanilla.TelegramBot.Pages
+namespace Vanilla.TelegramBot.Pages.CreateUser
 {
     internal class UserCreateProfileFolder : AbstractFolder, IFolder
     {
@@ -21,8 +21,8 @@ namespace Vanilla.TelegramBot.Pages
 
             var PagesCatalog = new List<IPage>
             {
-                new CreateUserWelcomePage(botClient, userContext, this._sendedMessages),
-                new UpdateUserNicknamePage(botClient, userContext, this._sendMessages),
+                new CreateUserWelcomePage(botClient, userContext, _sendedMessages),
+                new UpdateUserNicknamePage(botClient, userContext, _sendMessages),
                 new UpdateUserAboutPage(botClient, userContext, _sendMessages),
                 new UpdateUserLinksPage(botClient, userContext, _sendMessages),
                 new UpdateIsRedyToWorkPage(botClient, userContext, _sendMessages),
@@ -31,8 +31,8 @@ namespace Vanilla.TelegramBot.Pages
                 new UpdateSeccessUserPage(botClient, userContext, _sendMessages),
             };
 
-            this.InitPagesCatalog(PagesCatalog);
-            this.InitPages(PagesCatalog);
+            InitPagesCatalog(PagesCatalog);
+            InitPages(PagesCatalog);
 
         }
 

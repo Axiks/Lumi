@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Telegram.BotAPI;
 using Telegram.BotAPI.GettingUpdates;
 using Vanilla.TelegramBot.Models;
-using Vanilla.TelegramBot.Services.Bot;
 
 namespace Vanilla.TelegramBot.Interfaces
 {

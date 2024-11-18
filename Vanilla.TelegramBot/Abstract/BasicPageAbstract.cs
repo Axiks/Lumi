@@ -4,9 +4,9 @@ using Telegram.BotAPI.GettingUpdates;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
-using static Vanilla.TelegramBot.Pages.ActionFrame;
+using static Vanilla.TelegramBot.Abstract.ActionFrame;
 
-namespace Vanilla.TelegramBot.Pages
+namespace Vanilla.TelegramBot.Abstract
 {
     delegate Exception? InputValidator();
     public abstract class BasicPageAbstract(TelegramBotClient botClient, UserContextModel userContext, List<SendedMessageModel> sendedMessages) : IPage, IPageChangeFlowExtension
@@ -31,7 +31,7 @@ namespace Vanilla.TelegramBot.Pages
 
         void IPage.InputHendler(Update update)
         {
-           CurrentUpdate = update;
+            CurrentUpdate = update;
             //if (Validators() is false) return;
             if (isFirstInput is true) PrepareBasicActions();
             if (isFirstInput is true) InitActions();
@@ -43,10 +43,12 @@ namespace Vanilla.TelegramBot.Pages
         public abstract void InitMessage();
         public abstract void InitActions();
 
-        void ActionInput(Update update) {
+        void ActionInput(Update update)
+        {
             if (_inputActionsList is null) return;
 
-            foreach (var action in _inputActionsList) {
+            foreach (var action in _inputActionsList)
+            {
 
                 if (action.Trigger() is true)
                 {
@@ -64,7 +66,7 @@ namespace Vanilla.TelegramBot.Pages
 
         void ActionDontFound()
         {
-            if(CurrentUpdate.Message is not null) AddMessage(CurrentUpdate.Message.MessageId, DeleteMessageMethodEnum.ExitFolder);
+            if (CurrentUpdate.Message is not null) AddMessage(CurrentUpdate.Message.MessageId, DeleteMessageMethodEnum.ExitFolder);
 
             var mess = botClient.SendMessage(ChatId, "No actions found");
             AddMessage(mess.MessageId, DeleteMessageMethodEnum.ExitFolder);
@@ -122,7 +124,7 @@ namespace Vanilla.TelegramBot.Pages
             if (CurrentUpdate.Message.PinnedMessage is null) return false;
             return true;
         }
-        void PinMessageAction(Telegram.BotAPI.GettingUpdates.Update update) => AddMessage(CurrentUpdate.Message.MessageId, DeleteMessageMethodEnum.ClosePage);
+        void PinMessageAction(Update update) => AddMessage(CurrentUpdate.Message.MessageId, DeleteMessageMethodEnum.ClosePage);
 
     }
 
@@ -131,8 +133,8 @@ namespace Vanilla.TelegramBot.Pages
         public delegate void ActionDelegate(Update update);
         public delegate bool ValidateDelegate(Update update);
 
-        public required Func<bool> Trigger {  get; init; }
-        public ValidateDelegate? Validate {  get; init; }
+        public required Func<bool> Trigger { get; init; }
+        public ValidateDelegate? Validate { get; init; }
         public ActionDelegate ActionObj { get; init; }
     }
 }

@@ -4,12 +4,13 @@ using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
 using Vanilla.Common.Enums;
+using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Models;
-using static Vanilla.TelegramBot.Pages.ActionFrame;
+using static Vanilla.TelegramBot.Abstract.ActionFrame;
 
 namespace Vanilla.TelegramBot.Pages.Projects.Create
 {

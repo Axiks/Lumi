@@ -4,9 +4,8 @@ using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Interfaces;
-using Vanilla.TelegramBot.Models;
 
-namespace Vanilla.TelegramBot.Abstract
+namespace Vanilla.TelegramBot.Models
 {
     public class Folder : IFolder
     {
@@ -50,16 +49,16 @@ namespace Vanilla.TelegramBot.Abstract
             }
         }
 
-    /*    void IFolder.CloseFolder()
-        {
-            throw new NotImplementedException();
-        }*/
+        /*    void IFolder.CloseFolder()
+            {
+                throw new NotImplementedException();
+            }*/
 
-      /*  void IFolder.GoToPage(short index)
-        {
-            if(index < (short)_pages.Count()) _index = index;
-            ApplayPage();
-        }*/
+        /*  void IFolder.GoToPage(short index)
+          {
+              if(index < (short)_pages.Count()) _index = index;
+              ApplayPage();
+          }*/
 
         public void NextPage()
         {
@@ -67,11 +66,11 @@ namespace Vanilla.TelegramBot.Abstract
             ApplayPage();
         }
 
-    /*    void IFolder.PreviousPage()
-        {
-            if (_index > 0) _index--;
-            ApplayPage();
-        }*/
+        /*    void IFolder.PreviousPage()
+            {
+                if (_index > 0) _index--;
+                ApplayPage();
+            }*/
 
         void ApplayPage()
         {
@@ -81,7 +80,8 @@ namespace Vanilla.TelegramBot.Abstract
             {
                 _pages[_index].SendInitMessage();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 InternallException(ex);
             }
 
@@ -113,7 +113,7 @@ namespace Vanilla.TelegramBot.Abstract
 
             var exeptionId = _logger.WriteLog(ex.Message, LogType.Error);
 
-            var errorMessage = String.Format(_userContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
+            var errorMessage = string.Format(_userContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
             MessageSendHelper(errorMessage);
         }
         void SubscribePageEvents()
@@ -132,10 +132,10 @@ namespace Vanilla.TelegramBot.Abstract
             _sendMessages.Add(mess.MessageId);
         }
 
-/*        void ToCompliteAction()
-        {
+        /*        void ToCompliteAction()
+                {
 
-        }*/
+                }*/
 
         void ClearMessages() => _botClient.DeleteMessages(_userContext.User.TelegramId, _sendMessages);
 

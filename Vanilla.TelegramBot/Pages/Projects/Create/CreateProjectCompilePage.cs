@@ -3,6 +3,7 @@ using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common.Enums;
+using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Entityes;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
@@ -11,7 +12,7 @@ using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
 using Vanilla_App.Services;
-using static Vanilla.TelegramBot.Pages.ActionFrame;
+using static Vanilla.TelegramBot.Abstract.ActionFrame;
 
 namespace Vanilla.TelegramBot.Pages.Projects.Create
 {

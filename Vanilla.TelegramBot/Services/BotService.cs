@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
-using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.Extensions;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.InlineMode;
@@ -12,13 +11,16 @@ using Vanilla.TelegramBot.Entityes;
 using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
-using Vanilla.TelegramBot.Pages;
 using Vanilla.TelegramBot.Pages.Bonus;
+using Vanilla.TelegramBot.Pages.CreateUser;
+using Vanilla.TelegramBot.Pages.Projects;
+using Vanilla.TelegramBot.Pages.UpdateUser;
+using Vanilla.TelegramBot.Pages.User;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
 
-namespace Vanilla.TelegramBot.Services.Bot
+namespace Vanilla.TelegramBot.Services
 {
 
     public class BotService : IBotService
@@ -32,17 +34,9 @@ namespace Vanilla.TelegramBot.Services.Bot
 
         private readonly ILogger _logger;
 
-        //private readonly string[] mainMenuitems = { "Add project", "View own projects" };
 
         private List<UserContextModel> _usersContext = new List<UserContextModel>();
 
-        private readonly List<string> _punktsMenu = new List<string>
-                            {
-                                "update name",
-                                "update description",
-                                "update status",
-                                "update links",
-                            };
         public BotService(IUserService userService, IProjectService projectService, ILogger logger, IBonusService bonusService)
         {
             _userService = userService;
@@ -66,8 +60,6 @@ namespace Vanilla.TelegramBot.Services.Bot
             _logger.WriteLog("Init bot service", LogType.Information);
         }
 
-        private void DestroyUserCreator(UserContextModel currentUserContext) => currentUserContext.BotUserCreator = null;
-
         public async Task StartListening()
         {
             //var x = _botClient.GetWebhookInfo;
@@ -82,7 +74,7 @@ namespace Vanilla.TelegramBot.Services.Bot
 
             if (updates.Count() > 0)
             {
-                _logger.WriteLog(String.Format("Cleared {0} old messages", updates.Count()), LogType.Information);
+                _logger.WriteLog(string.Format("Cleared {0} old messages", updates.Count()), LogType.Information);
                 var clearOffset = updates.Last().UpdateId + updates.Count();
                 updates = _botClient.GetUpdates(clearOffset);
             }
@@ -115,10 +107,9 @@ namespace Vanilla.TelegramBot.Services.Bot
                             if (update.CallbackQuery is not null)
                             {
                                 _botClient.AnswerCallbackQuery(update.CallbackQuery.Id);
-                                //if (BotCallBackComandHendler(update, currentUserContext)) continue;
                             }
 
-                            if(isUserHasProfile is false)
+                            if (isUserHasProfile is false)
                             {
                                 // Registration process
                                 if (currentUserContext.Folder is not null)
@@ -148,18 +139,14 @@ namespace Vanilla.TelegramBot.Services.Bot
                                 var messageText = update.CallbackQuery.Data;
                                 if (messageText == "AddProject")
                                 {
-                                    //ToCreateProject(update, currentUserContext);
                                     ToAddProjects(update, currentUserContext);
                                     continue;
                                 }
                                 else if (messageText == "MainMenu")
                                 {
-                                    //_botClient.SendMessage(currentUserContext.User.TelegramId, currentUserContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(currentUserContext));
                                     OpenMainMenu(currentUserContext);
                                     continue;
                                 }
-                       /*         var userContext = GetUserContext(update);
-                                ToUpdateProject(update, userContext);*/
 
                             }
                             else if (update.PollAnswer is not null) { }
@@ -167,7 +154,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                         catch (Exception ex)
                         {
                             Guid exeptionId = Guid.NewGuid();
-                            var mess = String.Format(currentUserContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
+                            var mess = string.Format(currentUserContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
 
                             _botClient.SendMessage(chatId: currentUserContext.User.TelegramId, replyMarkup: Keyboards.GetErrorKeypoard(currentUserContext), text: mess, parseMode: "HTML");
                             _logger.WriteLog(ex.Message + "; Exeption ID: " + exeptionId, LogType.Error);
@@ -189,10 +176,10 @@ namespace Vanilla.TelegramBot.Services.Bot
 
 
         private string _deliver = " mya~ ";
-        private bool BotInlineComandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
+        private bool BotInlineComandHendler(Update update, UserContextModel userContext)
         {
             if (update.Message is null) return false;
-            bool isUserHaveRunTask = userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null || userContext.Folder is not null;
+            bool isUserHaveRunTask = userContext.Folder is not null;
 
             var chatId = userContext.User.TelegramId; //also fix
 
@@ -202,21 +189,16 @@ namespace Vanilla.TelegramBot.Services.Bot
                 ToAddProjects(update, userContext);
                 return true;
             }
-            //else if (!isUserHaveRunTask && update.Message.Text == userContext.ResourceManager.GetString("ViewOwnProjects"))
             else if (userContext.Folder is null && update.Message.Text == userContext.ResourceManager.GetString("ViewOwnProjects"))
             {
-                //DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
-
                 DeleteAllMesssages(userContext);
 
-                //ToViewUserProjets(update, userContext);
                 ToUpdateProjects(update, userContext);
 
                 return true;
             }
-            else if (userContext.Folder is null && update.Message.Text == userContext.ResourceManager.GetString("MyProfile")) {
-                //DeleteAllMesssages(userContext);
-                //OpenMainProfile(userContext);
+            else if (userContext.Folder is null && update.Message.Text == userContext.ResourceManager.GetString("MyProfile"))
+            {
                 DeleteAllMesssages(userContext);
                 ToInfoUserToInfoUser(update, userContext);
                 return true;
@@ -227,12 +209,6 @@ namespace Vanilla.TelegramBot.Services.Bot
                 ToBonusInfoUser(update, userContext);
                 return true;
             }
-            /*            else if (userContext.Folder is null && update.Message.Text == userContext.ResourceManager.GetString("MyProfile"))
-                        {
-                            DeleteAllMesssages(userContext);
-                            ToInfoUserToInfoUser(update, userContext);
-                            return true;
-                        }*/
             else if (update.Message.Text == userContext.ResourceManager.GetString("MyProfileUpdate"))
             {
                 if (userContext.Folder is not null) userContext.Folder.CloseFolder();
@@ -241,51 +217,11 @@ namespace Vanilla.TelegramBot.Services.Bot
                 ToUpdateUser(update, userContext);
                 return true;
             }
-            /*            else if (update.Message.Text == userContext.ResourceManager.GetString("Back"))
-                        {
-                            if (userContext.Folder is not null) userContext.Folder.CloseFolder();
-
-                            // Delete slesh message
-                            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
-                            DeleteMessage(userContext.User.TelegramId, messageId);
-
-                            DeleteAllMesssages(userContext);
-                            OpenMainMenu(userContext);
-                            return true;
-                        }*/
             else if (update.Message.Text == userContext.ResourceManager.GetString("Cannel"))
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
 
-                if (userContext.BotProjectCreator is not null)
-                {
-                    // Reset create project
-                    //_botClient.DeleteMessages(chatId: chatId, messageIds: userContext.CreateProjectContext.SendedMessages);
-                    userContext.BotProjectCreator.ClearMessages();
-                    userContext.CreateProjectContext = null;
-                    userContext.BotProjectCreator = null;
-
-                    OpenMainMenu(userContext);
-                    //_botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
-                }
-                else if (userContext.BotProjectUpdater is not null)
-                {
-                    // Reset update project
-                    userContext.BotProjectUpdater.ClearMessages();
-                    userContext.BotProjectUpdater = null;
-
-                    OpenMainMenu(userContext);
-                    //_botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
-                }
-                else if (userContext.BotUserCreator is not null)
-                {
-                    userContext.BotUserCreator.ClearMessages();
-                    userContext.BotUserCreator = null;
-                    userContext.UpdateUserContext = null;
-
-                    OpenMainMenu(userContext);
-                }
-                else if (userContext.Folder is not null)
+                if (userContext.Folder is not null)
                 {
                     userContext.Folder.CloseFolder();
 
@@ -294,7 +230,6 @@ namespace Vanilla.TelegramBot.Services.Bot
                 else
                 {
                     OpenMainMenu(userContext);
-                    //_botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenu"), replyMarkup: Keyboards.MainMenu(userContext));
                 }
                 return true;
             }
@@ -308,201 +243,21 @@ namespace Vanilla.TelegramBot.Services.Bot
             userContext.SendMessages.Add(message_obj.MessageId);
         }
 
+        private void ToAddProjects(Update update, UserContextModel userContext) => ToInitFolder(update, userContext, new CreateProjectFolder(_botClient, userContext, _userService, _logger, true, _projectService));
+        private void ToUpdateProjects(Update update, UserContextModel userContext) => ToInitFolder(update, userContext, new AboutProjectFolder(_botClient, userContext, _userService, _logger, true, _projectService));
+        private void ToInitUser(Update update, UserContextModel userContext) => ToInitFolder(update, userContext, new UserCreateProfileFolder(_botClient, userContext, _userService, _logger));
+        private void ToUpdateUser(Update update, UserContextModel userContext) => ToInitFolder(update, userContext, new UserUpdateProfileFolder(_botClient, userContext, _userService, _logger));
+        private void ToInfoUserToInfoUser(Update update, UserContextModel userContext) => ToInitFolder(update, userContext, new UserGetProfileFolder(_botClient, userContext, _userService, _logger));
+        private void ToBonusInfoUser(Update update, UserContextModel userContext) => ToInitFolder(update, userContext, new UserBonusFolder(_botClient, userContext, _userService, _logger, _bonusService));
 
-        private void ToAddProjects(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
-        {
-            void destroyFolderContext()
-            {
-                OpenMainMenu(userContext);
 
-                userContext.Folder.CloseFolderEvent -= destroyFolderContext;
-                userContext.Folder = null;
-            }
-
-            if (userContext.Folder is null)
-            {
-                userContext.Folder = new CreateProjectFolder(_botClient, userContext, _userService, _logger, true, _projectService);
-                userContext.Folder.CloseFolderEvent += destroyFolderContext;
-                userContext.Folder.Run();
-            }
-            //else _logger.WriteLog("User have no closed folder context", LogType.Error);
-            else
-            {
-                _logger.WriteLog("User have no closed folder context", LogType.Error);
-                destroyFolderContext();
-                ToInitUser(update, userContext);
-            }
-
-            // Delete slesh message
-            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
-            DeleteMessage(userContext.User.TelegramId, messageId);
-        }
-
-        private void ToUpdateProjects(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
-        {
-            void destroyFolderContext()
-            {
-                OpenMainMenu(userContext);
-
-                userContext.Folder.CloseFolderEvent -= destroyFolderContext;
-                userContext.Folder = null;
-            }
-
-            if (userContext.Folder is null)
-            {
-                userContext.Folder = new AboutProjectFolder(_botClient, userContext, _userService, _logger, true, _projectService);
-                userContext.Folder.CloseFolderEvent += destroyFolderContext;
-                userContext.Folder.Run();
-            }
-            //else _logger.WriteLog("User have no closed folder context", LogType.Error);
-            else
-            {
-                _logger.WriteLog("User have no closed folder context", LogType.Error);
-                destroyFolderContext();
-                ToInitUser(update, userContext);
-            }
-
-            // Delete slesh message
-            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
-            DeleteMessage(userContext.User.TelegramId, messageId);
-        }
-
-        private void ToInitUser(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
-        {
-            void destroyFolderContext()
-            {
-                OpenMainMenu(userContext);
-
-                userContext.Folder.CloseFolderEvent -= destroyFolderContext;
-                userContext.Folder = null;
-            }
-
-            if (userContext.Folder is null)
-            {
-                userContext.Folder = new UserCreateProfileFolder(_botClient, userContext, _userService, _logger);
-                userContext.Folder.CloseFolderEvent += destroyFolderContext;
-                userContext.Folder.Run();
-            }
-            //else _logger.WriteLog("User have no closed folder context", LogType.Error);
-            else
-            {
-                _logger.WriteLog("User have no closed folder context", LogType.Error);
-                destroyFolderContext();
-                ToInitUser(update, userContext);
-            }
-
-            // Delete slesh message
-            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
-            DeleteMessage(userContext.User.TelegramId, messageId);
-        }
-
-        private void ToUpdateUser(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
-        {
-            void destroyFolderContext()
-            {
-                userContext.Folder.CloseFolderEvent -= destroyFolderContext;
-                userContext.Folder = null;
-
-                OpenMainMenu(userContext);
-            }
-
-            if (userContext.Folder is null)
-            {
-                userContext.Folder = new UserUpdateProfileFolder(_botClient, userContext, _userService, _logger);
-                userContext.Folder.CloseFolderEvent += destroyFolderContext;
-                userContext.Folder.Run();
-            }
-            //else _logger.WriteLog("User have no closed folder context", LogType.Error);
-            else
-            {
-                _logger.WriteLog("User have no closed folder context", LogType.Error);
-                destroyFolderContext();
-                ToUpdateUser(update, userContext);
-            }
-
-            // Delete slesh message
-            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
-            DeleteMessage(userContext.User.TelegramId, messageId);
-        }
-
-        private void ToInfoUserToInfoUser(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
-        {
-            void destroyFolderContext()
-            {
-                userContext.Folder.CloseFolderEvent -= destroyFolderContext;
-                userContext.Folder = null;
-
-                OpenMainMenu(userContext);
-            }
-
-            if (userContext.Folder is null)
-            {
-                userContext.Folder = new UserGetProfileFolder(_botClient, userContext, _userService, _logger);
-                userContext.Folder.CloseFolderEvent += destroyFolderContext;
-                userContext.Folder.Run();
-            }
-            else
-            {
-                _logger.WriteLog("User have no closed folder context", LogType.Error);
-                destroyFolderContext();
-                ToInfoUserToInfoUser(update, userContext);
-            }
-
-            // Delete slesh message
-            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
-            DeleteMessage(userContext.User.TelegramId, messageId);
-        }
-
-        private void ToBonusInfoUser(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
-        {
-            void destroyFolderContext()
-            {
-                userContext.Folder.CloseFolderEvent -= destroyFolderContext;
-                userContext.Folder = null;
-
-                OpenMainMenu(userContext);
-            }
-
-            if (userContext.Folder is null)
-            {
-                userContext.Folder = new UserBonusFolder(_botClient, userContext, _userService, _logger, _bonusService);
-                userContext.Folder.CloseFolderEvent += destroyFolderContext;
-                userContext.Folder.Run();
-            }
-            else
-            {
-                _logger.WriteLog("User have no closed folder context", LogType.Error);
-                destroyFolderContext();
-                ToBonusInfoUser(update, userContext);
-            }
-
-            // Delete slesh message
-            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
-            DeleteMessage(userContext.User.TelegramId, messageId);
-        }
-
-        private bool BotSleshCommandHendler(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
+        private bool BotSleshCommandHendler(Update update, UserContextModel userContext)
         {
             if (update.Message is null) return false;
             if (update.Message.Text is null) return false;
             if (update.Message.Text.First() != '/') return false;
             if (update.Message.Text.Split("/").Length != 2) return false;
             if (update.Message.Text.Split(" ").Length > 2) return false;
-            //if (userContext.BotProjectCreator is not null || userContext.UpdateProjectContext is not null) return false;
-            if (userContext.BotProjectCreator is not null)
-            {
-                userContext.BotProjectCreator.ClearMessages();
-                userContext.BotProjectCreator = null;
-                userContext.CreateProjectContext = null;
-                _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
-            }
-            else if (userContext.BotProjectUpdater is not null)
-            {
-                userContext.BotProjectUpdater.ClearMessages();
-                userContext.BotProjectUpdater = null;
-                userContext.UpdateProjectContext = null;
-                _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("CanceledOperation"));
-            }
 
 
             if (update.Message.Text == "/menu")
@@ -563,7 +318,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             else
             {
                 var ms = userContext.ResourceManager.GetString("CommandNotRecognized");
-                var formatedMs = String.Format(ms, update.Message.Text);
+                var formatedMs = string.Format(ms, update.Message.Text);
 
                 SendMessageArgs inputMessage = new SendMessageArgs(update.Message.Chat.Id, formatedMs);
                 inputMessage.ParseMode = "HTML";
@@ -575,7 +330,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             return false;
         }
 
-        private void InlineSearch(Telegram.BotAPI.GettingUpdates.Update update, UserContextModel userContext)
+        private void InlineSearch(Update update, UserContextModel userContext)
         {
             var inline = update.InlineQuery;
             var query = inline.Query;
@@ -689,7 +444,7 @@ namespace Vanilla.TelegramBot.Services.Bot
             }
         }
 
-        private UserContextModel GetUserContext(Telegram.BotAPI.GettingUpdates.Update update)
+        private UserContextModel GetUserContext(Update update)
         {
             Models.UserModel user;
 
@@ -775,7 +530,7 @@ namespace Vanilla.TelegramBot.Services.Bot
                 userContext = new UserContextModel(user);
                 _usersContext.Add(userContext);
 
-                string welcomeMessage = user.Username is not null || user.FirstName is not null ? String.Format(userContext.ResourceManager.GetString("WelcomeUserMessage"), userContext.User.Username) : userContext.ResourceManager.GetString("WelcomeMessage");
+                string welcomeMessage = user.Username is not null || user.FirstName is not null ? string.Format(userContext.ResourceManager.GetString("WelcomeUserMessage"), userContext.User.Username) : userContext.ResourceManager.GetString("WelcomeMessage");
 
                 try
                 {
@@ -799,10 +554,6 @@ namespace Vanilla.TelegramBot.Services.Bot
 
         private void DeleteAllMesssages(UserContextModel userContext)
         {
-            /*            foreach (var messageId in userContext.SendMessages)
-                        {
-                            DeleteMessage(userContext.User.TelegramId, messageId);
-                        }*/
 
             try
             {
@@ -814,6 +565,35 @@ namespace Vanilla.TelegramBot.Services.Bot
             }
 
             userContext.SendMessages.Clear();
+        }
+
+
+        private void ToInitFolder(Update update, UserContextModel userContext, IFolder folder)
+        {
+            void destroyFolderContext()
+            {
+                userContext.Folder.CloseFolderEvent -= destroyFolderContext;
+                userContext.Folder = null;
+
+                OpenMainMenu(userContext);
+            }
+
+            if (userContext.Folder is null)
+            {
+                userContext.Folder = folder;
+                userContext.Folder.CloseFolderEvent += destroyFolderContext;
+                userContext.Folder.Run();
+            }
+            else
+            {
+                _logger.WriteLog("User have no closed folder context", LogType.Error);
+                destroyFolderContext();
+                ToInfoUserToInfoUser(update, userContext);
+            }
+
+            // Delete slesh message
+            int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
+            DeleteMessage(userContext.User.TelegramId, messageId);
         }
 
 

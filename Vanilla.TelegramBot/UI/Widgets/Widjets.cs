@@ -23,42 +23,6 @@ namespace Vanilla.TelegramBot.UI.Widgets
 
             return text;
 
-
-            /* var _sendMessages = new List<int>();
-            var mediaList = new List<InputMedia>();
-            if (userModel.Images is not null)
-            {
-                foreach (var img in userModel.Images)
-                {
-                    var inputPhoto = new InputMediaPhoto(img.TgMediaId);
-                    mediaList.Add(inputPhoto);
-                }
-
-                if (userModel.Images.Count() > 0)
-                {
-                    mediaList.First().Caption = text;
-                    mediaList.First().ParseMode = "HTML";
-                }
-
-            }
-
-            if (mediaList.Count() > 0) {
-                var groups = botClient.SendMediaGroup(chatId, mediaList);
-                foreach (var group in groups)
-                {
-                    _sendMessages.Add(group.MessageId);
-                }
-                var mess = botClient.SendMessage(chatId, "Чи усе заповнено вірно?", replyMarkup: replyMarkup, parseMode: "HTML");
-                _sendMessages.Add(mess.MessageId);
-            }
-            else
-            {
-                var textPrefix = "Бачу що усі дані було заповнено :3\nНа останок хочу переконатись що усе вірно запам'ятала\n\n";
-                var mess = botClient.SendMessage(chatId, textPrefix + text, replyMarkup: replyMarkup, parseMode: "HTML");
-                _sendMessages.Add(mess.MessageId);
-            }
-
-            return _sendMessages;*/
         }
     }
 }

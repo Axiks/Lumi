@@ -1,7 +1,6 @@
 ﻿using System.Resources;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Resources.Texts;
-using Vanilla.TelegramBot.Services.Bot;
 
 namespace Vanilla.TelegramBot.Models
 {
@@ -24,13 +23,6 @@ namespace Vanilla.TelegramBot.Models
             if(FinishUploadingPhotosEvent is not null) timer.Elapsed += (sender, e) => FinishUploadingPhotosEvent.Invoke();
             timer.Elapsed += (sender, e) => timer.Dispose();
             timer.Start();
-
-
-     /*       DateTime now = DateTime.Now;
-            DateTime fourOClock = DateTime.Today.AddSeconds(1);
-
-            await Task.Delay((int)fourOClock.Subtract(DateTime.Now).TotalMilliseconds);
-            FinishUploadingPhotosEvent.Invoke();*/
         }
 
 
@@ -41,13 +33,8 @@ namespace Vanilla.TelegramBot.Models
 
         public readonly UserModel User;
         public ResourceManager ResourceManager { get { return _resourceManager; } }
-        public BotCreateProjectModel? CreateProjectContext { get; set; }
-        public BotUpdateProjectModel? UpdateProjectContext { get; set; }
-        public BotUpdateUserModel? UpdateUserContext { get; set; }
 
-        public BotProjectCreator? BotProjectCreator { get; set; }
-        public BotProjectUpdate? BotProjectUpdater { get; set; }
-        public BotUserCreator? BotUserCreator { get; set; }
+        public BotUpdateUserModel? UpdateUserContext { get; set; }
 
 
 

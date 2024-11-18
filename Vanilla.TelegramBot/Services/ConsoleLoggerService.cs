@@ -4,7 +4,7 @@ using Vanilla.TelegramBot.Models;
 
 namespace Vanilla.TelegramBot.Services
 {
-    public class ConsoleLogger : ILogger
+    public class ConsoleLoggerService : ILogger
     {
         private List<LogModel> _loggs = new List<LogModel>();
         public List<LogModel> ReadLogs() => _loggs;
@@ -37,7 +37,7 @@ namespace Vanilla.TelegramBot.Services
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
             }
-            Console.WriteLine(logType + " & " + message);
+            Console.WriteLine("t: " + DateTime.UtcNow + " & " + logType + " :3 " + message);
             Console.ForegroundColor = ConsoleColor.White;
 
             using (StreamWriter sw = File.AppendText(logFolderPath + "/" + "log.txt"))

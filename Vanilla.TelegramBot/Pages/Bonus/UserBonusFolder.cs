@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.BotAPI;
+using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Pages.Bonus.Pages;

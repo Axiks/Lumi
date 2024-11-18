@@ -7,7 +7,7 @@ using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
 
-namespace Vanilla.TelegramBot.Pages.UpdateUser
+namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 {
     internal class UpdateUserImagesPage : IPage
     {
@@ -50,7 +50,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 
         bool ValidateInputType(Update update)
         {
-            if (update.Message is not null && update.Message.Photo is not null) {
+            if (update.Message is not null && update.Message.Photo is not null)
+            {
                 _sendMessages.Add(update.Message.MessageId);
                 return true;
             }
@@ -72,7 +73,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             }
         }
 
-        void ToNextPage() {
+        void ToNextPage()
+        {
             _userContext.FinishUploadingPhotosEvent -= ToNextPage;
             CompliteEvent.Invoke();
         }
@@ -90,12 +92,12 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
             }*/
         }
 
-       void MessageSendHelper(string text, InlineKeyboardMarkup? keyboard = null)
+        void MessageSendHelper(string text, InlineKeyboardMarkup? keyboard = null)
         {
             var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.GetPassKeypoard(_userContext), parseMode: "HTML");
             _sendMessages.Add(mess.MessageId);
         }
 
- 
+
     }
 }
