@@ -1,4 +1,5 @@
-﻿using Vanilla.Common.Enums;
+﻿using System.Text.Json;
+using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 
@@ -6,16 +7,13 @@ namespace Vanilla.TelegramBot.Services
 {
     public class ConsoleLoggerService : ILogger
     {
-        private List<LogModel> _loggs = new List<LogModel>();
-        public List<LogModel> ReadLogs() => _loggs;
+        List<LogModel> _loggs = new List<LogModel>();
+
+        string _logFolderPath = "AppLog";
+        public List<LogModel> ReadLogs() => TakeAllLogs();
 
         public Guid WriteLog(string message, LogType logType)
         {
-
-            string logFolderPath = "AppLog";
-            Directory.CreateDirectory(logFolderPath);
-
-
             var log = new LogModel
             {
                 Message = message,
@@ -25,7 +23,15 @@ namespace Vanilla.TelegramBot.Services
             };
             _loggs.Add(log);
 
-            switch (logType)
+            WriteLogToConsole(log);
+            WriteLogToFile(log);
+
+            return log.Id;
+        }
+
+        void WriteLogToConsole(LogModel log)
+        {
+            switch (log.LogType)
             {
                 case LogType.Information:
                     Console.ForegroundColor = ConsoleColor.Blue;
@@ -37,15 +43,40 @@ namespace Vanilla.TelegramBot.Services
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
             }
-            Console.WriteLine("t: " + DateTime.UtcNow + " & " + logType + " :3 " + message);
+            Console.WriteLine(MakeLogStringHelper(log));
             Console.ForegroundColor = ConsoleColor.White;
+        }
 
-            using (StreamWriter sw = File.AppendText(logFolderPath + "/" + "log.txt"))
+        void WriteLogToFile(LogModel log)
+        {
+            Directory.CreateDirectory(_logFolderPath);
+
+            using (StreamWriter sw = System.IO.File.AppendText(_logFolderPath + "/" + "log.txt"))
             {
-                sw.WriteLine(log.Id + " - " + logType + " & " + message);
+                sw.WriteLine(MakeLogStringHelper(log));
+            }
+        }
+
+        List<LogModel> TakeAllLogs()
+        {
+            var logs = new List<LogModel>();
+
+            foreach (var line in File.ReadLines(_logFolderPath + "/" + "log.txt"))
+            {
+                logs.Add(DeserialiseLogToStringLine(line));
             }
 
-            return log.Id;
+            return logs;
         }
+
+        string SerialiseLogToStringLine(LogModel log) => MakeLogStringHelper(log);
+        LogModel DeserialiseLogToStringLine(string logString)
+        {
+            string[] parts = logString.Split(new string[] { " & ", " :3 ", " t: " }, StringSplitOptions.None);
+            return new LogModel() { Id = Guid.Parse(parts[0]), LogType = (LogType) Enum.Parse(typeof(LogType), parts[1]), Message = parts[2], CreateAt = DateTime.Parse(parts[3]) };
+        }
+
+        //string MakeLogStringHelper(LogModel log) => String.Format() log.Id.ToString() + " & " + log.LogType + " :3 " + log.Message + "t: " + log.CreateAt.ToString();
+        string MakeLogStringHelper(LogModel log) => String.Format("{0} & {1} :3 {2} t: {3}", log.Id, log.LogType, log.Message, log.CreateAt);
     }
 }
