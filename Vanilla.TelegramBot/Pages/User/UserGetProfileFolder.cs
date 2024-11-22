@@ -17,7 +17,7 @@ namespace Vanilla.TelegramBot.Pages.User
         {
             UserModel userModel = userContext.User;
 
-            var infoPage = new UserInfoPage(botClient, userContext, userModel, _sendMessages);
+            var infoPage = new UserInfoPage(botClient, userContext, userModel, _sendedMessages);
 
             var PagesCatalog = new List<IPage>
             {

@@ -9,5 +9,6 @@ namespace Vanilla_App.Interfaces
         public UserEntity Get(Guid userId);
         public UserEntity Create(UserCreateRequestModel update);
         public UserEntity Update(Guid userId, UserUpdateRequestModel update);
+        public void Delete (Guid userId);
     }
 }

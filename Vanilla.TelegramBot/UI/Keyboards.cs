@@ -139,15 +139,21 @@ namespace Vanilla.TelegramBot.UI
 
         public static InlineKeyboardMarkup GetErrorKeypoard(UserContextModel userContext)
         {
-            var passBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Pass"));
-            passBtn.Text = "Топік з багами";
-            passBtn.Url = "https://t.me/c/2378034660/2";
+            var topicLinkBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Pass"));
+            topicLinkBtn.Text = "Топік з багами";
+            topicLinkBtn.Url = "https://t.me/LumiFanbase/2";
+
+            var reloadUserContextBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("ReloadUserContext"));
+            reloadUserContextBtn.CallbackData= "ReloadUserContext";
 
             var replyMarkuppp = new InlineKeyboardMarkup
             (
                 new InlineKeyboardButton[][]{
                     new InlineKeyboardButton[]{
-                        passBtn
+                        topicLinkBtn
+                    },
+                    new InlineKeyboardButton[]{
+                        reloadUserContextBtn
                     },
                 }
             );
@@ -264,7 +270,7 @@ namespace Vanilla.TelegramBot.UI
         public static InlineKeyboardMarkup GetCreateProjectInlineKeyboard(UserContextModel userContext)
         {
             var makeNewProjectBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("AddProject"));
-            makeNewProjectBtn.CallbackData = userContext.ResourceManager.GetString("AddProject");
+            makeNewProjectBtn.CallbackData = "AddProject";
 
             var replyMarkuppp = new InlineKeyboardMarkup
             (
@@ -351,6 +357,23 @@ namespace Vanilla.TelegramBot.UI
                                             }
                 }
             );
+
+            return replyMarkuppp;
+        }
+
+        public static InlineKeyboardMarkup CannelInlineKeyboard(UserContextModel userContext)
+        {
+            var cannelBtn = new InlineKeyboardButton(userContext.ResourceManager.GetString("Cannel"));
+            cannelBtn.CallbackData = "cannel";
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+           (
+               new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                                                cannelBtn
+                                            }
+               }
+           );
 
             return replyMarkuppp;
         }

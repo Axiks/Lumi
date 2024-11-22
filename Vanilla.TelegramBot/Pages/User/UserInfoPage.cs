@@ -3,6 +3,7 @@ using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.UpdatingMessages;
+using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI;
@@ -10,7 +11,7 @@ using Vanilla.TelegramBot.UI.Widgets;
 
 namespace Vanilla.TelegramBot.Pages.User
 {
-    internal class UserInfoPage : IPage
+    internal class UserInfoPage : BasicPageAbstract
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
         public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
@@ -19,14 +20,11 @@ namespace Vanilla.TelegramBot.Pages.User
         public TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
         readonly UserModel _userInfo;
-        readonly List<int> _sendMessages;
+        readonly List<SendedMessageModel> _sendMessages;
         public int? _inlineKeyboardId;
         public int? _inlineKeyboardUniqueId;
 
-        //const string InitMessage = "<b>{0}</b>\n\n{1}\n\nЗамовлення: {2}\n\n<b>Доєднуйтесь до смоїх соцмереж:</b>\n\n{3}";
-
-
-        public UserInfoPage(TelegramBotClient botClient, UserContextModel userContextModel, UserModel userInfo, List<int> sendMessages)
+        public UserInfoPage(TelegramBotClient botClient, UserContextModel userContextModel, UserModel userInfo, List<SendedMessageModel> sendMessages) : base(botClient, userContextModel, sendMessages)
         {
             _botClient = botClient;
             _userContext = userContextModel;
@@ -34,54 +32,8 @@ namespace Vanilla.TelegramBot.Pages.User
             _sendMessages = sendMessages;
         }
 
-        void IPage.SendInitMessage()
-        {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Мій профайллл", replyMarkup: Keyboards.ProfileKeyboard(_userContext), parseMode: "HTML");
-            _inlineKeyboardId = mess.MessageId;
-            //_inlineKeyboardUniqueId = mess.id
-            _sendMessages.Add(mess.MessageId);
-
-            string redyMessage = _userInfo.IsRadyForOrders ? "Reddy" : "No reddy";
-            string links = _userInfo.Links is not null ? String.Join(", ", _userInfo.Links) : "No links";
-
-            var message = Widjets.AboutUser(_userContext.ResourceManager, _userInfo);
-
-            //MessageSendHelper(string.Format(InitMessage, _userInfo.Nickname, _userInfo.About, redyMessage, links));
-            MessageSendHelper(message, _userInfo.Images);
-
-            //CompliteEvent.Invoke();
-        }
-
-        void IPage.InputHendler(Update update)
-        {
-            //if(!ValidateInputType(update)) return;
-
-            //Action(update);
-        }
-
-/*        bool ValidateInputType(Update update)
-        {
-            if (!ValidatorHelpers.InlineBtnActionValidate(update, _userContext.ResourceManager.GetString("MyProfileUpdate")))
-            {
-                ValidationErrorEvent.Invoke("Не те що очікувала. Обери дію!");
-                return false;
-            }
-            return true;
-        }
-
-        void Action(Update update)
-        {
-            if(ValidatorHelpers.InlineBtnActionValidate(update, _userContext.ResourceManager.GetString("MyProfileUpdate")))
-            {
-                ChangePagesFlowPagesEvent
-            }
-        }*/
-
         public void MessageSendHelper(string text, List<ImageModel>? imagesIist = null)
         {
-            //var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, parseMode: "HTML");
-            //_sendMessages.Add(mess.MessageId);
-
             var mediaList = new List<InputMedia>();
 
             if (imagesIist is not null)
@@ -103,19 +55,37 @@ namespace Vanilla.TelegramBot.Pages.User
 
             if (mediaList.Count() > 0)
             {
-                /*var mess = _botClient.SendMessage(chatId: _userContext.User.TelegramId,  text: "Мій профайл", replyMarkup: Keyboards.ProfileKeyboard(_userContext), parseMode: "HTML");
-                _sendMessages.Add(mess.MessageId);*/
-
-                //if (_inlineKeyboardId is not null) _botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: _inlineKeyboardId ?? 0, text: "UserInfoKb", parseMode: "HTML");
-
                 var groups = _botClient.SendMediaGroup(_userContext.User.TelegramId, mediaList);
-                _sendMessages.AddRange(groups.Select(x => x.MessageId).ToList());
+
+                foreach(var group in groups)
+                {
+                    AddMessage(group.MessageId, Common.Enums.DeleteMessageMethodEnum.ClosePage);
+                }
+
             }
             else
             {;
                 var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.ProfileKeyboard(_userContext), parseMode: "HTML");
-                _sendMessages.Add(mess.MessageId);
+                AddMessage(mess.MessageId, Common.Enums.DeleteMessageMethodEnum.ClosePage);
             }
+        }
+
+        public override void InitMessage()
+        {
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Мій профіль", replyMarkup: Keyboards.ProfileKeyboard(_userContext), parseMode: "HTML");
+            _inlineKeyboardId = mess.MessageId;
+            AddMessage(mess.MessageId, Common.Enums.DeleteMessageMethodEnum.ClosePage);
+
+            string redyMessage = _userInfo.IsRadyForOrders ? "Reddy" : "No reddy";
+            string links = _userInfo.Links is not null ? String.Join(", ", _userInfo.Links) : "No links";
+
+            var message = Widjets.AboutUser(_userContext.ResourceManager, _userInfo);
+
+            MessageSendHelper(message, _userInfo.Images);
+        }
+
+        public override void InitActions()
+        {
         }
     }
 }

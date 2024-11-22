@@ -19,8 +19,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
                 new UpdateUserLinksPage(botClient, userContext, _sendMessages),
                 new UpdateIsRedyToWorkPage(botClient, userContext, _sendMessages),
                 new UpdateUserImagesPage(botClient, userContext, _sendMessages),
-                new UpdateUserComplitePage(botClient, userContext, _sendMessages, userService),
-                new UpdateSeccessUserPage(botClient, userContext, _sendMessages),
+                new UpdateUserComplitePage(botClient, userContext, _sendMessages, userService), //5
+                new UpdateSeccessUserPage(botClient, userContext, _sendMessages), //6
             };
 
             InitPagesCatalog(PagesCatalog);

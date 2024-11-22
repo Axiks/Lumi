@@ -286,6 +286,9 @@
   <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
     <value>Проект було видалено</value>
   </data>
+  <data name="ReloadUserContext" xml:space="preserve">
+    <value>Перезапустити Lumi</value>
+  </data>
   <data name="SaveProject" xml:space="preserve">
     <value>Зберегти проект</value>
   </data>
@@ -296,7 +299,7 @@
     <value>&lt;b&gt;Ой-йой.. 500&lt;/b&gt;
 Виникла внутрішня помилка серверу
 
-Якщо Лумі, надалі, не працюватиме належним чином, повідомте про це у &lt;a href="https://t.me/+ZT1iI5NFdTAwNjUy"&gt;Lumi fanbase&lt;/a&gt;
+Якщо Лумі, надалі, не працюватиме належним чином, повідомте про це у &lt;a href="https://t.me/LumiFanbase"&gt;Lumi fanbase&lt;/a&gt;
 
 Error ID: &lt;code&gt;{1}&lt;/code&gt;</value>
   </data>

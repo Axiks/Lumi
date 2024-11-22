@@ -125,6 +125,7 @@ namespace Vanilla.TelegramBot.Services
                             }
 
                             if (BotInlineComandHendler(update, currentUserContext)) continue;
+                            if (BotReplyComandHendler(update, currentUserContext)) continue;
                             if (BotSleshCommandHendler(update, currentUserContext)) continue;
 
 
@@ -134,7 +135,7 @@ namespace Vanilla.TelegramBot.Services
                             }
 
                             if (update.Message is not null) { }
-                            else if (update.CallbackQuery is not null)
+       /*                     else if (update.CallbackQuery is not null)
                             {
                                 var messageText = update.CallbackQuery.Data;
                                 if (messageText == "AddProject")
@@ -148,7 +149,7 @@ namespace Vanilla.TelegramBot.Services
                                     continue;
                                 }
 
-                            }
+                            }*/
                             else if (update.PollAnswer is not null) { }
                         }
                         catch (Exception ex)
@@ -175,8 +176,46 @@ namespace Vanilla.TelegramBot.Services
         }
 
 
-        private string _deliver = " mya~ ";
         private bool BotInlineComandHendler(Update update, UserContextModel userContext)
+        {
+            void CloseFolderIfExist()
+            {
+                if (userContext.Folder is not null) userContext.Folder.CloseFolder();
+            }
+
+
+            if (update.CallbackQuery is null) return false;
+
+            if (Helpers.ValidatorHelpers.CallbackBtnActionValidate(update, "AddProject"))
+            {
+                CloseFolderIfExist();
+                ToAddProjects(update, userContext);
+                return true;
+            }
+            else if (Helpers.ValidatorHelpers.CallbackBtnActionValidate(update, "MainMenu"))
+            {
+                CloseFolderIfExist();
+                OpenMainMenu(userContext);
+                return true;
+            }
+            else if (Helpers.ValidatorHelpers.CallbackBtnActionValidate(update, "ReloadUserContext"))
+            {
+                var chatId = userContext.User.TelegramId;
+                var mainMenuKeyboard = Keyboards.MainMenu(userContext);
+
+                _usersContext.Remove(userContext);
+
+                _botClient.SendMessage(chatId, "Lumi successfully rebooted", replyMarkup: mainMenuKeyboard);
+
+                return true;
+            }
+
+            return false;
+        }
+
+
+        private string _deliver = " mya~ ";
+        private bool BotReplyComandHendler(Update update, UserContextModel userContext)
         {
             if (update.Message is null) return false;
             bool isUserHaveRunTask = userContext.Folder is not null;
@@ -313,6 +352,11 @@ namespace Vanilla.TelegramBot.Services
             else if (update.Message.Text == "/init")
             {
                 ToInitUser(update, userContext);
+                return true;
+            }
+            else if (update.Message.Text == "/deletemyself")
+            {
+                DeleteMyself(userContext);
                 return true;
             }
             else
@@ -594,6 +638,14 @@ namespace Vanilla.TelegramBot.Services
             // Delete slesh message
             int messageId = update.Message is not null ? update.Message.MessageId : update.CallbackQuery.Message.MessageId;
             DeleteMessage(userContext.User.TelegramId, messageId);
+        }
+
+
+        // Dev func
+        public void DeleteMyself(UserContextModel userContext)
+        {
+            _userService.DeleteUser(userContext.User.UserId);
+            _usersContext.Remove(userContext);
         }
 
 

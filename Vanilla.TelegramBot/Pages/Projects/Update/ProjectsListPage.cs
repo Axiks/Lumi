@@ -185,7 +185,11 @@ namespace Vanilla.TelegramBot.Pages.Projects.Update
             }
         }
 
-        void PrintUserDontHaveProjects() => _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UserDontHaveProjectsMess"), replyMarkup: Keyboards.GetCreateProjectInlineKeyboard(_userContext));
+        void PrintUserDontHaveProjects()
+        {
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, _userContext.ResourceManager.GetString("UserDontHaveProjectsMess"), replyMarkup: Keyboards.GetCreateProjectInlineKeyboard(_userContext));
+            AddMessage(mess.MessageId, DeleteMessageMethodEnum.ClosePage);
+        }
 
 
 

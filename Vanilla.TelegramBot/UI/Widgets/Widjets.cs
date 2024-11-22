@@ -12,7 +12,7 @@ namespace Vanilla.TelegramBot.UI.Widgets
         //public static string AboutUser(long chatId, TelegramBotClient botClient, ResourceManager resourceManager, UserModel userModel, ReplyMarkup? replyMarkup = null)
         public static string AboutUser(ResourceManager resourceManager, UserModel userModel)
         {
-            var InitMessage = "<b>{0}</b>\n{1}\n{2}\n\nЗнайти мене можеш тут\n{3}";
+            var InitMessage = "<b>{0}</b>\n\n{1}\n\n{2}\n\nЗнайти мене можеш тут:\n\n{3}\n\n";
 
             var links = new List<string>();
             if (userModel.Links is not null) links.AddRange(userModel.Links);

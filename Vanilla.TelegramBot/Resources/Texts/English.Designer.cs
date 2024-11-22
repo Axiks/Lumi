@@ -515,6 +515,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reload Lumi.
+        /// </summary>
+        internal static string ReloadUserContext {
+            get {
+                return ResourceManager.GetString("ReloadUserContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save project.
         /// </summary>
         internal static string SaveProject {

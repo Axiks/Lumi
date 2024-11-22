@@ -10,5 +10,6 @@ namespace Vanilla.TelegramBot.Interfaces
         public Task<UserModel> GetUser(Guid userId);
         public Task<UserModel> UpdateUser(long userTgId, Models.UserUpdateRequestModel user);
         public Task<List<UserModel>> FindByUsername(string usernme);
+        public Task DeleteUser(Guid userId);
     }
 }

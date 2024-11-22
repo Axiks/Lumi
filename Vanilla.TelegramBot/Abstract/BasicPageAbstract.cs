@@ -4,6 +4,7 @@ using Telegram.BotAPI.GettingUpdates;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.UI;
 using static Vanilla.TelegramBot.Abstract.ActionFrame;
 
 namespace Vanilla.TelegramBot.Abstract
@@ -45,6 +46,8 @@ namespace Vanilla.TelegramBot.Abstract
 
         void ActionInput(Update update)
         {
+            bool isProblemWithValidation = false;
+
             if (_inputActionsList is null) return;
 
             foreach (var action in _inputActionsList)
@@ -53,23 +56,26 @@ namespace Vanilla.TelegramBot.Abstract
                 if (action.Trigger() is true)
                 {
                     bool isValidate = action.Validate is not null ? action.Validate(update) : true;
-                    if (isValidate is false) continue;
+                    if (isValidate is false) {
+                        isProblemWithValidation = true;
+                        continue;
+                    }
 
                     action.ActionObj(update);
                     return;
                 }
             }
 
-            ActionDontFound();
+            if(isProblemWithValidation == false) ActionDontFound();
             //throw new Exception("No actions found");
         }
 
         void ActionDontFound()
         {
-            if (CurrentUpdate.Message is not null) AddMessage(CurrentUpdate.Message.MessageId, DeleteMessageMethodEnum.ExitFolder);
+            if (CurrentUpdate.Message is not null) AddMessage(CurrentUpdate.Message.MessageId, DeleteMessageMethodEnum.NextAction);
 
-            var mess = botClient.SendMessage(ChatId, "No actions found");
-            AddMessage(mess.MessageId, DeleteMessageMethodEnum.ExitFolder);
+            var mess = botClient.SendMessage(ChatId, "Action not recognized.\nFollow the instructions above or cancel the current operation.", replyMarkup: Keyboards.CannelInlineKeyboard(userContext));
+            AddMessage(mess.MessageId, DeleteMessageMethodEnum.NextAction);
         }
 
         public void AddMessage(int messageId, DeleteMessageMethodEnum deleteMessageMethodEnum) => sendedMessages.Add(new SendedMessageModel(messageId, deleteMessageMethodEnum));

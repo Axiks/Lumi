@@ -1,12 +1,14 @@
 ﻿using Vanilla.Data.Entities;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
+using Vanilla_App.Repository;
 
 namespace Vanilla_App.Services
 {
     public class UserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IProjectRepository _projectRepository;
 
         public UserService(IUserRepository userRepository)
         {
@@ -37,6 +39,18 @@ namespace Vanilla_App.Services
             var entity = _userRepository.Update(userId, update);
             var user = EntityToModelMapper(entity);
             return user;
+        }
+
+        public void DeleteUser(Guid userId)
+        {
+            // delete the all user projects
+            foreach(var project in _userRepository.GetProjectsAsync(userId).Result)
+            {
+                _projectRepository.Delete(project.Id);
+            }
+
+            _userRepository.Delete(userId);
+
         }
 
         private static UserModel EntityToModelMapper(UserEntity entity) => new UserModel

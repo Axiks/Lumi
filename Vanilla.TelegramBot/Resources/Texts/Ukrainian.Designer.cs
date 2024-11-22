@@ -524,6 +524,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Перезапустити Lumi.
+        /// </summary>
+        internal static string ReloadUserContext {
+            get {
+                return ResourceManager.GetString("ReloadUserContext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Зберегти проект.
         /// </summary>
         internal static string SaveProject {
@@ -545,7 +554,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         ///   Looks up a localized string similar to &lt;b&gt;Ой-йой.. 500&lt;/b&gt;
         ///Виникла внутрішня помилка серверу
         ///
-        ///Якщо Лумі, надалі, не працюватиме належним чином, повідомте про це у &lt;a href=&quot;https://t.me/+ZT1iI5NFdTAwNjUy&quot;&gt;Lumi fanbase&lt;/a&gt;
+        ///Якщо Лумі, надалі, не працюватиме належним чином, повідомте про це у &lt;a href=&quot;https://t.me/LumiFanbase&quot;&gt;Lumi fanbase&lt;/a&gt;
         ///
         ///Error ID: &lt;code&gt;{1}&lt;/code&gt;.
         /// </summary>

@@ -33,17 +33,6 @@ namespace Vanilla.TelegramBot.Services
                 var coreUser = _coreUserService.GetUser(localUser.UserId);
                 if (coreUser is null) throw new Exception("User don`t exist in core service");
 
-                /*var userModel = new UserModel
-                {
-                    UserId = oauthUser.Id,
-                    Token = _authService.GenerateToken(oauthUser),
-                    TelegramId = localUser.TelegramId,
-                    Username = localUser.Username,
-                    FirstName = localUser.FirstName,
-                    LastName = localUser.LastName,
-                    RegisterInServiceAt = localUser.CreatedAt,
-                    RegisterInSystemAt = oauthUser.CreatedAt
-                };*/
 
                 var userModel =  EntityesToObjectMapperHelper(localUser, coreUser, oauthUser);
                 response.Add(userModel);
@@ -63,22 +52,6 @@ namespace Vanilla.TelegramBot.Services
             if (coreUser is null) throw new Exception("User don`t exist in core service");
 
             _authService.GenerateToken(oauthUser);
-
-/*            var userModel = new UserModel
-            {
-                UserId = oauthUser.Id,
-                Token = _authService.GenerateToken(oauthUser),
-                TelegramId = localUser.TelegramId,
-                Username = localUser.Username,
-                FirstName = localUser.FirstName,
-                LastName = localUser.LastName,
-                About = coreUser.About,
-                Links = coreUser.Links,
-                IsRadyForOrders = coreUser.IsRadyForOrders,
-                RegisterInServiceAt = localUser.CreatedAt,
-                RegisterInSystemAt = oauthUser.CreatedAt
-            };
-            return userModel;*/
 
             return EntityesToObjectMapperHelper(localUser, coreUser, oauthUser);
         }
@@ -109,20 +82,6 @@ namespace Vanilla.TelegramBot.Services
                 LanguageCode = userRequest.LanguageCode,
             });
 
-/*            var userModel = new UserModel
-            {
-                UserId = oauthUser.Id,
-                Token = _authService.GenerateToken(oauthUser),
-                TelegramId = localUser.TelegramId,
-                Username = localUser.Username,
-                FirstName = localUser.FirstName,
-                LastName = localUser.LastName,
-                LanguageCode = localUser.LanguageCode,
-                RegisterInServiceAt = localUser.CreatedAt,
-                RegisterInSystemAt = oauthUser.CreatedAt
-            };
-            return userModel;*/
-
             return EntityesToObjectMapperHelper(localUser, coreUser, oauthUser);
         }
 
@@ -138,20 +97,6 @@ namespace Vanilla.TelegramBot.Services
             if (coreUser is null) throw new Exception("User don`t exist in core service");
 
             _authService.GenerateToken(oauthUser);
-
-            /*            var userModel = new UserModel
-                        {
-                            UserId = oauthUser.Id,
-                            Token = _authService.GenerateToken(oauthUser),
-                            TelegramId = localUser.TelegramId,
-                            Username = localUser.Username,
-                            FirstName = localUser.FirstName,
-                            LastName = localUser.LastName,
-                            LanguageCode = localUser.LanguageCode,
-                            RegisterInServiceAt = localUser.CreatedAt,
-                            RegisterInSystemAt = oauthUser.CreatedAt
-                        };
-                        return userModel;*/
 
             return EntityesToObjectMapperHelper(localUser, coreUser, oauthUser);
         }
@@ -192,6 +137,23 @@ namespace Vanilla.TelegramBot.Services
             });
 
             return EntityesToObjectMapperHelper(uplocalUser, upcoreUser, upauthUser);
+        }
+
+        public async Task DeleteUser(Guid userId)
+        {
+            var localUser = await _userRepository.GetUserAsync(userId);
+            if (localUser is null) throw new Exception("User don`t exist in tg service");
+
+            var oauthUser = await _oauthUserService.GetUserAsync(localUser.UserId);
+            if (oauthUser is null) throw new Exception("User don`t exist in oauth service");
+
+            var coreUser = _coreUserService.GetUser(localUser.UserId);
+            if (coreUser is null) throw new Exception("User don`t exist in core service");
+
+            _userRepository.RemoveUserAsync(userId);
+            _coreUserService.DeleteUser(userId);
+            _oauthUserService.DeleteUser(userId);
+
         }
 
         private UserModel EntityesToObjectMapperHelper(UserCreateResponseModel localUser, Vanilla_App.Models.UserModel coreUser, BasicUserModel oauthUser) => new UserModel

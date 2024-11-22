@@ -100,6 +100,9 @@ namespace Vanilla.TelegramBot.Abstract
         void PageNotifiedComplite() => NextPage();
         public virtual void EnterPoint(Update update)
         {
+            if(CannelActionMidleware(update) == true) return;
+            AutoRemoveNextActionMessages();
+
             if (Helpers.ValidatorHelpers.InlineBtnActionValidate(update, _userContext.ResourceManager.GetString("Back")))
             {
                 var myCastedObject = _pages[_index] as IPageKeyboardExtension;
@@ -128,6 +131,15 @@ namespace Vanilla.TelegramBot.Abstract
             _pages[_index].InputHendler(update);
         }
 
+        public bool CannelActionMidleware(Update update) {
+            if (update.CallbackQuery is null) return false;
+            if (update.CallbackQuery.Data != "cannel") return false;
+
+            CloseFolder();
+
+            return true;
+        }
+
         internal void ApplayPage()
         {
             AutoRemoveMessagesFromPage();
@@ -148,7 +160,7 @@ namespace Vanilla.TelegramBot.Abstract
 
         public void NextPage()
         {
-            AutoRemoveNextMessages();
+            AutoRemoveNextPageMessages();
             if (_index < (short)_pages.Count() - 1)
             {
                 _index++;
@@ -329,7 +341,16 @@ namespace Vanilla.TelegramBot.Abstract
             //var respnse = _botClient.EditMessageReplyMarkup(chatId: _userContext.User.TelegramId, messageId: _catalogInitMessageId ?? 0, replyMarkup: Keyboards.BackKeyboard(_userContext));    
         }
 
-        void AutoRemoveNextMessages()
+        void AutoRemoveNextActionMessages()
+        {
+            if (_sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.NextAction).Count() > 0)
+            {
+                var messagesToRemove = _sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.NextAction).Select(x => x.messageId);
+                _botClient.DeleteMessages(_userContext.User.TelegramId, messagesToRemove);
+            }
+        }
+
+        void AutoRemoveNextPageMessages()
         {
             if (_sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.NextMessage).Count() > 0)
             {
@@ -357,6 +378,7 @@ namespace Vanilla.TelegramBot.Abstract
 
             ClearMessages();
             if (_catalogInitMessageId is not null) _botClient.DeleteMessage(_userContext.User.TelegramId, _catalogInitMessageId ?? 0);
+
             CloseFolderEvent.Invoke();
             _logger.WriteLog("Success exit from folder", LogType.Information);
         }
