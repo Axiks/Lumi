@@ -266,7 +266,7 @@ namespace Vanilla.TelegramBot.Abstract
         void InternallException(Exception ex)
         {
 
-            var exeptionId = _logger.WriteLog(ex.Message, LogType.Error);
+            var exeptionId = _logger.WriteLog(ex.Message, LogType.Error, UserId: _userContext.User.UserId);
 
             var errorMessage = string.Format(_userContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
         }
@@ -380,7 +380,7 @@ namespace Vanilla.TelegramBot.Abstract
             if (_catalogInitMessageId is not null) _botClient.DeleteMessage(_userContext.User.TelegramId, _catalogInitMessageId ?? 0);
 
             CloseFolderEvent.Invoke();
-            _logger.WriteLog("Success exit from folder", LogType.Information);
+            _logger.WriteLog("Success exit from folder", LogType.Information, UserId: _userContext.User.UserId);
         }
 
         public void CloseFolder() => ExitFromFolder();

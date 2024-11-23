@@ -154,11 +154,11 @@ namespace Vanilla.TelegramBot.Services
                         }
                         catch (Exception ex)
                         {
-                            Guid exeptionId = Guid.NewGuid();
-                            var mess = string.Format(currentUserContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
+                            Guid exeptionId = _logger.WriteLog(ex.Message, LogType.Error, UserId: currentUserContext.User.UserId);
 
+                            var mess = string.Format(currentUserContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
                             _botClient.SendMessage(chatId: currentUserContext.User.TelegramId, replyMarkup: Keyboards.GetErrorKeypoard(currentUserContext), text: mess, parseMode: "HTML");
-                            _logger.WriteLog(ex.Message + "; Exeption ID: " + exeptionId, LogType.Error);
+                            
                         }
                     }
 
@@ -585,7 +585,7 @@ namespace Vanilla.TelegramBot.Services
                     _logger.WriteLog("I can't send a greeting message", LogType.Warning);
                 }
 
-                _logger.WriteLog("Added new user: " + user.Username, LogType.Information);
+                _logger.WriteLog("Added new user: " + user.Username, LogType.Information, UserId: userContext.User.UserId);
             }
 
             if (!_usersContext.Exists(x => x.User.UserId == user.UserId)) _usersContext.Add(new UserContextModel(user));
@@ -601,11 +601,11 @@ namespace Vanilla.TelegramBot.Services
 
             try
             {
-                _botClient.DeleteMessages(userContext.User.TelegramId, userContext.SendMessages);
+                if(userContext.SendMessages.Count() > 0) _botClient.DeleteMessages(userContext.User.TelegramId, userContext.SendMessages);
             }
             catch (Exception ex)
             {
-                _logger.WriteLog(ex.Message, LogType.Error);
+                _logger.WriteLog(ex.Message, LogType.Error, UserId: userContext.User.UserId);
             }
 
             userContext.SendMessages.Clear();
@@ -630,7 +630,7 @@ namespace Vanilla.TelegramBot.Services
             }
             else
             {
-                _logger.WriteLog("User have no closed folder context", LogType.Error);
+                _logger.WriteLog("User have no closed folder context", LogType.Error, UserId: userContext.User.UserId);
                 destroyFolderContext();
                 ToInfoUserToInfoUser(update, userContext);
             }
