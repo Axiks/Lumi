@@ -8,7 +8,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser
 {
     public class UserUpdateProfileFolder : AbstractFolder, IFolder
     {
-        public UserUpdateProfileFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger) : base(botClient, userContext, userService, logger)
+        const string? folderName = "Оновлення профілю";
+        public UserUpdateProfileFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger) : base(botClient, userContext, userService, logger, folderName: folderName)
         {
             var userModel = userContext.UpdateUserContext;
 

@@ -40,14 +40,18 @@ namespace Vanilla.TelegramBot.Abstract
 
         readonly string _deliver = " mya~ ";
 
+        string? _folderName;
 
-        public AbstractFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger, bool isWithCannelButton = true)
+
+        public AbstractFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger, bool isWithCannelButton = true, string folderName = null)
         {
             _logger = logger;
             _userContext = userContext;
             _botClient = botClient;
             _userService = userService;
             _isWithCannelButton = isWithCannelButton;
+
+            _folderName = folderName;
 
             _index = 0;
             _sendMessages = new List<int>();
@@ -87,7 +91,10 @@ namespace Vanilla.TelegramBot.Abstract
         {
             ReplyKeyboardMarkup replyKeyboard = null;
             if (_isWithCannelButton is true) replyKeyboard = Keyboards.BackKeyboard(_userContext);
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Run task", replyMarkup: replyKeyboard, parseMode: "HTML");
+
+            //var taskName = _folderName is not null ? _folderName : "Run task";
+            var taskName = _folderName is not null ? _folderName : new EmojiRandomizer().Take();
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, taskName, replyMarkup: replyKeyboard, parseMode: "HTML");
 
             _catalogInitMessageId = mess.MessageId;
             //_sendMessages.Add(mess.MessageId);
@@ -385,6 +392,17 @@ namespace Vanilla.TelegramBot.Abstract
 
         public void CloseFolder() => ExitFromFolder();
 
+/*        string RandomEmojies()
+        {
+
+
+
+            string GetRandomEmoji =>;
+
+
+
+        }*/
+
         /*        public void GoToPage(string path)
                 {
                     var pageName = path.Split(_deliver).First();
@@ -399,4 +417,26 @@ namespace Vanilla.TelegramBot.Abstract
                     }
                 }*/
     }
+
+    class EmojiRandomizer(int count = 3)
+    {
+        Random random = new Random();
+
+        List<string> smiles = new List<string>
+            {
+                "😺", "😸", "😹", "😻", "😽", "😼", "🙀", "🐱"
+            };
+        string TakeEmoji() => smiles[random.Next(0, smiles.Count)];
+        public string Take()
+        {
+            var emojiesString = "";
+            for (int i = 0; i < count; i++)
+            {
+                emojiesString += " ";
+                emojiesString += TakeEmoji();
+            }
+            return emojiesString;
+        }
+    }
+
 }
