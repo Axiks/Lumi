@@ -76,7 +76,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         ///Особлива подяка всім, хто допомагає розробляти цього бота.
         ///
         ///Створено учасником спільноти &lt;a href=&quot;https://t.me/include_anime&quot;&gt;Програмісти і печеньки&lt;/a&gt;
-        ///Ви можете зв&apos;язатися з автором тут: &lt;a href=&quot;https://t.me/Yumikki&quot;&gt;@Yumikki&lt;/a&gt;.
+        ///Знайти розробників можете тут &lt;a href=&quot;https://t.me/LumiFanbase&quot;&gt;@LumiFanbase&lt;/a&gt;.
         /// </summary>
         internal static string About {
             get {
