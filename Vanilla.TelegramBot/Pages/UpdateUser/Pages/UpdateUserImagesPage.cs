@@ -81,11 +81,35 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 
         void AddImageId(Update update)
         {
+/*            var x = update.Message.Photo;
+
+            foreach(var i in x)
+            {
+                Console.WriteLine(i.FileId);
+                Console.WriteLine(i.FileUniqueId);
+                Console.WriteLine(i.FileSize);
+                Console.WriteLine(i.Width);
+                Console.WriteLine(i.Height);
+                Console.WriteLine("\n");
+            }*/
+
+            var maxSizeImg = update.Message.Photo.OrderBy(x => x.FileSize).Last();
+            var id = maxSizeImg.FileId;
+            _userContext.User.Images.Add(new ImageModel { TgMediaId = id });
+
+            /*imagesData.Remove(original);
+
+
+            foreach (var image in imagesData)
+            {
+                _userContext.User.Images.Add(new ImageModel { TgMediaId = id });
+            }
+
             var imagesData = update.Message.Photo.GroupBy(x => x.FileUniqueId).Last();
             var id = imagesData.First().FileId;
             _userContext.User.Images.Add(new ImageModel { TgMediaId = id });
 
-            /*foreach (var image in imagesData)
+            foreach (var image in imagesData)
             {
                 var id = image.FileId;
                 _dataContext.ImagesId.Add(id);

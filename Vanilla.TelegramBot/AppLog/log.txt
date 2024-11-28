@@ -10,3 +10,7 @@ Error & One or more errors occurred. (Conflict: terminated by other getUpdates r
 b1b498f2-d28c-46fd-a91e-b150d88d8886 - Information & Init bot service
 8cd7cb10-eba9-465f-bee2-2504a5af4007 - Information & Init bot service
 e59d94ea-0f1d-4461-b2c1-4eabcf487416 - Information & Init bot service
+e0c91572-599a-4be5-b4b0-dea58cf4bca5 & Information :3 Init bot service t: 11/27/2024 8:31:30 PM u: , m: .ctor, p: D:\Projects\Axiks\Vanilla\Vanilla.TelegramBot\Services\BotService.cs, l: 63
+5b1d0684-0f9a-4127-88bd-e071ab5c7f78 & Information :3 Init bot service t: 11/27/2024 8:31:45 PM u: , m: .ctor, p: D:\Projects\Axiks\Vanilla\Vanilla.TelegramBot\Services\BotService.cs, l: 63
+e58c0333-4bdf-4f2d-9d57-d83f3fba0f8c & Information :3 Init bot service t: 11/28/2024 8:13:52 PM u: , m: .ctor, p: D:\Projects\Axiks\Vanilla\Vanilla.TelegramBot\Services\BotService.cs, l: 63
+cdac56b5-bfaa-45c7-b341-38d00d17a259 & Information :3 Cleared 1 old messages t: 11/28/2024 8:13:53 PM u: , m: StartListening, p: D:\Projects\Axiks\Vanilla\Vanilla.TelegramBot\Services\BotService.cs, l: 80

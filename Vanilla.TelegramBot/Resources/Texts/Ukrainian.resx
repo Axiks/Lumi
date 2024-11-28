@@ -286,6 +286,9 @@
   <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
     <value>Проект було видалено</value>
   </data>
+  <data name="Registration" xml:space="preserve">
+    <value>Реєстрація</value>
+  </data>
   <data name="ReloadUserContext" xml:space="preserve">
     <value>Перезапустити Lumi</value>
   </data>

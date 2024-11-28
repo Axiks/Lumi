@@ -1,8 +1,10 @@
-﻿using Telegram.BotAPI.AvailableTypes;
+﻿using System.Drawing;
+using Telegram.BotAPI.AvailableTypes;
 using Vanilla.OAuth.Models;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Vanilla.TelegramBot.Services
 {
@@ -35,6 +37,26 @@ namespace Vanilla.TelegramBot.Services
 
 
                 var userModel =  EntityesToObjectMapperHelper(localUser, coreUser, oauthUser);
+                response.Add(userModel);
+            }
+            return response;
+        }
+
+        public async Task<List<UserModel>> GetUsers()
+        {
+            var users = await _userRepository.GetUsersAsync();
+
+            var response = new List<UserModel>();
+            foreach (var localUser in users)
+            {
+                var oauthUser = await _oauthUserService.GetUserAsync(localUser.UserId);
+                if (oauthUser is null) throw new Exception("User don`t exist in oauth service");
+
+                var coreUser = _coreUserService.GetUser(localUser.UserId);
+                if (coreUser is null) throw new Exception("User don`t exist in core service");
+
+
+                var userModel = EntityesToObjectMapperHelper(localUser, coreUser, oauthUser);
                 response.Add(userModel);
             }
             return response;
@@ -136,6 +158,8 @@ namespace Vanilla.TelegramBot.Services
                 IsHasProfile = user.IsHasProfile,
             });
 
+            if (IsUserUploadNewProfileImages(localUser.Images, user.Images)) DownloadProfileImages(user.Images);
+
             return EntityesToObjectMapperHelper(uplocalUser, upcoreUser, upauthUser);
         }
 
@@ -156,6 +180,62 @@ namespace Vanilla.TelegramBot.Services
 
         }
 
+        async Task DownloadProfileImages(List<ImageModel> images)
+        {
+            foreach (var image in images)
+            {
+                Directory.CreateDirectory("storage");
+
+                var imagePath = "storage\\" + image.TgMediaId + ".jpg";
+                await DownloadImageAsync(image.DownloadPath, imagePath);
+                MakeResizeImage(imagePath);
+            }
+        }
+
+        async Task DownloadImageAsync(string imageUrl, string fileName)
+        {
+            using var client = new HttpClient();
+            using var response = await client.GetAsync(imageUrl);
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var fileStream = new FileStream(fileName, FileMode.Create);
+            await stream.CopyToAsync(fileStream);
+        }
+
+        async Task MakeResizeImage(string path)
+        {
+            var original = System.Drawing.Image.FromFile(path);
+            var thumbnail = await ScaleImage(original, 256);
+
+            var iamgePathWichoutJpg = path.Split(".jpg").First();
+            var thumbnailPath = iamgePathWichoutJpg + "_thumbnail.jpg";
+            thumbnail.Save(thumbnailPath);
+        }
+
+        async Task<System.Drawing.Image> ScaleImage(System.Drawing.Image image, int height)
+        {
+            double ratio = (double)height / image.Height;
+            int newWidth = (int)(image.Width * ratio);
+            int newHeight = (int)(image.Height * ratio);
+            Bitmap newImage = new Bitmap(newWidth, newHeight);
+            using (Graphics g = Graphics.FromImage(newImage))
+            {
+                g.DrawImage(image, 0, 0, newWidth, newHeight);
+            }
+            image.Dispose();
+            return newImage;
+        }
+
+        bool IsUserUploadNewProfileImages(List<ImageModel>? currentImages, List<ImageModel>? newImages) {
+            if (currentImages is null && newImages is null) return false;
+
+            if (currentImages is null != newImages is null) return true;
+            if(currentImages.Count() != newImages.Count()) return true;
+            foreach (var image in newImages) {
+                if(currentImages.Exists(x => x.TgMediaId == image.TgMediaId) is false) return true;
+            }
+            return false;
+        }
+
         private UserModel EntityesToObjectMapperHelper(UserCreateResponseModel localUser, Vanilla_App.Models.UserModel coreUser, BasicUserModel oauthUser) => new UserModel
         {
                 UserId = oauthUser.Id,
@@ -173,6 +253,5 @@ namespace Vanilla.TelegramBot.Services
                 RegisterInSystemAt = oauthUser.CreatedAt,
                 IsHasProfile = localUser.IsHasProfile
         };
-
     }
 }

@@ -34,6 +34,7 @@ namespace Vanilla.TelegramBot.Services
 
         private readonly ILogger _logger;
 
+        private readonly InlineSearchService _inlineSearchService;
 
         private List<UserContextModel> _usersContext = new List<UserContextModel>();
 
@@ -56,6 +57,8 @@ namespace Vanilla.TelegramBot.Services
 
             string botToken = Environment.GetEnvironmentVariable("ACCESS_TOKEN") ?? _settings.BotAccessToken;
             _botClient = new TelegramBotClient(botToken);
+
+            _inlineSearchService = new InlineSearchService(_botClient, _projectService, _userService);
 
             _logger.WriteLog("Init bot service", LogType.Information);
         }
@@ -376,6 +379,11 @@ namespace Vanilla.TelegramBot.Services
 
         private void InlineSearch(Update update, UserContextModel userContext)
         {
+            _inlineSearchService.InlineSearch(update, userContext);
+        }
+
+      /*  private void InlineSearch(Update update, UserContextModel userContext)
+        {
             var inline = update.InlineQuery;
             var query = inline.Query;
 
@@ -474,7 +482,7 @@ namespace Vanilla.TelegramBot.Services
             var ans = new AnswerInlineQueryArgs(inline.Id, res);
 
             _botClient.AnswerInlineQuery(inlineQueryId: inline.Id, results: res, button: inlineAddOwnProjectButton, nextOffset: offsetProjectId, cacheTime: 24);
-        }
+        }*/
 
         private void DeleteMessage(long chatId, int messageId)
         {

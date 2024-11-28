@@ -284,6 +284,9 @@ The name must not exceed 64 characters</value>
     <value>The project has been deleted</value>
     <comment>Mes</comment>
   </data>
+  <data name="Registration" xml:space="preserve">
+    <value>Registration</value>
+  </data>
   <data name="ReloadUserContext" xml:space="preserve">
     <value>Reload Lumi</value>
   </data>

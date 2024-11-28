@@ -67,12 +67,15 @@ namespace Vanilla.TelegramBot.Entityes
         public static string AboutUser(Models.UserModel user)
         {
             string links = "";
-            foreach (var link in user.Links)
+            if (user.Links is not null)
             {
-                Uri linkUri = new Uri(link);
-                //links += "<a href=\"" + FavionParser(linkUri.OriginalString) + "\">" + linkUri.Host.ToString()  + "</a>" + "\n";
-                links += String.Format("<a href=\"{0}\">&#128279 {1}</a>", linkUri.OriginalString, linkUri.Host.ToString());
-                links += " ";
+                foreach (var link in user.Links)
+                {
+                    Uri linkUri = new Uri(link);
+                    //links += "<a href=\"" + FavionParser(linkUri.OriginalString) + "\">" + linkUri.Host.ToString()  + "</a>" + "\n";
+                    links += String.Format("<a href=\"{0}\">&#128279 {1}</a>", linkUri.OriginalString, linkUri.Host.ToString());
+                    links += " ";
+                }
             }
 
             return string.Format("<b>{0}</b> \n\n{1} \n\n{2}\nRady to new job: {3}", user.Nickname, user.About, links, user.IsRadyForOrders);

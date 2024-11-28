@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vanilla.TelegramBot.Helpers;
 
 namespace Vanilla.TelegramBot.Entityes
 {
@@ -10,6 +11,5 @@ namespace Vanilla.TelegramBot.Entityes
     {
         public Guid Id { get; set; }
         public required string TgMediaId { get; init; }
-        public required string TgUrl { get; init; }
     }
 }

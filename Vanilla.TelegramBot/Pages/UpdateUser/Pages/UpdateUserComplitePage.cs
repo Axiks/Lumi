@@ -1,6 +1,7 @@
 ﻿using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
+using Telegram.BotAPI.Extensions;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.TelegramBot.Interfaces;
@@ -126,9 +127,15 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
             foreach (var image in _userContext.User.Images)
             {
                 var file = _botClient.GetFile(image.TgMediaId);
-                image.TgUrl = file.FilePath;
+                var imageUrl = _botClient.BuildFileDownloadLink(file);
+
+         /*       Directory.CreateDirectory("storage");
+                DownloadImageAsync(imageUrl, "storage\\" + image.TgMediaId + ".jpg");*/
+
+                image.DownloadPath = imageUrl;
             }
         }
+
 
         void BackKeyboardAction(Update update)
         {

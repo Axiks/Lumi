@@ -57,6 +57,17 @@ namespace Vanilla.TelegramBot.Repositories
             return users;
         }
 
+        public async Task<List<UserCreateResponseModel>> GetUsersAsync()
+        {
+            var usersEntity = _dbContext.Users.ToList();
+            var users = new List<UserCreateResponseModel>();
+            foreach (var userEntity in usersEntity)
+            {
+                users.Add(MapperHelper.UserEntityToUserCreateResponseModel(userEntity));
+            }
+            return users;
+        }
+
         public async void RemoveUserAsync(Guid userId)
         {
             var user = await _dbContext.Users.FirstAsync(x => x.UserId == userId);
@@ -79,7 +90,7 @@ namespace Vanilla.TelegramBot.Repositories
                 userEntity.Images = new List<ImagesEntity>();
                 foreach (var image in user.Images)
                 {
-                    userEntity.Images.Add(new ImagesEntity { TgMediaId = image.TgMediaId, TgUrl = image.TgUrl });
+                    userEntity.Images.Add(new ImagesEntity { TgMediaId = image.TgMediaId });
                 }
             } 
 

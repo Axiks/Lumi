@@ -25,7 +25,6 @@ namespace Vanilla.TelegramBot.Helpers
         private static ImageModel ImageEntityToUserImage(ImagesEntity imageEntity) => new ImageModel
         {
             TgMediaId = imageEntity.TgMediaId,
-            TgUrl = imageEntity.TgUrl,
         };
 
         private static List<ImageModel>? ImageEntityesToUserImages(List<ImagesEntity> imageEntities)
