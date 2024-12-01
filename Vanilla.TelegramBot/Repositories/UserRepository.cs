@@ -34,7 +34,7 @@ namespace Vanilla.TelegramBot.Repositories
 
         public async Task<UserCreateResponseModel?> GetUserAsync(Guid userId)
         {
-            var userEntity = await _dbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            var userEntity = await _dbContext.Users.Include(x => x.Images).FirstOrDefaultAsync(x => x.UserId == userId);
             if (userEntity is null) return null;
             return MapperHelper.UserEntityToUserCreateResponseModel(userEntity);
         }
@@ -48,7 +48,7 @@ namespace Vanilla.TelegramBot.Repositories
 
         public async Task<List<UserCreateResponseModel>> GetUsersAsync(string username)
         {
-            var usersEntity = _dbContext.Users.Where(x => x.Username == username).ToList();
+            var usersEntity = _dbContext.Users.Where(x => x.Username == username).Include(x => x.Images).ToList();
             var users = new List<UserCreateResponseModel>();
             foreach (var userEntity in usersEntity)
             {
@@ -59,7 +59,7 @@ namespace Vanilla.TelegramBot.Repositories
 
         public async Task<List<UserCreateResponseModel>> GetUsersAsync()
         {
-            var usersEntity = _dbContext.Users.ToList();
+            var usersEntity = _dbContext.Users.Include(x => x.Images).ToList();
             var users = new List<UserCreateResponseModel>();
             foreach (var userEntity in usersEntity)
             {

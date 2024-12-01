@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Vanilla.Common;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
@@ -35,6 +37,15 @@ namespace Vanilla.TelegramBot
 
             var serviceProvider = services.BuildServiceProvider();
             PrepareDB(serviceProvider);
+
+
+            // Temp api (remove in future)
+            new Thread(delegate () {
+                RunMinimalApi(args);
+            }).Start();
+
+
+
 
             RunBotWatchdog();
             void RunBotWatchdog()
@@ -119,6 +130,23 @@ namespace Vanilla.TelegramBot
                 dbContext.Database.Migrate();
             }
         }
+
+
+        async static void RunMinimalApi(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            var app = builder.Build();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "storage")),
+                RequestPath = "/storage"
+            });
+            app.MapGet("/", () => "Hello World!");
+            app.MapGet("/test", () => "It`s test");
+            app.Run();
+        }
+
+
 
     }
 }

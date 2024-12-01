@@ -184,19 +184,22 @@ namespace Vanilla.TelegramBot.Services
                 /*var file = _botClient.GetFile(user.Images.First().TgMediaId);
                 var imgUrl = _botClient.BuildFileDownloadLink(file);*/
 
-               /* inputMessage.LinkPreviewOptions = new Telegram.BotAPI.AvailableTypes.LinkPreviewOptions
+                var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + ".jpg";
+
+                inputMessage.LinkPreviewOptions = new Telegram.BotAPI.AvailableTypes.LinkPreviewOptions
                 {
                     PreferLargeMedia = true,
-                    Url = "https://img.freepik.com/premium-vector/smile-girl-anime-error-404-page-found_150972-827.jpg"
-                    //Url = imgUrl
-                };*/
+                    ShowAboveText = true,
+                    //Url = "https://img.freepik.com/premium-vector/smile-girl-anime-error-404-page-found_150972-827.jpg"
+                    Url = profileImgUrl
+                };
             }
             inputMessage.ParseMode = "HTML";
 
             var description = "🐱 @" + user.Username;
 
 
-            return new InlineQueryResultArticle
+            var result = new InlineQueryResultArticle
             {
                 Id = ResultId,
                 Title = name,
@@ -204,6 +207,16 @@ namespace Vanilla.TelegramBot.Services
                 InputMessageContent = inputMessage,
                 //ThumbnailUrl = "https://avatarfiles.alphacoders.com/293/293990.jpg",
             };
+
+            if (user.Images is not null && user.Images.Count() > 0)
+            {
+                //var profileImgUrl = "https://avatarfiles.alphacoders.com/293/293990.jpg";
+                //var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + "_thumbnail.jpg";
+                var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + ".jpg";
+                result.ThumbnailUrl = profileImgUrl;
+            }
+
+            return result;
 
             /*           return new InlineQueryResultCachedPhoto
                        {

@@ -1,10 +1,12 @@
 ﻿using System.Drawing;
+using System.IO;
 using Telegram.BotAPI.AvailableTypes;
 using Vanilla.OAuth.Models;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using static System.Net.Mime.MediaTypeNames;
+using File = System.IO.File;
 
 namespace Vanilla.TelegramBot.Services
 {
@@ -158,7 +160,8 @@ namespace Vanilla.TelegramBot.Services
                 IsHasProfile = user.IsHasProfile,
             });
 
-            if (IsUserUploadNewProfileImages(localUser.Images, user.Images)) DownloadProfileImages(user.Images);
+            //if (IsUserUploadNewProfileImages(localUser.Images, user.Images)) DownloadProfileImages(user.Images);
+            if (user.Images is not null && user.Images.Count() > 0) DownloadProfileImages(user.Images);
 
             return EntityesToObjectMapperHelper(uplocalUser, upcoreUser, upauthUser);
         }
@@ -224,6 +227,7 @@ namespace Vanilla.TelegramBot.Services
             image.Dispose();
             return newImage;
         }
+
 
         bool IsUserUploadNewProfileImages(List<ImageModel>? currentImages, List<ImageModel>? newImages) {
             if (currentImages is null && newImages is null) return false;

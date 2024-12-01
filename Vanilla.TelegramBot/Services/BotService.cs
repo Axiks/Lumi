@@ -19,6 +19,7 @@ using Vanilla.TelegramBot.Pages.User;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
+using UserModel = Vanilla.TelegramBot.Models.UserModel;
 
 namespace Vanilla.TelegramBot.Services
 {
@@ -61,6 +62,16 @@ namespace Vanilla.TelegramBot.Services
             _inlineSearchService = new InlineSearchService(_botClient, _projectService, _userService);
 
             _logger.WriteLog("Init bot service", LogType.Information);
+
+
+
+
+     /*       // dev fix
+            var allUsers = _userService.GetUsers().Result.Where(x => x.IsHasProfile == true && x.Images is not null && x.Images.Count() > 0);
+            foreach (var user in allUsers)
+            {
+                LoadProfileImgIfDontExist(user);
+            }*/
         }
 
         public async Task StartListening()
@@ -599,6 +610,7 @@ namespace Vanilla.TelegramBot.Services
             if (!_usersContext.Exists(x => x.User.UserId == user.UserId)) _usersContext.Add(new UserContextModel(user));
 
             userContext = _usersContext.First(x => x.User.UserId == user.UserId);
+
             return userContext;
         }
 
@@ -654,6 +666,42 @@ namespace Vanilla.TelegramBot.Services
         {
             _userService.DeleteUser(userContext.User.UserId);
             _usersContext.Remove(userContext);
+        }
+
+        // Dev temp fix
+        void LoadProfileImgIfDontExist(UserModel userModel)
+        {
+            var userProfileImages = userModel.Images;
+            foreach (ImageModel image in userProfileImages)
+            {
+                if (IsProfileImageBeLoad(image.TgMediaId) is false) LoadProfileImages(userModel);
+            }
+        }
+        bool IsProfileImageBeLoad(string TgMediaId)
+        {
+            var originalImagePath = "storage\\" + TgMediaId + ".jpg";
+            var thumbnailImagePath = "storage\\" + TgMediaId + "_thumbnail.jpg";
+
+            if (File.Exists(originalImagePath) is false) return false;
+            if (File.Exists(thumbnailImagePath) is false) return false;
+
+            return true;
+        }
+
+        void LoadProfileImages(UserModel userModel)
+        {
+            var update = new Models.UserUpdateRequestModel() {
+                Images = new List<ImageModel>(),
+                IsHasProfile = true,
+            };
+
+            foreach (var image in userModel.Images) {
+                var file = _botClient.GetFile(image.TgMediaId);
+                var imageUrl = _botClient.BuildFileDownloadLink(file);
+                update.Images.Add(new ImageModel { TgMediaId = image.TgMediaId, DownloadPath = imageUrl });
+            }
+
+            _userService.UpdateUser(userModel.TelegramId, update);
         }
 
 
