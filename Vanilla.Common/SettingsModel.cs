@@ -5,6 +5,7 @@ namespace Vanilla.Common
     public class SettingsModel
     {
         public required string BotAccessToken { get; set; }
+        public required string Domain { get; set; }
         public required DatabaseConfigModel TgBotDatabaseConfiguration { get; set; }
         public required DatabaseConfigModel OAuthDatabaseConfiguration { get; set; }
         public required DatabaseConfigModel CoreDatabaseConfiguration { get; set; }

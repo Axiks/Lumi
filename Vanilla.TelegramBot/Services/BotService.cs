@@ -46,22 +46,31 @@ namespace Vanilla.TelegramBot.Services
             _logger = logger;
             _bonusService = bonusService;
 
-            // Build a config object, using env vars and JSON providers.
+
+            ConfigurationMeneger confManager = new ConfigurationMeneger();
+            var _settings = confManager.Settings;
+
+/*            // Build a config object, using env vars and JSON providers.
             IConfigurationRoot config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .AddEnvironmentVariables()
                 .Build();
 
             // Get values from the config given their key and their target type.
-            _settings = config.GetRequiredSection("Settings").Get<SettingsModel>();
-            if (_settings == null) throw new Exception("No found setting section");
+            _settings = config.GetRequiredSection("Settings").Get<SettingsModel>();*/
+            //if (_settings == null) throw new Exception("No found setting section");
 
             string botToken = Environment.GetEnvironmentVariable("ACCESS_TOKEN") ?? _settings.BotAccessToken;
             _botClient = new TelegramBotClient(botToken);
 
-            _inlineSearchService = new InlineSearchService(_botClient, _projectService, _userService);
+            var domainName = _settings.Domain;
+
+
+            _inlineSearchService = new InlineSearchService(_botClient, _projectService, _userService, domainName);
 
             _logger.WriteLog("Init bot service", LogType.Information);
+
+
 
 
 

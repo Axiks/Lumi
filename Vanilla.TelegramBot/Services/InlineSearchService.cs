@@ -15,7 +15,7 @@ using UserModel = Vanilla.TelegramBot.Models.UserModel;
 
 namespace Vanilla.TelegramBot.Services
 {
-    public class InlineSearchService(TelegramBotClient _botClient, IProjectService _projectService, IUserService _userService)
+    public class InlineSearchService(TelegramBotClient _botClient, IProjectService _projectService, IUserService _userService, string _domainName)
     {
         public void InlineSearch(Update update, UserContextModel? userContext)
         {
@@ -184,7 +184,8 @@ namespace Vanilla.TelegramBot.Services
                 /*var file = _botClient.GetFile(user.Images.First().TgMediaId);
                 var imgUrl = _botClient.BuildFileDownloadLink(file);*/
 
-                var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + ".jpg";
+                //var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + ".jpg";
+                var profileImgUrl = "https://"+ _domainName + "/storage/" + user.Images.First().TgMediaId + ".jpg";
 
                 inputMessage.LinkPreviewOptions = new Telegram.BotAPI.AvailableTypes.LinkPreviewOptions
                 {
@@ -212,7 +213,8 @@ namespace Vanilla.TelegramBot.Services
             {
                 //var profileImgUrl = "https://avatarfiles.alphacoders.com/293/293990.jpg";
                 //var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + "_thumbnail.jpg";
-                var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + ".jpg";
+                //var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + ".jpg";
+                var profileImgUrl = "https://"+ _domainName + "/storage/" + user.Images.First().TgMediaId + ".jpg";
                 result.ThumbnailUrl = profileImgUrl;
             }
 

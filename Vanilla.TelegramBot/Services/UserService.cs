@@ -189,7 +189,8 @@ namespace Vanilla.TelegramBot.Services
             {
                 Directory.CreateDirectory("storage");
 
-                var imagePath = "storage\\" + image.TgMediaId + ".jpg";
+                //var imagePath = "storage\\" + image.TgMediaId + ".jpg";
+                var imagePath = Path.Combine("storage", image.TgMediaId + ".jpg");
                 await DownloadImageAsync(image.DownloadPath, imagePath);
                 MakeResizeImage(imagePath);
             }

@@ -1,19 +1,21 @@
 version: '3.4'
 
 services:
-  tg_bot-service:
+  lumi-core-service:
     image: app:latest
     depends_on:
-        - "postgres_db"
+        - "lumi_db"
     build: .
-    volumes:
-      - ./applog:/app/AppLog
     environment:
         ACCESS_TOKEN: "${ACCESS_TOKEN}"
+        DOTNET_ENVIRONMENT: Docker-Production
+    volumes:
+      - ./applog:/app/AppLog
+      - ./storage:/app/storage
     networks:
-        - vanilla-dev
+        - lumi-net-dev
   
-  postgres_db:
+  lumi_db:
     image: postgres:latest
     ports:
       - "5434:5432"
@@ -27,14 +29,26 @@ services:
         POSTGRES_USER: "${DB_USERNAME}"
         POSTGRES_PASSWORD: "${DB_PASSWORD}"
     networks:
-        - vanilla-dev
+        - lumi-net-dev
+
+  lumi-tunnel:
+    container_name: cloudflared-tunnel
+    image: cloudflare/cloudflared
+    depends_on:
+        - "lumi-core-service"
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: "${TUNNEL_TOKEN}"
+    networks:
+        - lumi-net-dev
 
 networks:
- vanilla-dev:
+ lumi-net-dev:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.22.0.0/16
+        - subnet: 172.32.0.0/16
 
 volumes:
   pgdata:
