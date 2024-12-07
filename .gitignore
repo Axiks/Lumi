@@ -362,3 +362,8 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Vanilla.Common/appsettings.json
+/Vanilla.Common/appsettings.Development.json
+/Vanilla.Common/appsettings.Docker-Production.json
+/.env
+/applog/log.txt
+/storage
