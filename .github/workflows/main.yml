@@ -18,3 +18,4 @@ jobs:
         ssh_private_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         ssh_user: ${{ secrets.DEPLOY_USERNAME }}
         docker_compose_prefix: lumi
+        github_token: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
