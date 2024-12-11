@@ -1,34 +1,106 @@
 ﻿using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
 using Refit;
+using Vanilla.Common;
 
 namespace Vanilla_App.Repository
 {
     public class BonusRepository : IBonusRepository
     {
-        IBonusApi _api;
+        readonly IBonusApi _api;
+        readonly string Token;
         public BonusRepository()
         {
-            var _api = RestService.For<IBonusApi>("https://tg-users-api.dan.org.ua");
+            /*
+                        var setting = new RefitSettings
+                        {
+                        };
+
+
+                        var refit = RestService.CreateHttpClient(", setting);
+                        refit.
+
+                        _api = RestService.For<IBonusApi>(refit);*/
+
+            ConfigurationMeneger confManager = new ConfigurationMeneger();
+            var _settings = confManager.Settings.ProvisionBonusApiConfiguration;
+            Token = _settings.Token;
+
+            try
+            {
+                _api = RestService.For<IBonusApi>(_settings.Url);
+            }
+            catch (Exception e)
+            {
+                var x = e.Message;
+            }
         }
-        public UserBonusModel GetBonus(long bonusId)
+        public UserBonusModel GetBonus(string bonusId)
         {
-            throw new NotImplementedException();
+            ApiResponse<UserBonusModel> response;
+
+            try
+            {
+                response = _api.GetBonusAsync(bonusId, Token).Result;
+            }
+            catch (Exception e) {
+                throw new HttpRequestException($"Server offline");
+            } 
+
+            if (response.IsSuccessful == false)
+            {
+                throw new HttpRequestException($"Failed to fetch bonuses. Status code: {response.StatusCode}");
+            }
+
+            return response.Content;
         }
 
         public List<UserBonusModel> GetUserBonuses(long tgId)
         {
-            throw new NotImplementedException();
+            ApiResponse<List<UserBonusModel>> response;
+
+            try
+            {
+                response = _api.GetUserAsync(tgId, Token).Result;
+            }
+            catch (Exception e)
+            {
+                throw new HttpRequestException($"Server offline");
+            }
+
+            if (response.IsSuccessful == false)
+            {
+                throw new HttpRequestException($"Failed to fetch bonuses. Status code: {response.StatusCode}");
+            }
+
+            return response.Content;
         }
 
         public List<long> GetUsersWithBonus()
         {
-            throw new NotImplementedException();
+            return new List<long> { };
         }
 
-        public void TakeBonus(int bonusId)
+        public bool TakeBonus(string bonusId)
         {
-            throw new NotImplementedException();
+            ApiResponse<TakeBonusModel> response;
+
+            try
+            {
+                response = _api.TakeBonusAsync(bonusId, Token).Result;
+            }
+            catch (Exception e)
+            {
+                throw new HttpRequestException($"Server offline");
+            }
+
+            if (response.IsSuccessful == false)
+            {
+                throw new HttpRequestException($"Failed to fetch bonuses. Status code: {response.StatusCode}");
+            }
+
+
+            return response.StatusCode == System.Net.HttpStatusCode.OK;
         }
     }
 }

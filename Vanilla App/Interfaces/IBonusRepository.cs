@@ -5,8 +5,8 @@ namespace Vanilla_App.Interfaces
     internal interface IBonusRepository
     {
         List<long> GetUsersWithBonus();
-        UserBonusModel GetBonus(long bonusId);
+        UserBonusModel GetBonus(string bonusId);
         List<UserBonusModel> GetUserBonuses(long tgId);
-        void TakeBonus(int bonusId);
+        bool TakeBonus(string bonusId);
     }
 }

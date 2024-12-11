@@ -4,17 +4,20 @@ using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common.Enums;
+using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.UI.Widgets;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
+using static Vanilla.TelegramBot.Abstract.ActionFrame;
 
 namespace Vanilla.TelegramBot.Pages.Bonus.Pages
 {
-    public class UserBonusInfoPage : IPage
+    public class UserBonusInfoPage : BasicPageAbstract, IPage
     {
-        long _bonus_id;
+        string _bonus_id;
         TelegramBotClient _botClient;
         UserContextModel _userContext;
         IBonusService _bonusService;
@@ -26,12 +29,13 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
 
         private string _deliver = " mya~ ";
 
-        private string _bonusUrl = "https://cdn4.cdn-telegram.org/file/sdfey5DeW7gixp3VffGrQpRg5ru84-vOjFCtwOQKKIX2gDKj0Am5K9IkoYRtcvMz2NYociqLh8VUbTyZomHYocX1ZKo0X_mXtCvHlGL0NSuWQmQvVgNhXrMFpEAYhGBftvYI9ceBHn8kH49ozWeGR9kXQt-FDEkbPgBHJsRqlP0Edyp_ZbrE4HkWAA3ctcUmO6moF3kqLli45OLY2BouOhVRjkcxhflv2jdqKacjC7iHvP6lKl8iDXzCrezF9VtmU1BiUvG02f0jSnTsFPxRK5eI1L06Xzlhy7kfNAqkyfx4366DGWtrUE6iOzXHvijRGBS8qDQrxmeJ6XuSUag0UA.jpg";
-
-        UserBonusModel _bonusObject;
+        UserBonusModel? _bonusObject;
 
         List<SendedMessageModel> _sendedMessages;
-        public UserBonusInfoPage(long bonus_id, TelegramBotClient botClient, UserContextModel userContext, IBonusService bonusService, List<int> sendMessages, List<SendedMessageModel> sendedMessages)
+
+        bool _isServerOnline = true;
+
+        public UserBonusInfoPage(string bonus_id, TelegramBotClient botClient, UserContextModel userContext, IBonusService bonusService, List<int> sendMessages, List<SendedMessageModel> sendedMessages) : base(botClient, userContext, sendedMessages)
         {
             _bonus_id = bonus_id;
             _botClient = botClient;
@@ -42,17 +46,53 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             _sendedMessages = sendedMessages;
 
             if (IsUserBonus(bonus_id) is false) throw new Exception("is`nt user bonus");
-            _bonusObject = GetUserBonus(bonus_id, bonusService);
+
+            try
+            {
+                _bonusObject = GetUserBonus(bonus_id, bonusService);
+            }
+            catch(HttpRequestException error)
+            {
+                // Problem connect to server
+                _isServerOnline = false;
+            }
         }
 
-        void IPage.SendInitMessage() => SendBonusInfo();
-        void IPage.InputHendler(Update update)
+        /*        void IPage.SendInitMessage() => SendBonusInfo();
+                void IPage.InputHendler(Update update)
+                {
+                    if (!ValidateInputType(update)) return;
+                    if (!ValidateInputData(update)) return;
+
+                    Action(update);
+                }*/
+
+
+        public override void InitMessage()
         {
-            if (!ValidateInputType(update)) return;
-            if (!ValidateInputData(update)) return;
+            if (_isServerOnline == false) {
+                ProblemWithGetDataFromServerMessage();
+                CompliteEvent.Invoke();
+                return;
+            }
 
-            Action(update);
+            SendBonusInfo();
         }
+
+        public override void InitActions()
+        {
+            var okBtnAction = new ActionFrame
+            {
+                ActionObj = new ActionDelegate(ActionOk),
+                Trigger = () => ConfirmOkBtnInputTrigger(),
+            };
+
+            AddAction(new List<ActionFrame> {
+                okBtnAction
+            });
+        }
+
+        bool ConfirmOkBtnInputTrigger() => Helpers.ValidatorHelpers.CallbackBtnActionValidate(CurrentUpdate, "ok");
 
         bool ValidateInputType(Update update)
         {
@@ -91,55 +131,27 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
         {
             if (_bonusObject.IsUsed is true)
             {
-                //SendBonusInfoMessage(isDelete: false);
                 SendBonusInfoMessage(DeleteMessageMethodEnum.ClosePage);
-                //CompliteEvent.Invoke();
             }
             else
             {
-                /*string message = string.Format("{0} \n\n{1}\n\nЗареєстровано: {2}", _bonusObject.Title, _bonusObject.Description, _bonusObject.DateOfRegistration.ToString("dd.MM.yyyy"));
-                SendBonusActionMessage(message, GenerateBonusInfoKeyboard());*/
                 SendBonusInfoMessage(DeleteMessageMethodEnum.ClosePage);
                 SendBonusInfoActions();
             }
         }
 
-        UserBonusModel GetUserBonus(long bonusId, IBonusService bonusService)
+        UserBonusModel? GetUserBonus(string bonusId, IBonusService bonusService)
         {
             var bonus = bonusService.GetBonus(_bonus_id);
             if (bonus is null) throw new Exception("this id not found");
             //if (IsUserBonus(bonusId) is false) throw new Exception("is`nt user bonus");
 
-            return (UserBonusModel)bonus;
+            return bonus;
+            //return (UserBonusModel)bonus;
         }
 
-        bool IsUserBonus(long bonusId) => _bonusService.GetUserBonuses(_userContext.User.TelegramId).Any(x => x.BonusId == bonusId);
+        bool IsUserBonus(string bonusId) => _bonusService.GetUserBonuses(_userContext.User.TelegramId).Any(x => x.BonusId == bonusId);
 
- /*       void SendBonusActionMessage(string message, InlineKeyboardMarkup? keyboard = null, bool isDelete = true)
-        {
-            *//* var bonusMessage = _botClient.SendPhoto(chatId: _userContext.User.TelegramId, caption: message, photo: _bonusUrl);
-             //if(isDelete) _sendMessages.Add(bonusMessage.MessageId);
-
-             string activateDate = _bonusObject.DateOfUsed?.ToString("dd.MM.yyyy");
-
-             if (_bonusObject.IsUsed)
-             {
-                 message += string.Format("Бонус було успішно активовано: {0}", activateDate);
-             }*/
-
-            /*if(keyboard is not null)
-            {
-                SendMessageArgs mes = new SendMessageArgs(_userContext.User.TelegramId, "Чи хочеш використати бонус?") { ParseMode = "HTML" };
-                mes.ReplyMarkup = keyboard;
-
-                var messageObj = _botClient.SendMessage(mes);
-                //_sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, DeleteMessageMethodEnum.ExitFolder));
-                //_sendMessages.Add(messageObj.MessageId);
-            }*//*
-
-            SendBonusInfoMessage();
-            if (keyboard is not null) SendMessageActions();
-        }*/
 
         void SendBonusInfoMessage(DeleteMessageMethodEnum deleteMessageMethodEnum)
         {
@@ -150,7 +162,7 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
                 message += string.Format("\nБонус було успішно активовано: {0}", activateDate);
             }
 
-            var messageObj = _botClient.SendPhoto(chatId: _userContext.User.TelegramId, caption: message, photo: _bonusUrl, parseMode: "HTML");
+            var messageObj = _botClient.SendPhoto(chatId: _userContext.User.TelegramId, caption: message, photo: _bonusObject.CoverUrl, parseMode: "HTML");
             _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, deleteMessageMethodEnum));
         }
 
@@ -163,31 +175,27 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, DeleteMessageMethodEnum.ClosePage));
         }
 
-        /*     void SendBonusInfoMessage(bool isDelete = true)
-             {
-                 string text = string.Format("{0} \n\n{1}\n\nЗареєстровано: {2}\n\nБонус було успішно активовано: {3}", _bonusObject.Title, _bonusObject.Description, _bonusObject.DateOfRegistration.ToString("dd.MM.yyyy"), _bonusObject.DateOfUsed?.ToString("dd.MM.yyyy"));
-                 var messageObj = _botClient.SendPhoto(chatId: _userContext.User.TelegramId, caption: text, photo: _bonusUrl, parseMode: "HTML");
-                 //if(isDelete) _sendMessages.Add(messageObj.MessageId);
-                 _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, DeleteMessageMethodEnum.NextMessage));
-             }*/
+        void ProblemWithGetDataFromServerMessage()
+        {
+            SendMessageArgs mes = new SendMessageArgs(_userContext.User.TelegramId, Widjets.ProblemWithExternalServer()) { ParseMode = "HTML" };
+            var messageObj = _botClient.SendMessage(mes);
+            _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, DeleteMessageMethodEnum.None));
+        }
 
         private InlineKeyboardMarkup GenerateBonusInfoKeyboard()
         {
             var yesBtn = new InlineKeyboardButton(text: _userContext.ResourceManager.GetString("Spend"));
-            //var noBtn = new InlineKeyboardButton(text: _userContext.ResourceManager.GetString("No"));
 
             var replyMarkuppp = new InlineKeyboardMarkup
             (
                 new InlineKeyboardButton[][]{
                         new InlineKeyboardButton[]{
                             yesBtn,
-                            //noBtn
                          }
                 }
             );
 
             yesBtn.CallbackData = "ok";
-            //noBtn.CallbackData = userContext.ResourceManager.GetString("Cannel"); // don`t work
 
             return replyMarkuppp;
         }

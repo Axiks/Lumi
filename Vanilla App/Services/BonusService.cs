@@ -10,20 +10,20 @@ namespace Vanilla_App.Services
         private List<long> _usersWithBonus { get; }
         public BonusService()
         {
-            _repository = new TestBonusRepository();
+            _repository = new BonusRepository();
+            //_repository = new TestBonusRepository();
             _usersWithBonus = _repository.GetUsersWithBonus();
         }
         public List<UserBonusModel>? GetUserBonuses(long tgId)
         {
-            //return _usersWithBonus.FirstOrDefault(x => x == tgId.ToString()) != null ? _repository.GetUserBonuses(tgId.ToString()) : null;
             return _repository.GetUserBonuses(tgId);
         }
 
-        public void TakeBonus(int bonusId)
+        public bool TakeBonus(string bonusId)
         {
-            _repository.TakeBonus(bonusId);
+            return _repository.TakeBonus(bonusId);
         }
 
-        public UserBonusModel? GetBonus(long bonusId) => _repository.GetBonus(bonusId);
+        public UserBonusModel? GetBonus(string bonusId) => _repository.GetBonus(bonusId);
     }
 }

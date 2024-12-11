@@ -13,17 +13,19 @@ namespace Vanilla_App.Repository
             _userBonusModels = GenerateUsersBonus(64);
         }
 
-        public List<long> GetUsersWithBonus() => _userBonusModels.Select(x => x.TgId).ToList();
+        public List<long> GetUsersWithBonus() => _userBonusModels.Select(x => x.UserTgId).ToList();
 
-        public void TakeBonus(int bonusId)
+        public bool TakeBonus(string bonusId)
         {
-            var bonus = _userBonusModels.First(x => x.BonusId == bonusId);
+            var bonus = _userBonusModels.First(x => x.BonusId.Equals(bonusId));
             var index = _userBonusModels.IndexOf(bonus);
             bonus.DateOfUsed = DateTime.Now;
             _userBonusModels[index] = bonus;
+
+            return true;
         }
 
-        List<UserBonusModel> IBonusRepository.GetUserBonuses(long tgId) => _userBonusModels.Where(x => x.TgId == _userBonusModels.First().TgId).ToList();
+        List<UserBonusModel> IBonusRepository.GetUserBonuses(long tgId) => _userBonusModels.Where(x => x.UserTgId == _userBonusModels.First().UserTgId).ToList();
 
         private static DateTime RandomDay()
         {
@@ -45,8 +47,8 @@ namespace Vanilla_App.Repository
 
                 userBonusModels.Add(new UserBonusModel
                 {
-                    TgId = _lastTgId,
-                    BonusId = random.Next(32),
+                    UserTgId = _lastTgId,
+                    BonusId = random.Next(32).ToString(),
                     ShortTitle = "Bon " + i.ToString(),
                     Title = "Bonus Name " + i.ToString(),
                     Description = "Bonus Description " + i.ToString(),
@@ -57,6 +59,6 @@ namespace Vanilla_App.Repository
             return userBonusModels;
         }
 
-        public UserBonusModel GetBonus(long bonusId) => _userBonusModels.FirstOrDefault(x => x.BonusId == bonusId);
+        public UserBonusModel GetBonus(string bonusId) => _userBonusModels.FirstOrDefault(x => x.BonusId.Equals(bonusId));
     }
 }

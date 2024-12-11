@@ -2,6 +2,7 @@
 using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
+using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Models;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -23,6 +24,12 @@ namespace Vanilla.TelegramBot.UI.Widgets
 
             return text;
 
+        }
+
+
+        public static string ProblemWithExternalServer()
+        {
+            return "Ой Йой \n\n На жаль, під час отримання інформації про бонуси виникла помилка. Це може бути пов’язано з тим, що один із наших серверів не працює через відключення електроенергії\r\n\r\nПовторіть спробу пізніше 😴";
         }
     }
 }

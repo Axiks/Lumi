@@ -11,16 +11,16 @@ namespace Vanilla_App.Interfaces
 {
     public interface IBonusApi
     {
-        [Post("/bonuses/{bonus_id}/take")]
-        Task<bool> TakeBonusAsync();
+        [Post("/bonuses/{bonus_id}/take?token={token}")]
+        Task<ApiResponse<TakeBonusModel>> TakeBonusAsync(string bonus_id, string token);
 
 
-        [Get("/bonuses/{bonus_id}")]
-        Task<List<UserBonusModel>> GetBonusAsync(int bonus_id);
+        [Get("/bonuses/{bonus_id}?token={token}")]
+        Task<ApiResponse<UserBonusModel>> GetBonusAsync(string bonus_id, string token);
 
 
-        [Get("/users/{user_tg_id}/bonuses")]
-        Task<List<UserBonusModel>> GetUserAsync(int user_tg_id);
+        [Get("/users/{user_tg_id}/bonuses?token={token}")]
+        Task<ApiResponse<List<UserBonusModel>>> GetUserAsync(long user_tg_id, string token);
 
     }
 }

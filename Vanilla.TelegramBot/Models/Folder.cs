@@ -118,13 +118,17 @@ namespace Vanilla.TelegramBot.Models
         }
         void SubscribePageEvents()
         {
+            _pages[_index].CompliteEvent += PageNotifiedComplite;
             _pages[_index].ValidationErrorEvent += ValidationErrorEvent;
         }
 
         void UnubscribePageEvents()
         {
+            _pages[_index].CompliteEvent -= PageNotifiedComplite;
             _pages[_previousndex].ValidationErrorEvent -= ValidationErrorEvent;
         }
+
+        void PageNotifiedComplite() => NextPage();
 
         void MessageSendHelper(string text)
         {

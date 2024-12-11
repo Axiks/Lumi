@@ -7,6 +7,7 @@ using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.UI.Widgets;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
 
@@ -37,6 +38,8 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
 
         List<SendedMessageModel> _sendedMessages;
 
+        //bool _isServerOnline = false;
+
         public UserBonusPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages, IBonusService bonusService, List<SendedMessageModel> sendedMessages)
         {
             _botClient = botClient;
@@ -50,7 +53,21 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             _sendedMessages = sendedMessages;
         }
 
-        void IPage.SendInitMessage() => InitMessageSendHelper(InitMessage);
+        void IPage.SendInitMessage() {
+            // Server offline fix
+            try
+            {
+                _bonusService.GetUserBonuses(_userContext.User.TelegramId);
+            }
+            catch (HttpRequestException error)
+            {
+                ProblemWithGetDataFromServerMessage();
+                CompliteEvent.Invoke();
+                return;
+            }
+
+            InitMessageSendHelper(InitMessage);
+        }
         void IPage.InputHendler(Update update)
         {
             if (!ValidateInputType(update)) return;
@@ -123,13 +140,13 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             else if (command.Contains("bonus" + _deliver))
             {
                 // Open card with bonus
-                int bonusId = Convert.ToInt32(command.Split(_deliver).Last());
+                string bonusId = command.Split(_deliver).Last();
                 OpenBonus(bonusId);
             }
             else throw new Exception("command not recognized");
         }
 
-        void OpenBonus(long bonusId)
+        void OpenBonus(string bonusId)
         {
             _isChangeBonus = true;
             var bonusObj = new UserBonusInfoPage(bonusId, _botClient, _userContext, _bonusService, _sendMessages, _sendedMessages);
@@ -139,7 +156,17 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             ChangePagesFlowByPagesPagesEvent.Invoke(pages);
         }
 
-        List<UserBonusModel> GetUserBonuses() => _bonusService.GetUserBonuses(_userContext.User.TelegramId);
+        List<UserBonusModel> GetUserBonuses()
+        {
+            return _bonusService.GetUserBonuses(_userContext.User.TelegramId);
+        }
+        void ProblemWithGetDataFromServerMessage()
+        {
+            SendMessageArgs mes = new SendMessageArgs(_userContext.User.TelegramId, Widjets.ProblemWithExternalServer()) { ParseMode = "HTML" };
+            var messageObj = _botClient.SendMessage(mes);
+            _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, DeleteMessageMethodEnum.None));
+        }
+
         List<UserBonusModel> GetActivatedBonuses() => GetUserBonuses().Where(x => x.IsUsed is false).ToList();
         List<UserBonusModel> GetUnactivatedBonuses() => GetUserBonuses().Where(x => x.IsUsed is true).ToList();
 

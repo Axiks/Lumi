@@ -10,6 +10,7 @@ namespace Vanilla.Common
         public required DatabaseConfigModel OAuthDatabaseConfiguration { get; set; }
         public required DatabaseConfigModel CoreDatabaseConfiguration { get; set; }
         public required TokenConfiguration TokenConfiguration { get; set; }
+        public required ProvisionBonusApiConfiguration ProvisionBonusApiConfiguration { get; set; }
     }
 
     public class DatabaseConfigModel
@@ -19,6 +20,12 @@ namespace Vanilla.Common
         public required string Username { get; init; }
         public required string Password { get; init; }
         public string ConnectionString => string.Format("Host={0};Database={1};Username={2};Password={3}", Environment.GetEnvironmentVariable("DB_HOST") ?? Host, Database, Username, Password);
+    }
+
+    public class ProvisionBonusApiConfiguration
+    {
+        public required string Url { get; init; }
+        public required string Token { get; init; }
     }
 
 }
