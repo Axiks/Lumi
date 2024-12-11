@@ -120,9 +120,18 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             if (_bonusObject.IsUsed is true) throw new Exception("Bonus is be used");
 
             _bonusService.TakeBonus(_bonusObject.BonusId);
-            var message = string.Format("Bonus {0} has been successfully spent!", _bonusObject.Title);
 
-            _botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: message, parseMode: "HTML");
+            //var message = string.Format("Bonus {0} has been successfully spent!", _bonusObject.Title);
+
+            //_botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: message, parseMode: "HTML");
+
+            //var media = Widjets.BonusInfo(_userContext.User.TelegramId, _bonusObject);
+
+            var media = new InputMediaPhoto(_bonusObject.CoverUrl);
+            media.Caption = Widjets.BonusInfo(_userContext.User.TelegramId, _bonusObject).Caption; // fix
+            media.Caption = media.Caption + "\n\nБонус успішно активовано!";
+
+            _botClient.EditMessageMedia(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, media: media);
 
             CompliteEvent.Invoke();
         }
@@ -155,7 +164,7 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
 
         void SendBonusInfoMessage(DeleteMessageMethodEnum deleteMessageMethodEnum)
         {
-            string message = string.Format("{0} \n\n{1}\n\nЗареєстровано: {2}", _bonusObject.Title, _bonusObject.Description, _bonusObject.DateOfRegistration.ToString("dd.MM.yyyy"));
+            /*string message = string.Format("{0} \n\n{1}\n\nЗареєстровано: {2}", _bonusObject.Title, _bonusObject.Description, _bonusObject.DateOfRegistration.ToString("dd.MM.yyyy"));
             if (_bonusObject.IsUsed)
             {
                 string activateDate = _bonusObject.DateOfUsed?.ToString("dd.MM.yyyy");
@@ -164,14 +173,21 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
 
             var messageObj = _botClient.SendPhoto(chatId: _userContext.User.TelegramId, caption: message, photo: _bonusObject.CoverUrl, parseMode: "HTML");
             _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, deleteMessageMethodEnum));
+            */
+
+            var messageObj = _botClient.SendPhoto(Widjets.BonusInfo(_userContext.User.TelegramId, _bonusObject));
+            _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, deleteMessageMethodEnum));
         }
 
         void SendBonusInfoActions()
         {
-            SendMessageArgs mes = new SendMessageArgs(_userContext.User.TelegramId, "Чи хочеш використати бонус?") { ParseMode = "HTML" };
-            mes.ReplyMarkup = GenerateBonusInfoKeyboard();
+            /*SendMessageArgs mes = new SendMessageArgs(_userContext.User.TelegramId, "Чи хочеш використати бонус?") { ParseMode = "HTML" };
+            mes.ReplyMarkup = GenerateBonusInfoKeyboard();*/
 
-            var messageObj = _botClient.SendMessage(mes);
+            var mes = Widjets.BonusInfo(_userContext.User.TelegramId, _bonusObject, _userContext);
+
+            //var messageObj = _botClient.SendMessage(mes);
+            var messageObj = _botClient.SendPhoto(mes);
             _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, DeleteMessageMethodEnum.ClosePage));
         }
 
@@ -182,7 +198,7 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, DeleteMessageMethodEnum.None));
         }
 
-        private InlineKeyboardMarkup GenerateBonusInfoKeyboard()
+       /* private InlineKeyboardMarkup GenerateBonusInfoKeyboard()
         {
             var yesBtn = new InlineKeyboardButton(text: _userContext.ResourceManager.GetString("Spend"));
 
@@ -198,7 +214,7 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             yesBtn.CallbackData = "ok";
 
             return replyMarkuppp;
-        }
+        }*/
 
     }
 }

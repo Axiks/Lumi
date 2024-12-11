@@ -137,6 +137,26 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
 
                 return;
             }
+            else if (command.Contains("bonus" + _deliver) && command.Contains("ok"))
+            {
+                string bonusId = command.Split(_deliver)[1];
+
+                _bonusService.TakeBonus(bonusId);
+
+                var bonus = _bonusService.GetBonus(bonusId);
+
+                var message = string.Format("Bonus {0} has been successfully spent!", bonus.Title);
+                //_botClient.EditMessageText(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, text: message, parseMode: "HTML");
+
+
+                var media = new InputMediaPhoto(bonus.CoverUrl);
+                media.Caption = Widjets.BonusInfo(_userContext.User.TelegramId, bonus).Caption; // fix
+                media.Caption = media.Caption + "\n\nБонус успішно активовано!";
+
+                _botClient.EditMessageMedia(chatId: _userContext.User.TelegramId, messageId: update.CallbackQuery.Message.MessageId, media: media);
+
+                var mess = _botClient.EditMessageReplyMarkup(chatId: _userContext.User.TelegramId, messageId: _initMessageId, replyMarkup: GenerateBonusKeyboard(GetActivatedBonuses(), GetUnactivatedBonuses(), isWithAllBonuses: true));
+            }
             else if (command.Contains("bonus" + _deliver))
             {
                 // Open card with bonus
@@ -146,14 +166,25 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             else throw new Exception("command not recognized");
         }
 
+
         void OpenBonus(string bonusId)
         {
             _isChangeBonus = true;
-            var bonusObj = new UserBonusInfoPage(bonusId, _botClient, _userContext, _bonusService, _sendMessages, _sendedMessages);
+      /*      var bonusObj = new UserBonusInfoPage(bonusId, _botClient, _userContext, _bonusService, _sendMessages, _sendedMessages);
             List<IPage> pages = new List<IPage> {
                 bonusObj
-            };
-            ChangePagesFlowByPagesPagesEvent.Invoke(pages);
+            };*/
+            //ChangePagesFlowByPagesPagesEvent.Invoke(pages);
+
+            SendInformationAboutBonus(bonusId);
+        }
+
+        void SendInformationAboutBonus(string bonusId)
+        {
+            var bonus = _bonusService.GetBonus(bonusId);
+            var arg = Widjets.BonusInfo(_userContext.User.TelegramId, bonus, _userContext);
+            var messageObj = _botClient.SendPhoto(arg);
+            _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, DeleteMessageMethodEnum.ExitFolder));
         }
 
         List<UserBonusModel> GetUserBonuses()

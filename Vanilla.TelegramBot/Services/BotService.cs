@@ -132,6 +132,11 @@ namespace Vanilla.TelegramBot.Services
                                 _botClient.AnswerCallbackQuery(update.CallbackQuery.Id);
                             }
 
+                            if (BotSleshCommandHendler(update, currentUserContext)) {
+                                if(currentUserContext.Folder is not null) currentUserContext.Folder.CloseFolder();
+                                continue;
+                            }; // temp fix
+
                             if (isUserHasProfile is false)
                             {
                                 // Registration process
@@ -149,7 +154,6 @@ namespace Vanilla.TelegramBot.Services
 
                             if (BotInlineComandHendler(update, currentUserContext)) continue;
                             if (BotReplyComandHendler(update, currentUserContext)) continue;
-                            if (BotSleshCommandHendler(update, currentUserContext)) continue;
 
 
                             if (currentUserContext.Folder is not null)
@@ -329,6 +333,7 @@ namespace Vanilla.TelegramBot.Services
 
                 var messageObj = _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
                 userContext.SendMessages.Add(messageObj.MessageId);
+
                 return true;
             }
             else if (update.Message.Text == "/start")
@@ -401,108 +406,6 @@ namespace Vanilla.TelegramBot.Services
         {
             _inlineSearchService.InlineSearch(update, userContext);
         }
-
-      /*  private void InlineSearch(Update update, UserContextModel userContext)
-        {
-            var inline = update.InlineQuery;
-            var query = inline.Query;
-
-            //future function
-            var inlineOffset = inline.Offset;
-
-            var inlineAddOwnProjectButton = new InlineQueryResultsButton
-            {
-                Text = userContext.ResourceManager.GetString("AddOwnProject"),
-                StartParameter = "addProject"
-            };
-
-            var res = new List<InlineQueryResult>();
-
-            var projects = _projectService.ProjectGetAllAsync().Result.OrderByDescending(x => x.Created).ToList();
-            if (query is not null && query != "")
-            {
-                if (query.Contains("@"))
-                {
-                    var username = query.Substring(1).Split(" ")[0];
-                    var users = _userService.FindByUsername(username).Result;
-                    //projects = projects.Where(x => users.Where(y => y.UserId == x.OwnerId));
-                    var preProjects = new List<ProjectModel>();
-                    var userSerchQuery = query.Split(" ");
-                    var q = userSerchQuery.Length > 1 ? string.Concat(userSerchQuery.Skip(1).ToArray()) : null;
-                    foreach (var user in users)
-                    {
-                        var searchResult = projects.Where(x => x.OwnerId == user.UserId);
-                        if (q is not null)
-                        {
-                            searchResult = searchResult.Where(x => x.Name.Contains(q, StringComparison.InvariantCultureIgnoreCase));
-                        };
-                        preProjects.AddRange(searchResult);
-                    }
-                    projects = preProjects;
-
-
-                    if (userSerchQuery.Length > 1)
-                    {
-
-                        preProjects.Where(x => x.Name.Contains(q, StringComparison.InvariantCultureIgnoreCase)).ToList();
-                    }
-                }
-                else
-                {
-                    projects = projects.Where(x => x.Name.Contains(query, StringComparison.InvariantCultureIgnoreCase)).ToList();
-                }
-            }
-
-            int maxProjects = 48;
-            int index = inlineOffset is not null && inlineOffset != "" ? int.Parse(inlineOffset) + 1 : 0;
-            int toIndex = index + 1 + maxProjects <= projects.Count ? index + 1 + maxProjects : projects.Count;
-
-            var offsetProjectId = toIndex < projects.Count ? toIndex.ToString() : null;
-
-
-            while (index < toIndex)
-            {
-                //var project in projects
-                var project = projects[index];
-
-                //var messageContent = AboutProjectFormating(project);
-                var owner = _userService.GetUser(project.OwnerId).Result;
-                var messageContent = MessageWidgets.AboutProject(project, owner, userContext);
-
-                var inputMessage = new InputTextMessageContent(messageContent);
-                inputMessage.ParseMode = "HTML";
-
-                string developStatusEmoji = FormationHelper.GetEmojiStatus(project.DevelopmentStatus);
-
-                var ownerName = owner.Username is not null ? "@" + owner.Username : owner.FirstName;
-                var desription = developStatusEmoji + " " + ownerName + "\n" + project.Description;
-
-                int messageMaxLenght = 4090;
-                if (desription.Length >= messageMaxLenght)
-                {
-                    int howMuchMore = desription.Length - messageMaxLenght;
-                    int abbreviation = desription.Length - howMuchMore - 3;
-                    desription = ownerName + "\n" + project.Description.Substring(0, abbreviation) + "...";
-                }
-
-                //var replyMarkuppp = userContext.User.TelegramId == owner.TelegramId && inline.From.Id == userContext.User.TelegramId && inline.ChatType == "sender" ? GetProjectItemMenu(project) : null;
-
-                res.Add(new InlineQueryResultArticle
-                {
-                    Id = index.ToString(),
-                    Title = project.Name,
-                    Description = desription,
-                    //InputMessageContent = new InputTextMessageContent("project " + project.Id.ToString()),
-                    InputMessageContent = inputMessage,
-                    //ReplyMarkup = replyMarkuppp
-                });
-                index++;
-            }
-
-            var ans = new AnswerInlineQueryArgs(inline.Id, res);
-
-            _botClient.AnswerInlineQuery(inlineQueryId: inline.Id, results: res, button: inlineAddOwnProjectButton, nextOffset: offsetProjectId, cacheTime: 24);
-        }*/
 
         private void DeleteMessage(long chatId, int messageId)
         {
