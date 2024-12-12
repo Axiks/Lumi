@@ -132,6 +132,12 @@ namespace Vanilla.TelegramBot.Services
                                 _botClient.AnswerCallbackQuery(update.CallbackQuery.Id);
                             }
 
+                            if (update.Message is not null && update.Message.Chat is not null && update.Message.Chat.Type != "private" && update.Message.Chat.Id != update.Message.From.Id)
+                            {
+                                _logger.WriteLog("Access denied. Message originates from outside the private chat. User TG ID: " + update.Message.From.Id.ToString(), LogType.Error);
+                                continue;
+                            } // temp fix
+
                             if (BotSleshCommandHendler(update, currentUserContext)) {
                                 if(currentUserContext.Folder is not null) currentUserContext.Folder.CloseFolder();
                                 continue;
