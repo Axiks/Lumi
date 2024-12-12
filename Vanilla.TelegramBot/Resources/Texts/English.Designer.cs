@@ -723,6 +723,22 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I&apos;m glad to see you here
+        ///I help you save and share your great projects, in a profitable way, anywhere
+        ///
+        ///🌟 Before starting our journey, you need to create a profile!
+        ///
+        ///🔎&lt;b&gt;To check people&apos;s projects, it is enough to type @{1} here, or in any other chat and channel&lt;/b&gt;
+        ///
+        ///I hope you like it here ❤️.
+        /// </summary>
+        internal static string WelcomeNewUser {
+            get {
+                return ResourceManager.GetString("WelcomeNewUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome: {0}!.
         /// </summary>
         internal static string WelcomeUserMessage {

@@ -178,6 +178,29 @@ namespace Vanilla.TelegramBot.UI
             return replyMarkuppp;
         }
 
+        public static InlineKeyboardMarkup GetCreateProfileKeypoardWithSearch(UserContextModel userContext)
+        {
+            var passBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("CreateProfile"));
+            passBtn.CallbackData = "CreateProfile";
+
+            var SearchBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Search"));
+            SearchBtn.SwitchInlineQueryCurrentChat = "";
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        passBtn
+                    },
+                    new InlineKeyboardButton[]{
+                        SearchBtn
+                    },
+                }
+            );
+
+            return replyMarkuppp;
+        }
+
 
         public static InlineKeyboardMarkup GetCreateProjectKeypoard(UserContextModel userContext)
         {

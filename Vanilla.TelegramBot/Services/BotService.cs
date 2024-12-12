@@ -1,14 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.IdentityModel.Abstractions;
 using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.Extensions;
 using Telegram.BotAPI.GettingUpdates;
-using Telegram.BotAPI.InlineMode;
 using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common;
 using Vanilla.Common.Enums;
-using Vanilla.TelegramBot.Entityes;
-using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Pages.Bonus;
@@ -18,12 +15,10 @@ using Vanilla.TelegramBot.Pages.UpdateUser;
 using Vanilla.TelegramBot.Pages.User;
 using Vanilla.TelegramBot.UI;
 using Vanilla_App.Interfaces;
-using Vanilla_App.Models;
 using UserModel = Vanilla.TelegramBot.Models.UserModel;
 
 namespace Vanilla.TelegramBot.Services
 {
-
     public class BotService : IBotService
     {
         private readonly TelegramBotClient _botClient;
@@ -69,18 +64,6 @@ namespace Vanilla.TelegramBot.Services
             _inlineSearchService = new InlineSearchService(_botClient, _projectService, _userService, domainName);
 
             _logger.WriteLog("Init bot service", LogType.Information);
-
-
-
-
-
-
-     /*       // dev fix
-            var allUsers = _userService.GetUsers().Result.Where(x => x.IsHasProfile == true && x.Images is not null && x.Images.Count() > 0);
-            foreach (var user in allUsers)
-            {
-                LoadProfileImgIfDontExist(user);
-            }*/
         }
 
         public async Task StartListening()
@@ -138,10 +121,14 @@ namespace Vanilla.TelegramBot.Services
                                 continue;
                             } // temp fix
 
+
+
                             if (BotSleshCommandHendler(update, currentUserContext)) {
                                 if(currentUserContext.Folder is not null) currentUserContext.Folder.CloseFolder();
                                 continue;
                             }; // temp fix
+
+                            if (update.Message is not null && update.Message.ViaBot is not null && isUserHasProfile is false) continue; // ignore message from inline when user don`t registred
 
                             if (isUserHasProfile is false)
                             {
@@ -311,6 +298,8 @@ namespace Vanilla.TelegramBot.Services
 
         private void OpenMainMenu(UserContextModel userContext)
         {
+            if (userContext.User.IsHasProfile == false) return;
+
             var message_obj = _botClient.SendMessage(userContext.User.TelegramId, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
             userContext.SendMessages.Add(message_obj.MessageId);
         }
@@ -331,11 +320,15 @@ namespace Vanilla.TelegramBot.Services
             if (update.Message.Text.Split("/").Length != 2) return false;
             if (update.Message.Text.Split(" ").Length > 2) return false;
 
+            bool HasProfile = userContext.User.IsHasProfile;
+
 
             if (update.Message.Text == "/menu")
             {
                 DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
                 DeleteAllMesssages(userContext);
+
+                if (!HasProfile) return false;
 
                 var messageObj = _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
                 userContext.SendMessages.Add(messageObj.MessageId);
@@ -344,17 +337,31 @@ namespace Vanilla.TelegramBot.Services
             }
             else if (update.Message.Text == "/start")
             {
+
+                // First chat message fix
+                if (HasProfile)
+                {
+                    DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
+                    DeleteAllMesssages(userContext);
+                }
+
                 var username = update.Message.Chat.FirstName ?? update.Message.Chat.Username ?? "";
-                string welcomeMessage = string.Format(userContext.ResourceManager.GetString("Welcome"), username, _botClient.GetMe().Username);
-                DeleteMessage(userContext.User.TelegramId, update.Message.MessageId);
-                DeleteAllMesssages(userContext);
-                var messageObj = _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.InlineStartMenuKeyboard(userContext), parseMode: "HTML");
+                string welcomeMessage = HasProfile
+                    ? string.Format(userContext.ResourceManager.GetString("Welcome"), username, _botClient.GetMe().Username)
+                    : string.Format(userContext.ResourceManager.GetString("WelcomeNewUser"), username, _botClient.GetMe().Username);
+
+                var keyboard = HasProfile ? Keyboards.InlineStartMenuKeyboard(userContext) : Keyboards.GetCreateProfileKeypoardWithSearch(userContext);
+                var messageObj = _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: keyboard, parseMode: "HTML");
+
                 userContext.SendMessages.Add(messageObj.MessageId);
+
                 //_botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: Keyboards.MainMenu(userContext), parseMode: "HTML");
                 return true;
             }
             else if (update.Message.Text == "/start addProject")
             {
+                if (!HasProfile) return true;
+
                 //ToCreateProject(update, userContext);
                 ToAddProjects(update, userContext);
                 return true;
@@ -384,6 +391,8 @@ namespace Vanilla.TelegramBot.Services
             }
             else if (update.Message.Text == "/update")
             {
+                if (!HasProfile) return true;
+
                 ToUpdateUser(update, userContext);
                 return true;
             }
@@ -448,6 +457,15 @@ namespace Vanilla.TelegramBot.Services
                 firstname = update.Message.Chat.FirstName;
                 lastname = update.Message.Chat.LastName;
             }
+            if (update.Message is not null && update.Message.From is not null)
+            {
+                chatId = update.Message.From.Id;
+
+                username = update.Message.From.Username;
+                firstname = update.Message.From.FirstName;
+                lastname = update.Message.From.LastName;
+                languageCode = update.Message.From.LanguageCode;
+            }
             else if (update.InlineQuery is not null)
             {
                 chatId = update.InlineQuery.From.Id;
@@ -486,23 +504,31 @@ namespace Vanilla.TelegramBot.Services
             }
             else
             {
-                _logger.WriteLog("Don`t find user tg id; Update type: " + update.GetUpdateType(), LogType.Error);
+                _logger.WriteLog("Don`t find user tg id; For update type: " + update.GetUpdateType(), LogType.Error);
                 throw new Exception("Don`t find user tg id");
             }
 
             UserContextModel? userContext = null;
             try
             {
+                // Is user registrated in our service?
                 user = _userService.SignInUser(chatId).Result;
             }
             catch
             {
-                if (update.Message is null && update.InlineQuery is null && update.CallbackQuery is null)
+                /*if (update.Message is null)
                 {
-                    _logger.WriteLog("Unable to create user", LogType.Error);
+                    _logger.WriteLog("The user could not be created because the action was called outside the scope of the private session.", LogType.Error);
+                    //throw new Exception("Unable to create user");
+                }*/
+
+                if (chatId <= 0)
+                {
+                    _logger.WriteLog("The user could not be created because the action was called outside the scope of the private session.", LogType.Error);
                     throw new Exception("Unable to create user");
                 }
 
+                // Init registration in server
                 user = _userService.RegisterUser(new UserRegisterModel
                 {
                     TelegramId = chatId,
@@ -531,7 +557,7 @@ namespace Vanilla.TelegramBot.Services
 
             if (!_usersContext.Exists(x => x.User.UserId == user.UserId)) _usersContext.Add(new UserContextModel(user));
 
-            userContext = _usersContext.First(x => x.User.UserId == user.UserId);
+            if(userContext is null) userContext = _usersContext.First(x => x.User.UserId == user.UserId);
 
             return userContext;
         }
@@ -588,42 +614,6 @@ namespace Vanilla.TelegramBot.Services
         {
             _userService.DeleteUser(userContext.User.UserId);
             _usersContext.Remove(userContext);
-        }
-
-        // Dev temp fix
-        void LoadProfileImgIfDontExist(UserModel userModel)
-        {
-            var userProfileImages = userModel.Images;
-            foreach (ImageModel image in userProfileImages)
-            {
-                if (IsProfileImageBeLoad(image.TgMediaId) is false) LoadProfileImages(userModel);
-            }
-        }
-        bool IsProfileImageBeLoad(string TgMediaId)
-        {
-            var originalImagePath = "storage\\" + TgMediaId + ".jpg";
-            var thumbnailImagePath = "storage\\" + TgMediaId + "_thumbnail.jpg";
-
-            if (File.Exists(originalImagePath) is false) return false;
-            if (File.Exists(thumbnailImagePath) is false) return false;
-
-            return true;
-        }
-
-        void LoadProfileImages(UserModel userModel)
-        {
-            var update = new Models.UserUpdateRequestModel() {
-                Images = new List<ImageModel>(),
-                IsHasProfile = true,
-            };
-
-            foreach (var image in userModel.Images) {
-                var file = _botClient.GetFile(image.TgMediaId);
-                var imageUrl = _botClient.BuildFileDownloadLink(file);
-                update.Images.Add(new ImageModel { TgMediaId = image.TgMediaId, DownloadPath = imageUrl });
-            }
-
-            _userService.UpdateUser(userModel.TelegramId, update);
         }
 
 

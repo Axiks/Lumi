@@ -372,6 +372,16 @@ I hope you like it here ❤️</value>
   <data name="WelcomeMessage" xml:space="preserve">
     <value>Welcome!</value>
   </data>
+  <data name="WelcomeNewUser" xml:space="preserve">
+    <value>I'm glad to see you here
+I help you save and share your great projects, in a profitable way, anywhere
+
+🌟 Before starting our journey, you need to create a profile!
+
+🔎&lt;b&gt;To check people's projects, it is enough to type @{1} here, or in any other chat and channel&lt;/b&gt;
+
+I hope you like it here ❤️</value>
+  </data>
   <data name="WelcomeUserMessage" xml:space="preserve">
     <value>Welcome: {0}!</value>
   </data>

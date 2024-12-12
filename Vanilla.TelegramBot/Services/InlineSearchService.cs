@@ -1,6 +1,4 @@
 ﻿using Telegram.BotAPI;
-using Telegram.BotAPI.AvailableMethods;
-using Telegram.BotAPI.Extensions;
 using Telegram.BotAPI.GettingUpdates;
 using Telegram.BotAPI.InlineMode;
 using Vanilla.TelegramBot.Entityes;
@@ -10,14 +8,13 @@ using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI.Widgets;
 using Vanilla_App.Interfaces;
 using Vanilla_App.Models;
-using static System.Net.Mime.MediaTypeNames;
 using UserModel = Vanilla.TelegramBot.Models.UserModel;
 
 namespace Vanilla.TelegramBot.Services
 {
     public class InlineSearchService(TelegramBotClient _botClient, IProjectService _projectService, IUserService _userService, string _domainName)
     {
-        public void InlineSearch(Update update, UserContextModel? userContext)
+        public void InlineSearch(Update update, UserContextModel userContext)
         {
             var inline = update.InlineQuery;
             var query = inline.Query;
@@ -26,69 +23,7 @@ namespace Vanilla.TelegramBot.Services
             AnswerInlineQuery(update, projects, userContext);
         }
 
-        /*        void AnswerInlineQuery(Update update, List<ProjectModel> projects, UserContextModel? userContext)
-                {
-                    var inline = update.InlineQuery;
-
-                    var inlineOffset = inline.Offset;
-
-                    int maxProjects = 48;
-                    int index = inlineOffset is not null && inlineOffset != "" ? int.Parse(inlineOffset) + 1 : 0;
-                    int toIndex = index + 1 + maxProjects <= projects.Count ? index + 1 + maxProjects : projects.Count;
-
-                    var offsetProjectId = toIndex < projects.Count ? toIndex.ToString() : null;
-
-                    var res = new List<InlineQueryResult>();
-                    if (userContext is not null && userContext.User.IsHasProfile && !inline.Query.Contains("@"))
-                    {
-                        var user = userContext.User;
-                        res.Add(GetInlineUserProfile(user, index.ToString()));
-                        index++;
-                    }
-                    else if (inline.Query.Contains("@"))
-                    {
-                        var username = inline.Query.Substring(1).Split(" ")[0];
-                        if (username == "")
-                        {
-                            var users = _userService.GetUsers().Result;
-                            foreach (var user in users)
-                            {
-                                res.Add(GetInlineUserProfile(user, index.ToString()));
-                                index++; // Can be overflow
-                            }
-                        }
-                        else
-                        {
-                            var users = _userService.FindByUsername(username).Result;
-                            if (users.Count > 0)
-                            {
-                                var user = users.First();
-                                res.Add(GetInlineUserProfile(user, index.ToString()));
-                                index++;
-                            }
-                        }
-
-                    }
-
-                    while (index < toIndex)
-                    {
-                        var project = projects[index];
-                        res.Add(GetInlineProjectProfile(project, index.ToString(), userContext));
-
-                        index++;
-                    }
-
-                    //var ans = new AnswerInlineQueryArgs(inline.Id, res);
-
-                    var inlineAddOwnProjectButton = new InlineQueryResultsButton
-                    {
-                        Text = userContext.ResourceManager.GetString("AddOwnProject"),
-                        StartParameter = "addProject"
-                    };
-                    _botClient.AnswerInlineQuery(inlineQueryId: inline.Id, results: res, button: inlineAddOwnProjectButton, nextOffset: offsetProjectId, cacheTime: 24);
-                }*/
-
-        void AnswerInlineQuery(Update update, List<ProjectModel> projectsq, UserContextModel? userContext)
+        void AnswerInlineQuery(Update update, List<ProjectModel> projectsq, UserContextModel userContext)
         {
             const int maxResults = 48;
 
@@ -104,7 +39,7 @@ namespace Vanilla.TelegramBot.Services
 
             var users = new List<UserModel>();
 
-            if (userContext is not null && userContext.User.IsHasProfile && !inline.Query.Contains("@"))
+            if (userContext.User.IsHasProfile && !inline.Query.Contains("@"))
             {
                 // Past current user profile
                 var curentUser = userContext.User;
@@ -133,7 +68,7 @@ namespace Vanilla.TelegramBot.Services
                 j++;
             }
 
-            // Add alll projects
+            // Add all projects
             foreach (var project in projectsq)
             {
                 fullResultItemsList.Add(GetInlineProjectProfile(project, j.ToString(), userContext));
@@ -163,7 +98,7 @@ namespace Vanilla.TelegramBot.Services
             var inlineRegistrationButton = new InlineQueryResultsButton
             {
                 Text = userContext.ResourceManager.GetString("Registration"),
-                //StartParameter = "addProject"
+                StartParameter = "start",
             };
 
             var inlineButton = userContext is not null && userContext.User.IsHasProfile == true ? inlineAddOwnProjectButton : inlineRegistrationButton;
@@ -280,7 +215,7 @@ namespace Vanilla.TelegramBot.Services
             };
         }
 
-        List<ProjectModel> Router(string query, UserContextModel? userContextModel)
+        List<ProjectModel> Router(string query, UserContextModel userContextModel)
         {
             var projects = new List<ProjectModel>();
             if (query is null) return new List<ProjectModel>();
@@ -289,7 +224,7 @@ namespace Vanilla.TelegramBot.Services
             else if (query.Contains("@")) projects = SearchProjectsByUsername(query);
             else projects = SearchProjectsByName(query);
 
-            if (userContextModel is not null) projects = UserProjectsToTopHelper(projects, userContextModel.User.UserId);
+            if (userContextModel.User.IsHasProfile) projects = UserProjectsToTopHelper(projects, userContextModel.User.UserId);
 
             return projects;
         }
