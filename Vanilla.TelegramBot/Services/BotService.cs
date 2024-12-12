@@ -365,6 +365,10 @@ namespace Vanilla.TelegramBot.Services
                 DeleteAllMesssages(userContext);
 
                 var ms = userContext.ResourceManager.GetString("About");
+
+                var commitDate = DateTime.Parse(ThisAssembly.Git.CommitDate).ToString("yyyy-MM-dd HH:mm");
+                ms += String.Format("\n\n<i>Version: {0} {1}</i>", commitDate, ThisAssembly.Git.Commit.ToString());
+
                 _logger.WriteLog(ms, LogType.Information);
                 SendMessageArgs inputMessage = new SendMessageArgs(update.Message.Chat.Id, ms);
                 inputMessage.ParseMode = "HTML";
