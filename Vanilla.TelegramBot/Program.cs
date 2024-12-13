@@ -145,6 +145,20 @@ namespace Vanilla.TelegramBot
             ConfigurationMeneger confManager = new ConfigurationMeneger();
             var _settings = confManager.Settings;
 
+            string PrintProfilesList()
+            {
+                var users = userService.GetUsers().Result.Where(x => x.IsHasProfile == true);
+
+                var message = "";
+
+                foreach (var user in users) {
+                    var profileUrl = String.Format("https://{0}/users/{1}", _settings.Domain, user.UserId.ToString());
+                    message += String.Format("**[{0}]({1})** \n --- \n\n", user.Username, profileUrl);
+                }
+
+                return Markdown.ToHtml(message);
+            }
+
             string PrintProfileInformation(Guid userId)
             {
                 var user = userService.GetUser(userId).Result;
@@ -197,7 +211,17 @@ namespace Vanilla.TelegramBot
             app.MapGet("/", () => "Hello World!");
             app.MapGet("/health", () => "online");
 
-            app.MapGet("/user/{userId}", 
+            app.MapGet("/users",
+                async context =>
+                {
+                    context.Response.ContentType = "text/html; charset=UTF8";
+
+                    var result = PrintProfilesList();
+                    await context.Response.WriteAsync(result, Encoding.UTF8);
+
+                });
+
+            app.MapGet("/users/{userId}", 
                 async context =>
             {
                 context.Response.ContentType = "text/html; charset=UTF8";
