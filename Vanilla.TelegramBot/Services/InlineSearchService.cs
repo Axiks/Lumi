@@ -36,6 +36,19 @@ namespace Vanilla.TelegramBot.Services
             var fullResultItemsList = new List<InlineQueryResult>();
 
 
+/*            var testUrl = "https://agronews.ua/news/eksperty-nazvaly-najkrashhi-sorty-ogirkiv-dlya-vidkrytogo-gruntu/";
+            var inputMessageTest = new InputTextMessageContent(testUrl);
+
+            var testItem = new InlineQueryResultArticle
+            {
+                Id = Guid.NewGuid().ToString() ,
+                Title = "Teswt ttile",
+                Description = "Link to test profile",
+                Url= testUrl,
+                HideUrl = true,
+                InputMessageContent = inputMessageTest,
+            };
+            fullResultItemsList.Add(testItem);*/
 
             var users = new List<UserModel>();
 
@@ -146,44 +159,11 @@ namespace Vanilla.TelegramBot.Services
 
             if (user.Images is not null && user.Images.Count() > 0)
             {
-                //var profileImgUrl = "https://avatarfiles.alphacoders.com/293/293990.jpg";
-                //var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + "_thumbnail.jpg";
-                //var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + ".jpg";
                 var profileImgUrl = "https://"+ _domainName + "/storage/" + user.Images.First().TgMediaId + ".jpg";
                 result.ThumbnailUrl = profileImgUrl;
             }
 
             return result;
-
-            /*           return new InlineQueryResultCachedPhoto
-                       {
-                           Id = ResultId,
-                           PhotoFileId = user.Images is not null ? user.Images.First().TgMediaId : "AgACAgIAAxkBAAIkc2LB6mYy0GnZBzKTXuxG_2qCaQAB2wACkr4xG8AuEEqrRCYAAUPEFEMBAAMCAANzAAMpBA",
-                           Title = "title test",
-                           Caption = "messageContent test",
-                           ShowCaptionAboveMedia = true,
-                       };*/
-
-
-            /*            return new InlineQueryResultPhoto
-                        {
-                            Id = ResultId,
-                            PhotoUrl = "https://img.freepik.com/premium-vector/smile-girl-anime-error-404-page-found_150972-827.jpg",
-                            ThumbnailUrl = "https://avatarfiles.alphacoders.com/293/293990.jpg",
-                            Title = name,
-                            Description = description,
-                            Caption = messageContent,
-                            ShowCaptionAboveMedia = true,
-                            ParseMode = "HTML",
-                        };*/
-
-            /*           return new InlineQueryResultArticle
-                       {
-                           Id = ResultId,
-                           Title = name,
-                           Description = description,
-                           InputMessageContent = inputMessage,
-                       };*/
         }
 
         InlineQueryResultArticle GetInlineProjectProfile(ProjectModel project, string ResultId, UserContextModel userContextModel)

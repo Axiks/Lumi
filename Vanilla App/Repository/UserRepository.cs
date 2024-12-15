@@ -68,6 +68,8 @@ namespace Vanilla_App.Repository
             return user;
         }
 
+        public List<UserEntity> GetAll() => _dbContext.Users.ToList();
+
         public void Delete(Guid userId)
         {
             if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
@@ -75,5 +77,6 @@ namespace Vanilla_App.Repository
             var user = _dbContext.Users.First(x => x.Id == userId);
             _dbContext.Remove(user);
         }
+
     }
 }

@@ -10,18 +10,27 @@ namespace Vanilla.Common
 
         public ConfigurationMeneger()
         {
+            var x = System.IO.Directory.GetCurrentDirectory();
+
             //string _pathToSettingFile = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Vanilla.Common", "appsettings.json");
             //string _pathToSettingFile = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).ToString(), "Vanilla.Common", "appsettings.json");
 
             // !!! Unstable FIX !!!
+            var y = Environment.GetEnvironmentVariables();
             var curentEnvironment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+
+            var z = AppDomain.CurrentDomain;
 
 
             string _pathToSettingFile = "";
             switch (curentEnvironment) { 
                 case "Development":
                     _configFileName = "appsettings.Development.json";
+                    // _pathToSettingFile = Path.Combine(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..")), "Vanilla.Common", _configFileName);
+                    // if(Environment.GetEnvironmentVariable("DOTNET_DASHBOARD_OTLP_ENDPOINT_URL") is not null) _pathToSettingFile = Path.Combine(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..")), "Vanilla.Common", _configFileName); // fix
                     _pathToSettingFile = Path.Combine(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..")), "Vanilla.Common", _configFileName);
+                    if (AppDomain.CurrentDomain.FriendlyName == "Vanilla.Aspire.ApiService") _pathToSettingFile = Path.Combine(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\..")), "Vanilla.Common", _configFileName); // fix
+
                     break;
                 case "Docker-Production":
                     _configFileName = "appsettings.Docker-Production.json";

@@ -10,6 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Vanilla App\Vanilla.Core.csproj" />
+    <ProjectReference Include="..\..\Vanilla.Common\Vanilla.Common.csproj" />
+    <ProjectReference Include="..\..\Vanilla.Data\Vanilla.Data.csproj" />
+    <ProjectReference Include="..\..\Vanilla.OAuth\Vanilla.OAuth.csproj" />
+    <ProjectReference Include="..\..\Vanilla.TelegramBot\Vanilla.TelegramBot.csproj" />
     <ProjectReference Include="..\Vanilla.Aspire.ApiService\Vanilla.Aspire.ApiService.csproj" />
     <ProjectReference Include="..\Vanilla.Aspire.Web\Vanilla.Aspire.Web.csproj" />
   </ItemGroup>

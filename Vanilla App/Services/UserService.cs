@@ -20,6 +20,18 @@ namespace Vanilla_App.Services
             return await _userRepository.GetProjectsAsync(user.Id);
         }
 
+        public List<UserModel> GetUsers()
+        {
+            var users = new List<UserModel>();
+
+            var entities = _userRepository.GetAll();
+            foreach (var entity in entities) {
+                users.Add(EntityToModelMapper(entity));
+            }
+
+            return users;
+        }
+
         public UserModel GetUser(Guid userId)
         {
             var entity = _userRepository.Get(userId);

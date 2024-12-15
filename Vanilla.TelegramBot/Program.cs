@@ -45,9 +45,9 @@ namespace Vanilla.TelegramBot
 
 
             // Temp api (remove in future)
-            new Thread(delegate () {
+/*            new Thread(delegate () {
                 RunMinimalApi(args, serviceProvider);
-            }).Start();
+            }).Start();*/
 
 
 

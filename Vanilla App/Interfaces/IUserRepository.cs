@@ -6,6 +6,7 @@ namespace Vanilla_App.Interfaces
     public interface IUserRepository
     {
         public Task<List<ProjectModel>> GetProjectsAsync(Guid userId);
+        public List<UserEntity> GetAll();
         public UserEntity Get(Guid userId);
         public UserEntity Create(UserCreateRequestModel update);
         public UserEntity Update(Guid userId, UserUpdateRequestModel update);
