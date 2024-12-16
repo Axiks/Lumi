@@ -1,7 +1,6 @@
-﻿using Vanilla_App.Interfaces;
-using Vanilla_App.Models;
+﻿using Vanilla_App.Services.Bonus;
 
-namespace Vanilla_App.Repository
+namespace Vanilla_App.Services.Bonus.Repository
 {
     public class TestBonusRepository : IBonusRepository
     {

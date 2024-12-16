@@ -4,7 +4,7 @@ using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Pages.Projects.Create;
-using Vanilla_App.Interfaces;
+using Vanilla_App.Services.Projects;
 
 namespace Vanilla.TelegramBot.Pages.Projects
 {

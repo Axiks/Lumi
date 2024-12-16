@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Vanilla_App.Models
+namespace Vanilla_App.Services.Bonus.Repository
 {
     public class TakeBonusModel
     {

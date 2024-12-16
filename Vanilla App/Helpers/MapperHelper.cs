@@ -1,5 +1,5 @@
 ﻿using Vanilla.Data.Entities;
-using Vanilla_App.Models;
+using Vanilla_App.Services.Projects;
 
 namespace Vanilla_App.Helpers
 {

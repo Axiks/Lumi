@@ -16,6 +16,9 @@ namespace Vanilla.OAuth.Services
 
         public async Task<BasicUserModel> CreateUserAsync(UserCreateRequestModel createUser)
         {
+            bool IsNicknameExist = _dbContext.Users.Any(x => x.Nickname == createUser.NickName);
+            if (IsNicknameExist is true) throw new Exception("A user with this id already exists");
+
             var userEntity = new UserEntity
             {
                 Nickname = createUser.NickName

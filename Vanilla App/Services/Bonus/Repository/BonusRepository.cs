@@ -1,9 +1,8 @@
-﻿using Vanilla_App.Interfaces;
-using Vanilla_App.Models;
-using Refit;
+﻿using Refit;
 using Vanilla.Common;
+using Vanilla_App.Services.Bonus;
 
-namespace Vanilla_App.Repository
+namespace Vanilla_App.Services.Bonus.Repository
 {
     public class BonusRepository : IBonusRepository
     {
@@ -43,9 +42,10 @@ namespace Vanilla_App.Repository
             {
                 response = _api.GetBonusAsync(bonusId, Token).Result;
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 throw new HttpRequestException($"Server offline");
-            } 
+            }
 
             if (response.IsSuccessful == false)
             {

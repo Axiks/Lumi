@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vanilla_App.Models
+namespace Vanilla_App.Services.Users
 {
     public struct UserUpdateRequestModel
     {

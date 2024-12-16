@@ -1,7 +1,6 @@
-﻿using Vanilla_App.Interfaces;
-using Vanilla_App.Models;
+﻿using Vanilla_App.Services.Projects.Repository;
 
-namespace Vanilla_App.Services
+namespace Vanilla_App.Services.Projects
 {
     public class ProjectService : IProjectService
     {

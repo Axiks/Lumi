@@ -2,7 +2,7 @@
 {
     public class UsersApiClient(HttpClient httpClient)
     {
-        public async Task<Users[]> GetUsersAsync(int maxItems = 10, CancellationToken cancellationToken = default)
+     /*   public async Task<Users[]> GetUsersAsync(int maxItems = 10, CancellationToken cancellationToken = default)
         {
             List<Users>? users = null;
 
@@ -20,6 +20,6 @@
             }
 
             return users?.ToArray() ?? [];
-        }
+        }*/
     }
 }

@@ -6,8 +6,7 @@ using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.UI.Widgets;
-using Vanilla_App.Interfaces;
-using Vanilla_App.Models;
+using Vanilla_App.Services.Projects;
 using UserModel = Vanilla.TelegramBot.Models.UserModel;
 
 namespace Vanilla.TelegramBot.Services

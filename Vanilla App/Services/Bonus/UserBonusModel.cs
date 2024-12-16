@@ -1,4 +1,4 @@
-﻿namespace Vanilla_App.Models
+﻿namespace Vanilla_App.Services.Bonus
 {
     public class UserBonusModel
     {

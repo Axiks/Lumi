@@ -1,6 +1,4 @@
-﻿using Vanilla_App.Models;
-
-namespace Vanilla_App.Interfaces
+﻿namespace Vanilla_App.Services.Bonus.Repository
 {
     internal interface IBonusRepository
     {

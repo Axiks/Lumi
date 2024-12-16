@@ -8,8 +8,7 @@ using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Pages.Bonus.Pages;
-using Vanilla_App.Interfaces;
-using Vanilla_App.Models;
+using Vanilla_App.Services.Bonus;
 
 namespace Vanilla.TelegramBot.Pages.Bonus
 {

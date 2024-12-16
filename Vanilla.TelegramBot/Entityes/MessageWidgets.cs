@@ -3,7 +3,7 @@ using Telegram.BotAPI.AvailableTypes;
 using Vanilla.Common.Enums;
 using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Models;
-using Vanilla_App.Models;
+using Vanilla_App.Services.Projects;
 
 namespace Vanilla.TelegramBot.Entityes
 {

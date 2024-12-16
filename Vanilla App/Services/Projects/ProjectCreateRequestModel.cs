@@ -1,6 +1,6 @@
 ﻿using Vanilla.Common.Enums;
 
-namespace Vanilla_App.Models
+namespace Vanilla_App.Services.Projects
 {
     public class ProjectCreateRequestModel
     {

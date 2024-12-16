@@ -1,8 +1,6 @@
-﻿using Vanilla_App.Interfaces;
-using Vanilla_App.Models;
-using Vanilla_App.Repository;
+﻿using Vanilla_App.Services.Bonus.Repository;
 
-namespace Vanilla_App.Services
+namespace Vanilla_App.Services.Bonus
 {
     public class BonusService : IBonusService
     {

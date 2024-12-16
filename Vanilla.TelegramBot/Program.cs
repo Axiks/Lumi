@@ -11,8 +11,9 @@ using Vanilla.Common;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Services;
-using Vanilla_App.Interfaces;
-using Vanilla_App.Services;
+using Vanilla_App.Services.Bonus;
+using Vanilla_App.Services.Projects;
+using Vanilla_App.Services.Projects.Repository;
 
 namespace Vanilla.TelegramBot
 {
@@ -94,25 +95,26 @@ namespace Vanilla.TelegramBot
             services.AddSingleton<IBotService, BotService>();
             services.AddTransient<ILogger, ConsoleLoggerService>();
 
+            services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
+               options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
+               ServiceLifetime.Transient);
             services.AddTransient<Vanilla.OAuth.Services.UserRepository>();
-            services.AddTransient<AuthService>(provider => new AuthService(settings.TokenConfiguration));
+            var serviceProvider = services.BuildServiceProvider();
+            var oauthRepository = serviceProvider.GetService<Vanilla.OAuth.Services.UserRepository>();
+            services.AddTransient<AuthService>(provider => new AuthService(settings.TokenConfiguration, oauthRepository));
 
             services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
                options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
                ServiceLifetime.Transient);
 
-            /*  services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
-                 options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
-                 ServiceLifetime.Transient);*/
-
             services.AddDbContextFactory<Vanilla.Data.ApplicationDbContext>(options =>
                options.UseNpgsql(settings.CoreDatabaseConfiguration.ConnectionString),
                ServiceLifetime.Transient);
 
-            services.AddTransient<Vanilla_App.Interfaces.IUserRepository, Vanilla_App.Repository.UserRepository>();
-            services.AddTransient<Vanilla_App.Interfaces.IProjectRepository, Vanilla_App.Repository.ProjectRepository>();
+            services.AddTransient<Vanilla_App.Services.Users.Repository.IUserRepository, Vanilla_App.Services.Users.Repository.UserRepository>();
+            services.AddTransient<IProjectRepository, ProjectRepository>();
             services.AddTransient<Vanilla_App.Services.UserService>();
-            services.AddTransient<Vanilla_App.Interfaces.IProjectService, Vanilla_App.Services.ProjectService>();
+            services.AddTransient<IProjectService, ProjectService>();
 
             return services;
         }

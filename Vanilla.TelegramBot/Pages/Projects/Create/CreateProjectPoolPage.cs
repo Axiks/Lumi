@@ -6,7 +6,7 @@ using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Entityes;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
-using Vanilla_App.Models;
+using Vanilla_App.Services.Projects;
 using static Vanilla.TelegramBot.Abstract.ActionFrame;
 
 namespace Vanilla.TelegramBot.Pages.Projects.Create

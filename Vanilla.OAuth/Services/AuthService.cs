@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using Vanilla.Common.Models;
+using Vanilla.OAuth.Interfaces;
 using Vanilla.OAuth.Models;
 
 namespace Vanilla.OAuth.Services
@@ -11,9 +12,11 @@ namespace Vanilla.OAuth.Services
     public class AuthService
     {
         public readonly TokenConfiguration _tokenConfig;
-        public AuthService(TokenConfiguration tokenSetting)
+        public readonly UserRepository _userRepository;
+        public AuthService(TokenConfiguration tokenSetting, UserRepository userRepository)
         {
             _tokenConfig = tokenSetting;
+            _userRepository = userRepository;
             /*// Build a config object, using env vars and JSON providers.
             IConfigurationRoot config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
@@ -24,8 +27,11 @@ namespace Vanilla.OAuth.Services
             settings = config.GetRequiredSection("Settings").Get<Settings>();
             if (settings == null) throw new Exception("No found setting section");*/
         }
-        public string GenerateToken(BasicUserModel user)
+        public string GenerateToken(Guid userId)
         {
+            var user = _userRepository.GetUserAsync(userId).Result;
+            if (user == null) throw new Exception("Token generation denied. User with this ID not found");
+
             var handler = new JwtSecurityTokenHandler();
 
             var privateKey = Encoding.UTF8.GetBytes(_tokenConfig.PrivateKey);

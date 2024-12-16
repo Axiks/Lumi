@@ -9,7 +9,6 @@ using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
 using Vanilla.TelegramBot.Pages.UpdateUser.Pages;
-using Vanilla_App.Models;
 
 namespace Vanilla.TelegramBot.Pages.CreateUser
 {

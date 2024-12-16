@@ -3,11 +3,9 @@ using Vanilla.Common.Enums;
 using Vanilla.Data;
 using Vanilla.Data.Entities;
 using Vanilla_App.Helpers;
-using Vanilla_App.Interfaces;
-using Vanilla_App.Models;
 
 
-namespace Vanilla_App.Repository
+namespace Vanilla_App.Services.Projects.Repository
 {
     public class ProjectRepository : IProjectRepository
     {
@@ -20,7 +18,7 @@ namespace Vanilla_App.Repository
         {
             var projectEntity = new ProjectEntity { Name = projectRequest.Name, Description = projectRequest.Description, DevelopStatus = projectRequest.DevelopStatus, OwnerId = ownerId };
 
-            if(projectRequest.Links is not null)
+            if (projectRequest.Links is not null)
             {
                 foreach (var url in projectRequest.Links)
                 {

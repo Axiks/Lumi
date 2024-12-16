@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Vanilla_App.Models
+namespace Vanilla_App.Services.Users.Repository
 {
-    public struct UserCreateRequestModel
+    public struct CoreUserCreateRequestModel
     {
         public required Guid UserId { get; init; }
         public string? About { get; set; }

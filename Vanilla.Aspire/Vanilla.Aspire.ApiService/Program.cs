@@ -6,8 +6,10 @@ using Vanilla.Aspire.ServiceDefaults;
 using Vanilla.Common;
 using Vanilla.Data;
 using Vanilla.OAuth.Services;
-using Vanilla_App.Interfaces;
 using Vanilla_App.Services;
+using Vanilla_App.Services.Projects;
+using Vanilla_App.Services.Projects.Repository;
+using Vanilla_App.Services.Users.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,10 +39,10 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
                options.UseNpgsql(settings.CoreDatabaseConfiguration.ConnectionString),
                ServiceLifetime.Transient);
 
-builder.Services.AddTransient<Vanilla_App.Interfaces.IUserRepository, Vanilla_App.Repository.UserRepository>();
+builder.Services.AddTransient<IUserRepository, Vanilla_App.Services.Users.Repository.UserRepository>();
 builder.Services.AddTransient<UserService>();
-builder.Services.AddTransient<Vanilla_App.Interfaces.IProjectRepository, Vanilla_App.Repository.ProjectRepository>();
-builder.Services.AddTransient<Vanilla_App.Interfaces.IProjectService, ProjectService>();
+builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
+builder.Services.AddTransient<IProjectService, ProjectService>();
 
 
 
@@ -94,10 +96,10 @@ static class TestMinimalAPI
         ConfigurationMeneger confManager = new ConfigurationMeneger();
         var _settings = confManager.Settings;
 
-        string PrintProfilesList()
+        async Task<string> PrintProfilesList()
         {
             //var users = userService.GetUsers().Result.Where(x => x.IsHasProfile == true);
-            var users = userService.GetUsers();
+            var users = await userService.GetUsers();
 
             var message = "";
 
@@ -112,7 +114,7 @@ static class TestMinimalAPI
             return Markdown.ToHtml(message);
         }
 
-        string PrintProfileInformation(Guid userId)
+        async Task<string> PrintProfileInformation(Guid userId)
         {
             //var user = userService.GetUser(userId).Result;
 
@@ -121,7 +123,7 @@ static class TestMinimalAPI
             var projectsService = serviceProvider.GetService<IProjectService>();
 
             var nickanme = oauthUserRepository.GetUserAsync(userId).Result.Nickname;
-            var user = userService.GetUser(userId);
+            var user = await userService.GetUser(userId);
 
             //var userProfile = "![" + nickanme + "](https://" + _settings.Domain + "/storage/" + user.Images.FirstOrDefault().TgMediaId + ".jpg) \r\n\n**" + nickanme + "**\r\n\r\n" + user.About + "\r\n\r\n\r\n";
             var userProfile = "**" + nickanme + "**\r\n\r\n" + user.About + "\r\n\r\n\r\n";
@@ -178,7 +180,7 @@ static class TestMinimalAPI
             {
                 context.Response.ContentType = "text/html; charset=UTF8";
 
-                var result = PrintProfilesList();
+                var result = await PrintProfilesList();
                 await context.Response.WriteAsync(result, Encoding.UTF8);
 
             });
@@ -192,7 +194,7 @@ static class TestMinimalAPI
 
                 if (context.Request.RouteValues.ContainsKey("userId"))
                 {
-                    var result = PrintProfileInformation(Guid.Parse(context.Request.RouteValues["userId"].ToString()));
+                    var result = await PrintProfileInformation(Guid.Parse(context.Request.RouteValues["userId"].ToString()));
                     await context.Response.WriteAsync(result, Encoding.UTF8);
                 }
 

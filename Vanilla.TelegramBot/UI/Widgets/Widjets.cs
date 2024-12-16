@@ -2,7 +2,7 @@
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Vanilla.TelegramBot.Models;
-using Vanilla_App.Models;
+using Vanilla_App.Services.Bonus;
 
 namespace Vanilla.TelegramBot.UI.Widgets
 {

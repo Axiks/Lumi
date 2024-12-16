@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vanilla.Data;
 using Vanilla_App.Helpers;
-using Vanilla_App.Interfaces;
-using Vanilla_App.Models;
 using AutoMapper;
 using Vanilla.Data.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Vanilla_App.Services.Projects;
 
-namespace Vanilla_App.Repository
+namespace Vanilla_App.Services.Users.Repository
 {
     public class UserRepository : IUserRepository
     {
@@ -29,11 +28,12 @@ namespace Vanilla_App.Repository
             return userProjexts;
         }
 
-        public UserEntity Create(UserCreateRequestModel create)
+        public UserEntity Create(CoreUserCreateRequestModel create)
         {
             if (_dbContext.Users.Any(x => x.Id == create.UserId)) throw new Exception("User with this ID exist");
 
-            var user = new UserEntity { 
+            var user = new UserEntity
+            {
                 Id = create.UserId,
                 About = create.About,
                 Links = create.Links,
@@ -46,7 +46,7 @@ namespace Vanilla_App.Repository
             return user;
         }
 
-        public UserEntity Update(Guid userId, UserUpdateRequestModel update)
+        public UserEntity Update(Guid userId, CoreUserUpdateRequestModel update)
         {
             if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
 

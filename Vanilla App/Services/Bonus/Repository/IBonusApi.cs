@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Refit;
-using Vanilla_App.Models;
 
-namespace Vanilla_App.Interfaces
+namespace Vanilla_App.Services.Bonus.Repository
 {
     public interface IBonusApi
     {

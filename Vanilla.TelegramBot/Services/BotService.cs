@@ -14,7 +14,8 @@ using Vanilla.TelegramBot.Pages.Projects;
 using Vanilla.TelegramBot.Pages.UpdateUser;
 using Vanilla.TelegramBot.Pages.User;
 using Vanilla.TelegramBot.UI;
-using Vanilla_App.Interfaces;
+using Vanilla_App.Services.Bonus;
+using Vanilla_App.Services.Projects;
 using UserModel = Vanilla.TelegramBot.Models.UserModel;
 
 namespace Vanilla.TelegramBot.Services
