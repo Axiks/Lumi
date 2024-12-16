@@ -2,6 +2,7 @@ using Markdig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Text;
+using System.Text.Json;
 using Vanilla.Aspire.ServiceDefaults;
 using Vanilla.Common;
 using Vanilla.Data;
@@ -10,6 +11,7 @@ using Vanilla_App.Services;
 using Vanilla_App.Services.Projects;
 using Vanilla_App.Services.Projects.Repository;
 using Vanilla_App.Services.Users.Repository;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +51,7 @@ builder.Services.AddTransient<IProjectService, ProjectService>();
 
 
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,7 +75,8 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 });
 
-TestMinimalAPI.RunMinimalApi(app, builder.Services.BuildServiceProvider());
+//TestMinimalAPI.RunMinimalApi(app, builder.Services.BuildServiceProvider());
+new UserAPI(app, builder.Services.BuildServiceProvider());
 
 app.MapDefaultEndpoints();
 
@@ -84,6 +88,73 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 }
 
 
+class UserAPI
+{
+    WebApplication _app;
+    UserService _userService;
+    SettingsModel _settings;
+
+    public UserAPI(WebApplication app, ServiceProvider serviceProvider)
+    {
+        _app = app;
+        _userService = serviceProvider.GetService<UserService>();
+
+        ConfigurationMeneger confManager = new ConfigurationMeneger();
+        _settings = confManager.Settings;
+
+        RouteRegistration();
+    }
+
+
+    void RouteRegistration()
+    {
+        _app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "storage")),
+            RequestPath = "/storage"
+        });
+        _app.MapGet("/", () => "Hello World!");
+        _app.MapGet("/health", () => "online");
+        _app.MapGet("/users",
+            async context =>
+            {
+                //context.Response.ContentType = "text/html; charset=UTF8";
+
+                var response = await GetAllUserResponse();
+                await context.Response.WriteAsync(response, Encoding.UTF8);
+            });
+        _app.MapGet("/users/{userId}",
+            async context =>
+            {
+                //context.Response.ContentType = "text/html; charset=UTF8";
+
+                var someValueFromGet = context.Response;
+
+                if (context.Request.RouteValues.ContainsKey("userId"))
+                {
+                    var response = await GetUserByIdResponse(Guid.Parse(context.Request.RouteValues["userId"].ToString()));
+                    await context.Response.WriteAsync(response, Encoding.UTF8);
+                }
+
+            });
+    }
+
+    async Task<string> GetAllUserResponse()
+    {
+        var users = await _userService.GetUsers();
+        var json = JsonSerializer.Serialize(users);
+        return json;
+    }
+
+    async Task<string> GetUserByIdResponse(Guid userId)
+    {
+        var users = await _userService.GetUser(userId);
+        var json = JsonSerializer.Serialize(users);
+        return json;
+    }
+
+
+}
 
 static class TestMinimalAPI
 {
