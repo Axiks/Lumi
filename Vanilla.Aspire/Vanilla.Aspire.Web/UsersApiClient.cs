@@ -2,11 +2,11 @@
 {
     public class UsersApiClient(HttpClient httpClient)
     {
-     /*   public async Task<Users[]> GetUsersAsync(int maxItems = 10, CancellationToken cancellationToken = default)
+        public async Task<Vanilla_App.Services.Users.UserModel[]> GetUsersAsync(int maxItems = 10, CancellationToken cancellationToken = default)
         {
-            List<Users>? users = null;
+            List<Vanilla_App.Services.Users.UserModel>? users = null;
 
-            await foreach (var user in httpClient.GetFromJsonAsAsyncEnumerable<Users>("/users", cancellationToken))
+            await foreach (var user in httpClient.GetFromJsonAsAsyncEnumerable<Vanilla_App.Services.Users.UserModel>("/users", cancellationToken))
             {
                 if (users?.Count >= maxItems)
                 {
@@ -20,6 +20,6 @@
             }
 
             return users?.ToArray() ?? [];
-        }*/
+        }
     }
 }
