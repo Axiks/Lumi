@@ -21,5 +21,10 @@
 
             return users?.ToArray() ?? [];
         }
+
+        public async Task<Vanilla_App.Services.Users.UserModel?> GetUserByIdAsync(Guid userId, int maxItems = 10, CancellationToken cancellationToken = default)
+        {
+            return await httpClient.GetFromJsonAsync<Vanilla_App.Services.Users.UserModel>(String.Format("/users/{0}", userId.ToString()), cancellationToken);
+        }
     }
 }

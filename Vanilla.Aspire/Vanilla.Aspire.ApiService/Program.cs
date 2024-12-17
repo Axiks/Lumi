@@ -92,12 +92,14 @@ class UserAPI
 {
     WebApplication _app;
     UserService _userService;
+    IProjectService _projectService;
     SettingsModel _settings;
 
     public UserAPI(WebApplication app, ServiceProvider serviceProvider)
     {
         _app = app;
         _userService = serviceProvider.GetService<UserService>();
+        _projectService = serviceProvider.GetService<IProjectService>();
 
         ConfigurationMeneger confManager = new ConfigurationMeneger();
         _settings = confManager.Settings;
@@ -137,6 +139,20 @@ class UserAPI
                 }
 
             });
+        _app.MapGet("/users/{userId}/projects",
+            async context =>
+            {
+                //context.Response.ContentType = "text/html; charset=UTF8";
+
+                var someValueFromGet = context.Response;
+
+                if (context.Request.RouteValues.ContainsKey("userId"))
+                {
+                    var response = await GetUserProjectsByIdResponse(Guid.Parse(context.Request.RouteValues["userId"].ToString()));
+                    await context.Response.WriteAsync(response, Encoding.UTF8);
+                }
+
+            });
     }
 
     async Task<string> GetAllUserResponse()
@@ -150,6 +166,14 @@ class UserAPI
     {
         var users = await _userService.GetUser(userId);
         var json = JsonSerializer.Serialize(users);
+        return json;
+    }
+
+    async Task<string> GetUserProjectsByIdResponse(Guid userId)
+    {
+        var allProjects =  await _projectService.ProjectGetAllAsync();
+        var userProjects = allProjects.Where(x => x.OwnerId == userId);
+        var json = JsonSerializer.Serialize(userProjects);
         return json;
     }
 

@@ -1,40 +1,74 @@
-﻿@page "/users/{id}"
+﻿@page "/users/{id:guid}"
+
+@inject UsersApiClient UsersApi
+@inject ProjectsApiClient ProjectsApi
 
 <PageTitle>User profile</PageTitle>
 
-        <p>
-            <figure>
-                <img style="height: 250px; border-radius: 15%;" src="https://dev-lumi.neko3.space/files/AgACAgIAAxkBAAJN1WdXmkYWW7pbe37ijFioCx3yXVgtAALB4jEbDXLBSke5.jpg" alt="Yumikki">
-            </figure>
-        </p>
-        <p>
-            <strong style="font-size:x-large;">Yuno</strong>
-            <a class="is-vertical-align" href="http://t.me/Yumikki">Yumikki</a>
-        </p>
-        <p>I like neko :3</p>
-        <a class="is-vertical-align" href="https://cern.eu/">cern.eu</a>
-        <h2>Projects</h2>
-        <hr>
-        <p><strong>Віддам кота</strong>
-        <em>InDevelopment</em></p>
-        <p>Позичу кота у добрі руки</p>
-        <p>Любить тепле молоко, шоколадки і фембойчиків
-        Дуже розумний, має навички в кіберкотлетизмі, тому з вашого холодильника може зникати їжа
-        Любить, коли його гладять. У повний місяць може перетворювати на некокотика, тому ніжним натурам сподобається</p>
-        <p>Ціна питання, дюжена Старлінків у підрозділи
-        Тривалість опіки, до обговорення у пп</p>
-        <p>
-            <a class="is-vertical-align" href="https://t.me/nitekot"><Img src="https://icongr.am/clarity/link.svg?size=24" /> https://t.me/nitekot</a>
-        </p>
-        <hr>
-        <p><strong>Lumi beta</strong>
-        <em>InDevelopment</em></p>
-        <p>Бот через який можна поділитись своєю творчою частинкою з оточуючими 😉</p>
-        <p>
-            <a class="is-vertical-align" href="https://t.me/LumiFanbase"><Img src="https://icongr.am/clarity/link.svg?size=24" /> https://t.me/LumiFanbase</a>
-        </p>
-        <hr>
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>
+        <figure>
+            <img style="height: 250px; border-radius: 15%;" src="https://dev-lumi.neko3.space/files/AgACAgIAAxkBAAJN1WdXmkYWW7pbe37ijFioCx3yXVgtAALB4jEbDXLBSke5.jpg" alt="@user.Nickname photo">
+        </figure>
+    </p>
+    <p>
+        <strong style="font-size:x-large;">@user.Nickname</strong>
+        @* <a class="is-vertical-align" href="http://t.me/TgNickname">TgNickname</a> *@
+    </p>
+    <p>@user.About</p>
+    @if (user.Links is not null)
+    {
+        @foreach (var link in user.Links)
+        {
+            <a class="is-vertical-align" href="@link">@link</a>
+        }
+    }
+
+    <h2>Projects</h2>
+    @if(projects is not null && projects.Length > 0)
+    {
+        @foreach (var project in projects)
+        {
+            <hr>
+            <p>
+                <strong>@project.Name</strong>
+                <em>@project.DevelopmentStatus</em>
+            </p>
+            <p>@project.Description</p>
+            <p>
+            @foreach (var link in project.Links)
+            {
+                <a class="is-vertical-align" href="@link"><Img src="https://icongr.am/clarity/link.svg?size=24" />@link</a>
+            }
+            </p>
+
+        }
+    }
+    else
+    {
+        <p>Не має ще проєктів</p>
+    }
+
+
+}
+
+
 
 @code {
+    [Parameter]
+    public Guid id { get; set; }
 
+    Vanilla_App.Services.Users.UserModel? user;
+    Vanilla_App.Services.Projects.ProjectModel[]? projects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UsersApi.GetUserByIdAsync(id);
+        projects = await ProjectsApi.GetUserProjectsAsync(id);
+    }
 }
