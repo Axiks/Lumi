@@ -152,10 +152,10 @@ namespace Vanilla.TelegramBot
                         e.ConfigureConsumer<TgMessageConsumer>(context);
                     });
 
-                    cfg.Host("localhost", "/", h =>
+                    cfg.Host(settings.RabitMQConfiguration.Host, "/", h =>
                     {
-                        h.Username("guest");
-                        h.Password("guest");
+                        h.Username(settings.RabitMQConfiguration.Username);
+                        h.Password(settings.RabitMQConfiguration.Password);
                     });
 
                     /*                cfg.ReceiveEndpoint("tg-user", e =>

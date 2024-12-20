@@ -31,6 +31,17 @@ services:
     networks:
         - lumi-net-dev
 
+  lumi-rabbitmq:
+    image: rabbitmq:4.0.0-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+    networks:
+        - lumi-net-dev
+
   lumi-tunnel:
     container_name: cloudflared-tunnel
     image: cloudflare/cloudflared

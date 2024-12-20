@@ -48,10 +48,10 @@ builder.Services.AddMassTransit(x =>
     {
         //x.AddRequestClient<MessageConsumer>(new Uri("exchange:tg-user"));
 
-        cfg.Host("localhost", "/", h =>
+        cfg.Host(settings.RabitMQConfiguration.Host, "/", h =>
         {
-            h.Username("guest");
-            h.Password("guest");
+            h.Username(settings.RabitMQConfiguration.Username);
+            h.Password(settings.RabitMQConfiguration.Password);
         });
 
         cfg.ConfigureEndpoints(context);
