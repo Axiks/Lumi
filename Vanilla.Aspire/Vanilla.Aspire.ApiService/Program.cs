@@ -2,16 +2,17 @@ using Markdig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Text;
-using System.Text.Json;
 using Vanilla.Aspire.ServiceDefaults;
 using Vanilla.Common;
 using Vanilla.Data;
-using Vanilla.OAuth.Services;
 using Vanilla_App.Services;
 using Vanilla_App.Services.Projects;
 using Vanilla_App.Services.Projects.Repository;
 using Vanilla_App.Services.Users.Repository;
-using System.Text.Json.Serialization;
+using MassTransit;
+using Vanilla.Common.Message_Broker;
+using Vanilla_App.Services.Users;
+using Vanilla_App.Module;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,17 +22,11 @@ builder.AddServiceDefaults();
 // Add services to the container.
 builder.Services.AddProblemDetails();
 
-
-
-
-
-
 var settings = new ConfigurationMeneger().Settings;
 if (settings == null) throw new Exception("No found setting section");
 
-
+builder.Services.AddTransient<StorageModule>();
 builder.Services.AddTransient<Vanilla.OAuth.Services.UserRepository>();
-//builder.Services.AddTransient<AuthService>(provider => new AuthService(settings.TokenConfiguration));
 
 builder.Services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
    options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
@@ -42,14 +37,29 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
                ServiceLifetime.Transient);
 
 builder.Services.AddTransient<IUserRepository, Vanilla_App.Services.Users.Repository.UserRepository>();
-builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
 builder.Services.AddTransient<IProjectService, ProjectService>();
 
+builder.Services.AddMassTransit(x =>
+{
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        //x.AddRequestClient<MessageConsumer>(new Uri("exchange:tg-user"));
+
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 
-
-
+builder.Services.AddControllers();
 
 
 var app = builder.Build();
@@ -57,35 +67,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-});
-
-//TestMinimalAPI.RunMinimalApi(app, builder.Services.BuildServiceProvider());
 new UserAPI(app, builder.Services.BuildServiceProvider());
 
-app.MapDefaultEndpoints();
+app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers(); // Map attribute-routed API controllers
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
 
 
 class UserAPI
@@ -94,6 +84,7 @@ class UserAPI
     UserService _userService;
     IProjectService _projectService;
     SettingsModel _settings;
+    IRequestClient<TgUserRequest> tgRequestClient;
 
     public UserAPI(WebApplication app, ServiceProvider serviceProvider)
     {
@@ -110,74 +101,17 @@ class UserAPI
 
     void RouteRegistration()
     {
+        var path = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\", "storage");
+        var filePath = new PhysicalFileProvider(path);
+
         _app.UseStaticFiles(new StaticFileOptions
         {
-            FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "storage")),
+            FileProvider = filePath,
             RequestPath = "/storage"
         });
         _app.MapGet("/", () => "Hello World!");
         _app.MapGet("/health", () => "online");
-        _app.MapGet("/users",
-            async context =>
-            {
-                //context.Response.ContentType = "text/html; charset=UTF8";
-
-                var response = await GetAllUserResponse();
-                await context.Response.WriteAsync(response, Encoding.UTF8);
-            });
-        _app.MapGet("/users/{userId}",
-            async context =>
-            {
-                //context.Response.ContentType = "text/html; charset=UTF8";
-
-                var someValueFromGet = context.Response;
-
-                if (context.Request.RouteValues.ContainsKey("userId"))
-                {
-                    var response = await GetUserByIdResponse(Guid.Parse(context.Request.RouteValues["userId"].ToString()));
-                    await context.Response.WriteAsync(response, Encoding.UTF8);
-                }
-
-            });
-        _app.MapGet("/users/{userId}/projects",
-            async context =>
-            {
-                //context.Response.ContentType = "text/html; charset=UTF8";
-
-                var someValueFromGet = context.Response;
-
-                if (context.Request.RouteValues.ContainsKey("userId"))
-                {
-                    var response = await GetUserProjectsByIdResponse(Guid.Parse(context.Request.RouteValues["userId"].ToString()));
-                    await context.Response.WriteAsync(response, Encoding.UTF8);
-                }
-
-            });
     }
-
-    async Task<string> GetAllUserResponse()
-    {
-        var users = await _userService.GetUsers();
-        var json = JsonSerializer.Serialize(users);
-        return json;
-    }
-
-    async Task<string> GetUserByIdResponse(Guid userId)
-    {
-        var users = await _userService.GetUser(userId);
-        var json = JsonSerializer.Serialize(users);
-        return json;
-    }
-
-    async Task<string> GetUserProjectsByIdResponse(Guid userId)
-    {
-        var allProjects =  await _projectService.ProjectGetAllAsync();
-        var userProjects = allProjects.Where(x => x.OwnerId == userId);
-        var json = JsonSerializer.Serialize(userProjects);
-        return json;
-    }
-
-
 }
 
 static class TestMinimalAPI

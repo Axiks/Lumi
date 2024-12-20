@@ -8,7 +8,7 @@ using Vanilla.TelegramBot.Models;
 
 namespace Vanilla.TelegramBot.Helpers
 {
-    public static class ImageHelper
+ /*   public static class ImageHelper
     {
         public static async Task DownloadProfileImages(List<ImageModel> images)
         {
@@ -55,5 +55,5 @@ namespace Vanilla.TelegramBot.Helpers
             image.Dispose();
             return newImage;
         }
-    }
+    }*/
 }

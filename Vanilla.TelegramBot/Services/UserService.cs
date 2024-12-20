@@ -1,7 +1,8 @@
 ﻿using Vanilla.OAuth.Services;
-using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla_App.Module;
+
 namespace Vanilla.TelegramBot.Services
 {
     public class UserService : IUserService
@@ -116,6 +117,32 @@ namespace Vanilla.TelegramBot.Services
                 IsRadyForOrders = user.IsRadyForOrders ?? coreUser.IsRadyForOrders,
             });
 
+            //if (user.Images is not null && user.Images.Count() > 0) ImageHelper.DownloadProfileImages(user.Images);
+            if (user.Images is not null && user.Images.Count() > 0)
+            {
+                // Remove old images
+                if(coreUser.ProfileImages.Count() > 0)
+                {
+                    foreach(var image in coreUser.ProfileImages)
+                    {
+                        _coreUserService.RemoveProfileImage(coreUser.Id, image.Id);
+                    }
+                }
+
+
+                foreach ( var image in user.Images)
+                {
+                    var fileRequest = new DownloadFileRequestModel
+                    {
+                        FileName = image.TgMediaId,
+                        DownloadURL = image.DownloadPath
+                    };
+
+                    var coreImage = await _coreUserService.AddProfileImage(coreUser.Id, fileRequest);
+                    image.CoreId = coreImage.Id;
+                }
+            }
+
             var uplocalUser = await _userRepository.UpdateUserAsync(new Models.UserCreateRequestModel
             {
                 TelegramId = localUser.TelegramId,
@@ -127,8 +154,6 @@ namespace Vanilla.TelegramBot.Services
                 Images = user.Images,
                 IsHasProfile = user.IsHasProfile,
             });
-
-            if (user.Images is not null && user.Images.Count() > 0) ImageHelper.DownloadProfileImages(user.Images);
 
             return EntityesToObjectMapperHelper(uplocalUser, upcoreUser);
         }
@@ -147,7 +172,7 @@ namespace Vanilla.TelegramBot.Services
         }
 
 
-        bool IsUserUploadNewProfileImages(List<ImageModel>? currentImages, List<ImageModel>? newImages) {
+ /*       bool IsUserUploadNewProfileImages(List<ImageModel>? currentImages, List<ImageModel>? newImages) {
             if (currentImages is null && newImages is null) return false;
 
             if (currentImages is null != newImages is null) return true;
@@ -156,7 +181,7 @@ namespace Vanilla.TelegramBot.Services
                 if(currentImages.Exists(x => x.TgMediaId == image.TgMediaId) is false) return true;
             }
             return false;
-        }
+        }*/
 
         private Models.UserModel EntityesToObjectMapperHelper(UserCreateResponseModel localUser, Vanilla_App.Services.Users.UserModel coreUser) => new Models.UserModel
         {

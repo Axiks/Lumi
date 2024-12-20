@@ -1,4 +1,6 @@
-﻿using Vanilla.Data.Entities;
+﻿using System.Collections.Generic;
+using Vanilla.Data.Entities;
+using Vanilla_App.Module;
 using Vanilla_App.Services.Projects;
 using Vanilla_App.Services.Projects.Repository;
 using Vanilla_App.Services.Users;
@@ -62,6 +64,7 @@ namespace Vanilla_App.Services
                 Links = update.Links,
                 IsRadyForOrders = update.IsRadyForOrders,
             });
+
             return ToUserModelMapper(entity, OAthUser);
         }
 
@@ -93,8 +96,42 @@ namespace Vanilla_App.Services
             About = entity.About,
             Links = entity.Links,
             IsRadyForOrders = entity.IsRadyForOrders,
-            Nickname = OAuthUser.Nickname
+            Nickname = OAuthUser.Nickname,
+            ProfileImages = ImagesEntityToProfileImagesMapper(entity.ProfileImages),
         };
 
+        private static List<ProfileImage> ImagesEntityToProfileImagesMapper(List<ImageEntity>? imagesEntity)
+        {
+            if(imagesEntity is null) return new List<ProfileImage> { };
+
+            var images = new List<ProfileImage>();
+
+            foreach (var imageEntity in imagesEntity)
+            {
+                images.Add(
+                    new ProfileImage
+                    {
+                        Id = imageEntity.Id,
+                        FileName = imageEntity.FileName
+                    }
+                );
+            }
+
+            return images;
+        }
+
+
+
+        public async Task<ProfileImage> AddProfileImage(Guid userId, DownloadFileRequestModel fileRequest)
+        {
+            return _coreUserRepository.AddProfileImage(userId, fileRequest);
+        }
+
+        public async Task<bool> RemoveProfileImage(Guid userId, Guid imageId)
+        {
+            _coreUserRepository.RemoveProfileImage(userId, imageId);
+
+            return true;
+        }
     }
 }

@@ -1,0 +1,19 @@
+{
+  "name": "npmjs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack ./src/index.js --output-path ../wwwroot/js --output-filename index.bundle.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "webpack": "^5.97.1",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@splidejs/splide": "^4.1.4"
+  }
+}

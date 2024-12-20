@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Vanilla App\Vanilla.Core.csproj" />
+    <ProjectReference Include="..\Vanilla.Aspire.ApiService\Vanilla.Aspire.ApiService.csproj" />
     <ProjectReference Include="..\Vanilla.Aspire.ServiceDefaults\Vanilla.Aspire.ServiceDefaults.csproj" />
   </ItemGroup>
 

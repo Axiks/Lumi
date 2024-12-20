@@ -7,6 +7,7 @@ namespace Vanilla.Data
     {
         public DbSet<ProjectEntity> Projects { get; set; }
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<ImageEntity> Images { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

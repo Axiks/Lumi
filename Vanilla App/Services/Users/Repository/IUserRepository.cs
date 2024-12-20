@@ -1,4 +1,5 @@
 ﻿using Vanilla.Data.Entities;
+using Vanilla_App.Module;
 using Vanilla_App.Services.Projects;
 
 namespace Vanilla_App.Services.Users.Repository
@@ -11,5 +12,9 @@ namespace Vanilla_App.Services.Users.Repository
         public UserEntity Create(CoreUserCreateRequestModel update);
         public UserEntity Update(Guid userId, CoreUserUpdateRequestModel update);
         public void Delete(Guid userId);
+
+
+        public ProfileImage AddProfileImage(Guid userId, DownloadFileRequestModel downloadFileRequestModel);
+        public void RemoveProfileImage(Guid userId, Guid imageId);
     }
 }

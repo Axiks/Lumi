@@ -10,6 +10,7 @@ namespace Vanilla.TelegramBot.Entityes
     public class ImagesEntity
     {
         public Guid Id { get; set; }
+        public Guid CoreId { get; set; }
         public required string TgMediaId { get; init; }
     }
 }

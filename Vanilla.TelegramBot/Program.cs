@@ -1,16 +1,23 @@
 ﻿using Markdig;
+using MassTransit;
+using MassTransit.Configuration;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.FileProviders;
+using Newtonsoft.Json;
 using System;
 using System.Text;
 using Telegram.BotAPI.AvailableTypes;
 using Vanilla.Common;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
+using Vanilla.TelegramBot.Message_Broker;
 using Vanilla.TelegramBot.Services;
+using Vanilla_App.Module;
 using Vanilla_App.Services.Bonus;
 using Vanilla_App.Services.Projects;
 using Vanilla_App.Services.Projects.Repository;
@@ -22,16 +29,35 @@ namespace Vanilla.TelegramBot
         public static void Main(string[] args)
         {
             Console.WriteLine("Hello, Vanilla TG bot server");
+            /*
+                        Testtt.Job();
 
-            /*            //var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+                        new Thread(delegate () {
+                            Testtt.Job();
+                        }).Start();*/
 
-                        string settingPath = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Vanilla.Common", "appsettings.json");
 
-                        // Build a config object, using env vars and JSON providers.
-                        IConfigurationRoot config = new ConfigurationBuilder()
-                            .AddJsonFile(settingPath)
-                            .AddEnvironmentVariables()
-                            .Build();*/
+            /*            // start the async task on a separate C# thread
+                        Task.Run(async () =>
+                        {
+                            // do some C# async work
+                            await Testtt.Job();
+                        });
+
+                        Console.ReadLine();*/
+
+
+            //var outPutDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+
+            //string settingPath = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Vanilla.Common", "appsettings.json");
+
+            // Build a config object, using env vars and JSON providers.
+     /*       IConfigurationRoot config = new ConfigurationBuilder()
+                .AddJsonFile(settingPath)
+                .AddEnvironmentVariables()
+
+
+                .Build();*/
 
             // Get values from the config given their key and their target type.
             //var settings = config.GetRequiredSection("Settings").Get<SettingsModel>();
@@ -39,21 +65,136 @@ namespace Vanilla.TelegramBot
             if (settings == null) throw new Exception("No found setting section");
 
             //var services = new ServiceCollection();
-            var services = PrepareServices(settings);
+            //var services = PrepareServices(settings);
 
+            var builder = WebApplication.CreateBuilder(args);
+            builder.WebHost.UseUrls("http://localhost:5007");
+
+/*            builder.Services.AddMassTransit(x =>
+            {
+                //x.AddConsumer<MessageConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    cfg.ReceiveEndpoint("message_queue", e =>
+                    {
+                        e.ConfigureConsumer<MessageConsumer>(context);
+                    });
+
+                });
+
+            });*/
+
+            //var serviceProvider = builder.Services.BuildServiceProvider();
+            var services = builder.Services;
+            //PrepareDB(serviceProvider);
+
+
+            services.AddDbContextFactory<ApplicationDbContext>(options =>
+               options.UseNpgsql(settings.TgBotDatabaseConfiguration.ConnectionString),
+               ServiceLifetime.Transient);
+
+            services.AddTransient<StorageModule>();
+            services.AddTransient<Interfaces.IUserRepository, Repositories.UserRepository>();
+            services.AddTransient<IBonusService, BonusService>();
+            services.AddTransient<IUserService, Services.UserService>();
+            services.AddSingleton<IBotService, BotService>();
+            services.AddTransient<ILogger, ConsoleLoggerService>();
+
+            services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
+               options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
+               ServiceLifetime.Transient);
+            services.AddTransient<Vanilla.OAuth.Services.UserRepository>();
             var serviceProvider = services.BuildServiceProvider();
+            var oauthRepository = serviceProvider.GetService<Vanilla.OAuth.Services.UserRepository>();
+            services.AddTransient<AuthService>(provider => new AuthService(settings.TokenConfiguration, oauthRepository));
+
+            services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
+               options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
+               ServiceLifetime.Transient);
+
+            services.AddDbContextFactory<Vanilla.Data.ApplicationDbContext>(options =>
+               options.UseNpgsql(settings.CoreDatabaseConfiguration.ConnectionString),
+               ServiceLifetime.Transient);
+
+            services.AddTransient<Vanilla_App.Services.Users.Repository.IUserRepository, Vanilla_App.Services.Users.Repository.UserRepository>();
+            services.AddTransient<IProjectRepository, ProjectRepository>();
+            services.AddTransient<Vanilla_App.Services.UserService>();
+            services.AddTransient<IProjectService, ProjectService>();
+
+            serviceProvider = services.BuildServiceProvider();
             PrepareDB(serviceProvider);
 
+            builder.Services.AddMassTransit(x =>
+            {
+                //x.AddConsumer<AboutUserConsumer>();
+                /*           x.AddConsumer<AboutUserConsumer>()
+                                      .Endpoint(e => e.Name = "tg-user");*/
 
+                x.AddConsumer<MessageConsumer>();
+                x.AddConsumer<TgMessageConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.ReceiveEndpoint("tg-user", e =>
+                    {
+                        e.ConfigureConsumer<MessageConsumer>(context);
+                    });
+
+                    cfg.ReceiveEndpoint("tg-user-2", e =>
+                    {
+                        e.ConfigureConsumer<TgMessageConsumer>(context);
+                    });
+
+                    cfg.Host("localhost", "/", h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    /*                cfg.ReceiveEndpoint("tg-user", e =>
+                                    {
+                                        e.ConfigureConsumer<MessageConsumer>(context);
+                                    });*/
+
+                    //cfg.ConfigureEndpoints(context);
+                });
+
+                /*            x.ConfigureHealthCheckOptions(options =>
+                            {
+                                options.Name = "masstransit";
+                                options.MinimalFailureStatus = HealthStatus.Unhealthy;
+                                options.Tags.Add("health");
+                            });*/
+            });
+                /*        .AddSingleton<IAsyncBusHandle, AsyncBusHandle>()
+                        .RemoveMassTransitHostedService();*/
+
+            //builder.Services.AddScoped<AboutUserConsumer>();
+
+
+
+            var app = builder.Build();
+            app.RunAsync();
             // Temp api (remove in future)
-/*            new Thread(delegate () {
+/*            new Thread(delegate ()
+            {
                 RunMinimalApi(args, serviceProvider);
             }).Start();*/
 
 
+            new Thread(delegate ()
+            {
+                RunBotWatchdog();
+            }).Start();
 
 
-            RunBotWatchdog();
             void RunBotWatchdog()
             {
                 var botService = serviceProvider.GetService<IBotService>();
@@ -84,6 +225,30 @@ namespace Vanilla.TelegramBot
         public static ServiceCollection PrepareServices(SettingsModel settings)
         {
             var services = new ServiceCollection();
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<AboutUserConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host("localhost", "/", h => {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    cfg.ConfigureEndpoints(context);
+                });
+
+                x.ConfigureHealthCheckOptions(options =>
+                {
+                    options.Name = "masstransit";
+                    options.MinimalFailureStatus = HealthStatus.Unhealthy;
+                    options.Tags.Add("health");
+                });
+            });
+
+
 
             services.AddDbContextFactory<ApplicationDbContext>(options =>
                 options.UseNpgsql(settings.TgBotDatabaseConfiguration.ConnectionString),
@@ -244,5 +409,47 @@ namespace Vanilla.TelegramBot
 
 
 
+    }
+
+    static class Testtt
+    {
+        public static async Task Job()
+        {
+            var busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
+            {
+                cfg.ReceiveEndpoint("order-created-event", e =>
+                {
+                    e.Consumer<OrderCreatedConsumer>();
+                });
+
+                cfg.Host("localhost", "/", h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+
+            });
+
+
+            await busControl.StartAsync(new CancellationToken());
+            try
+            {
+                Console.WriteLine("Press enter to exit");
+                await Task.Run(() => Console.ReadLine());
+            }
+            finally
+            {
+                await busControl.StopAsync();
+            }
+        }
+    }
+
+    class OrderCreatedConsumer : IConsumer<MessageConsumer>
+    {
+        public async Task Consume(ConsumeContext<MessageConsumer> context)
+        {
+            var jsonMessage = JsonConvert.SerializeObject(context.Message);
+            Console.WriteLine($"OrderCreated message: {jsonMessage}");
+        }
     }
 }

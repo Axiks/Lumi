@@ -7,6 +7,15 @@
         public string? About { get; set; }
         public List<string>? Links { get; set; }
         public bool IsRadyForOrders { get; set; }
+        public List<ProfileImage> ProfileImages { get; set; }
+
+    }
+
+    public class ProfileImage
+    {
+        public required Guid Id { get; init; }
+        public required string FileName { get; init; }
+        public string FileHref => String.Format("https://dev-lumi.neko3.space/storage/" + FileName);
 
     }
 }

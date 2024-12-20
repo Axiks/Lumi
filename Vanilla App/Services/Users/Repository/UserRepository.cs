@@ -1,20 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vanilla.Data;
 using Vanilla_App.Helpers;
-using AutoMapper;
 using Vanilla.Data.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Vanilla_App.Services.Projects;
+using Vanilla_App.Module;
+using MassTransit;
 
 namespace Vanilla_App.Services.Users.Repository
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(ApplicationDbContext _dbContext, StorageModule _storageModule) : IUserRepository
     {
-        private readonly ApplicationDbContext _dbContext;
-        public UserRepository(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public async Task<List<ProjectModel>> GetProjectsAsync(Guid userId)
         {
@@ -50,7 +45,7 @@ namespace Vanilla_App.Services.Users.Repository
         {
             if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
 
-            var user = _dbContext.Users.First(x => x.Id == userId);
+            var user = _dbContext.Users.Include(x => x.ProfileImages).First(x => x.Id == userId);
             user.About = update.About ?? user.About;
             user.Links = update.Links ?? user.Links;
             user.IsRadyForOrders = update.IsRadyForOrders ?? user.IsRadyForOrders;
@@ -64,7 +59,7 @@ namespace Vanilla_App.Services.Users.Repository
         {
             if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
 
-            var user = _dbContext.Users.First(x => x.Id == userId);
+            var user = _dbContext.Users.Include(x => x.ProfileImages).First(x => x.Id == userId);
             return user;
         }
 
@@ -74,8 +69,48 @@ namespace Vanilla_App.Services.Users.Repository
         {
             if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
 
-            var user = _dbContext.Users.First(x => x.Id == userId);
+            var user = _dbContext.Users.Include(x => x.ProfileImages).First(x => x.Id == userId);
+
+            if(user.ProfileImages is not null)
+            {
+                foreach(var image in user.ProfileImages)
+                {
+                    RemoveProfileImage(userId, image.Id);
+                }
+            }
+
             _dbContext.Remove(user);
+        }
+
+        public ProfileImage AddProfileImage(Guid userId, DownloadFileRequestModel downloadFileRequestModel)
+        {
+            if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
+
+            var filename = _storageModule.DownloadFile(downloadFileRequestModel).Result;
+
+            var user = _dbContext.Users.Include(x => x.ProfileImages).First(x => x.Id == userId);
+            var userImageEntity = new ImageEntity
+            {
+                FileName = filename
+            };
+
+            user.ProfileImages.Add(userImageEntity);
+
+            _dbContext.SaveChanges();
+
+            return new ProfileImage { FileName = filename, Id = userImageEntity.Id };
+        }
+
+        public void RemoveProfileImage(Guid userId, Guid imageId)
+        {
+            if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
+
+            var userImage = _dbContext.Users.Include(x => x.ProfileImages).First(x => x.Id == userId).ProfileImages.FirstOrDefault(x => x.Id == imageId);
+
+            _storageModule.RemoveFile(userImage.FileName);
+
+            _dbContext.Remove(userImage);
+            _dbContext.SaveChanges();
         }
 
     }

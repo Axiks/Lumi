@@ -9,6 +9,7 @@ namespace Vanilla.TelegramBot.Models
 {
     public class ImageModel
     {
+        public Guid CoreId { get; set; }
         public required string TgMediaId { get; init; }
         public string? DownloadPath { get; set; }
 

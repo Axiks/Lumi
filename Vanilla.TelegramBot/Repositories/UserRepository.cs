@@ -90,7 +90,7 @@ namespace Vanilla.TelegramBot.Repositories
                 userEntity.Images = new List<ImagesEntity>();
                 foreach (var image in user.Images)
                 {
-                    userEntity.Images.Add(new ImagesEntity { TgMediaId = image.TgMediaId });
+                    userEntity.Images.Add(new ImagesEntity { TgMediaId = image.TgMediaId, CoreId = image.CoreId });
                 }
             } 
 

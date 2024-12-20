@@ -1,8 +1,11 @@
-﻿namespace Vanilla.Aspire.Web
+﻿using Vanilla.Aspire.ApiService.Models;
+using Vanilla_App.Services.Projects;
+
+namespace Vanilla.Aspire.Web
 {
     public class UsersApiClient(HttpClient httpClient)
     {
-        public async Task<Vanilla_App.Services.Users.UserModel[]> GetUsersAsync(int maxItems = 10, CancellationToken cancellationToken = default)
+        public async Task<Vanilla_App.Services.Users.UserModel[]> GetUsersAsync( int maxItems = 100, CancellationToken cancellationToken = default)
         {
             List<Vanilla_App.Services.Users.UserModel>? users = null;
 
@@ -22,9 +25,16 @@
             return users?.ToArray() ?? [];
         }
 
-        public async Task<Vanilla_App.Services.Users.UserModel?> GetUserByIdAsync(Guid userId, int maxItems = 10, CancellationToken cancellationToken = default)
+        public async Task<UserModel?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            return await httpClient.GetFromJsonAsync<Vanilla_App.Services.Users.UserModel>(String.Format("/users/{0}", userId.ToString()), cancellationToken);
+            var user = await httpClient.GetFromJsonAsync<UserModel>(String.Format("/users/{0}", userId.ToString()), cancellationToken);
+            
+            return user;
         }
+
+     /*   public async Task<ProjectModel[]> GetUserProjectsByIdAsync(Guid userId, int maxItems = 10, CancellationToken cancellationToken = default)
+        {
+            return await httpClient.GetFromJsonAsync<ProjectModel[]>(String.Format("/users/{0}/projects", userId.ToString()), cancellationToken);
+        }*/
     }
 }
