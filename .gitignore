@@ -367,3 +367,8 @@ FodyWeavers.xsd
 /.env
 /applog/log.txt
 /storage
+/rabbitmq_data
+log.txt
+aspirate-output/
+/Vanilla.Aspire/Vanilla.Aspire.AppHost/appsettings.Development.json
+/Vanilla.Aspire/Vanilla.Aspire.AppHost/appsettings.Production.json
