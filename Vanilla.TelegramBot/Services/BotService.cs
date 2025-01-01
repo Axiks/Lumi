@@ -503,8 +503,10 @@ namespace Vanilla.TelegramBot.Services
                 // Is user registrated in our service?
                 user = _userService.SignInUser(chatId).Result;
             }
-            catch
+            catch(Exception e)
             {
+                _logger.WriteLog("Don`t find the user tg id in own service; TG ID: " + chatId, LogType.Warning);
+
                 /*if (update.Message is null)
                 {
                     _logger.WriteLog("The user could not be created because the action was called outside the scope of the private session.", LogType.Error);

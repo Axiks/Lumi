@@ -102,7 +102,9 @@ namespace Vanilla_App.Services
 
         private List<ProfileImage> ImagesEntityToProfileImagesMapper(List<ImageEntity>? imagesEntity)
         {
-            var domaintorageName = new Uri(configuration.GetValue<string>("cdnDomain")).ToString() + "storage/";
+            var domain = configuration.GetValue<string>("cdnDomain");
+            var domaintorageName = new Uri(domain).ToString() + "storage/";
+
 
             if (imagesEntity is null) return new List<ProfileImage> { };
 

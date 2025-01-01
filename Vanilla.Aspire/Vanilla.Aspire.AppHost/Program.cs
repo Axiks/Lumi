@@ -78,15 +78,14 @@ var telegramBot = builder.AddProject<Projects.Vanilla_TelegramBot>("telegrambot"
     .WaitFor(messaging)
     .WaitFor(postgres);
 
-var cloudflareToken = builder.AddParameter("cloudflareToken", secret: true);
+/*var cloudflareToken = builder.AddParameter("cloudflareToken", secret: true);
 builder
     .AddContainer("cloudflare-lumi-tunnel", "cloudflare/cloudflared", "latest")
     .WithArgs("tunnel", "run")
     //.WithHttpsEndpoint(port: 8080, targetPort: 8080, isProxied: true)
     .WaitFor(webFrontend)
     //.WithReference(webFrontend)
-    .WithP
-    .WithEnvironment("TUNNEL_TOKEN", cloudflareToken);
+    .WithEnvironment("TUNNEL_TOKEN", cloudflareToken);*/
 
 
 builder.Build().Run();
