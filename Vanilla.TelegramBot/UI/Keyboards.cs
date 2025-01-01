@@ -161,6 +161,24 @@ namespace Vanilla.TelegramBot.UI
             return replyMarkuppp;
         }
 
+        public static InlineKeyboardMarkup ToProfileKeypoard(UserContextModel userContext, string urlToDomain)
+        {
+            var profileLinkBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Pass"));
+            profileLinkBtn.Text = "View profile";
+            profileLinkBtn.Url = urlToDomain;
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        profileLinkBtn
+                    }
+                }
+            );
+
+            return replyMarkuppp;
+        }
+
         public static InlineKeyboardMarkup GetCreateProfileKeypoard(UserContextModel userContext)
         {
             var passBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("CreateProfile"));

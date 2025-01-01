@@ -4,7 +4,7 @@ using Vanilla.Common;
 
 namespace Vanilla.Data
 {
-    public class DataContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+    /*public class DataContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
 
         public ApplicationDbContext CreateDbContext(string[] args)
@@ -22,5 +22,5 @@ namespace Vanilla.Data
             return new ApplicationDbContext(optionsBuilder.Options);
         }
 
-    }
+    }*/
 }

@@ -15,7 +15,7 @@
     {
         public required Guid Id { get; init; }
         public required string FileName { get; init; }
-        public string FileHref => String.Format("https://dev-lumi.neko3.space/storage/" + FileName);
+        public required string FileHref { get; init; }
 
     }
 }

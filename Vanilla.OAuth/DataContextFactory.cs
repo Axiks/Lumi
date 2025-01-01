@@ -5,7 +5,7 @@ using Vanilla.Common;
 
 namespace Vanilla.OAuth
 {
-    public class DataContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+/*    public class DataContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
 
         public ApplicationDbContext CreateDbContext(string[] args)
@@ -20,5 +20,5 @@ namespace Vanilla.OAuth
             return new ApplicationDbContext(optionsBuilder.Options);
         }
 
-    }
+    }*/
 }

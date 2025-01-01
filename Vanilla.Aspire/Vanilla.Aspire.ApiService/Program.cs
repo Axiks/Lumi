@@ -22,18 +22,29 @@ builder.AddServiceDefaults();
 // Add services to the container.
 builder.Services.AddProblemDetails();
 
-var settings = new ConfigurationMeneger().Settings;
-if (settings == null) throw new Exception("No found setting section");
+/*var settings = new ConfigurationMeneger().Settings;
+if (settings == null) throw new Exception("No found setting section");*/
 
 builder.Services.AddTransient<StorageModule>();
 builder.Services.AddTransient<Vanilla.OAuth.Services.UserRepository>();
 
-builder.Services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
+/*builder.Services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
    options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
    ServiceLifetime.Transient);
 
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
                options.UseNpgsql(settings.CoreDatabaseConfiguration.ConnectionString),
+               ServiceLifetime.Transient);*/
+
+
+var connectionStringOAuthDb = builder.Configuration.GetConnectionString("oauthdb");
+builder.Services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
+   options.UseNpgsql(connectionStringOAuthDb),
+   ServiceLifetime.Transient);
+
+var connectionStringCoreDb = builder.Configuration.GetConnectionString("coredb");
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+               options.UseNpgsql(connectionStringCoreDb),
                ServiceLifetime.Transient);
 
 builder.Services.AddTransient<IUserRepository, Vanilla_App.Services.Users.Repository.UserRepository>();
@@ -48,11 +59,14 @@ builder.Services.AddMassTransit(x =>
     {
         //x.AddRequestClient<MessageConsumer>(new Uri("exchange:tg-user"));
 
-        cfg.Host(settings.RabitMQConfiguration.Host, "/", h =>
+        var connectionStringRQ = builder.Configuration.GetConnectionString("lumi-mq");
+        cfg.Host(connectionStringRQ);
+
+        /*cfg.Host(settings.RabitMQConfiguration.Host, "/", h =>
         {
             h.Username(settings.RabitMQConfiguration.Username);
             h.Password(settings.RabitMQConfiguration.Password);
-        });
+        });*/
 
         cfg.ConfigureEndpoints(context);
     });
@@ -81,23 +95,12 @@ app.Run();
 class UserAPI
 {
     WebApplication _app;
-    UserService _userService;
-    IProjectService _projectService;
-    SettingsModel _settings;
-    IRequestClient<TgUserRequest> tgRequestClient;
 
     public UserAPI(WebApplication app, ServiceProvider serviceProvider)
     {
         _app = app;
-        _userService = serviceProvider.GetService<UserService>();
-        _projectService = serviceProvider.GetService<IProjectService>();
-
-        ConfigurationMeneger confManager = new ConfigurationMeneger();
-        _settings = confManager.Settings;
-
         RouteRegistration();
     }
-
 
     void RouteRegistration()
     {
@@ -116,14 +119,14 @@ class UserAPI
 
 static class TestMinimalAPI
 {
-    public async static void RunMinimalApi(WebApplication app, ServiceProvider serviceProvider)
+    public async static void RunMinimalApi(WebApplication app, ServiceProvider serviceProvider, String domain)
     {
         //var userService = serviceProvider.GetService<IUserService>();
         var oauthUserRepository = serviceProvider.GetService<Vanilla.OAuth.Services.UserRepository>();
         var userService = serviceProvider.GetService<UserService>();
-
+/*
         ConfigurationMeneger confManager = new ConfigurationMeneger();
-        var _settings = confManager.Settings;
+        var _settings = confManager.Settings;*/
 
         async Task<string> PrintProfilesList()
         {
@@ -136,7 +139,9 @@ static class TestMinimalAPI
             {
                 var nickanme = oauthUserRepository.GetUserAsync(user.Id).Result.Nickname;
 
-                var profileUrl = String.Format("https://{0}/users/{1}", _settings.Domain, user.Id.ToString());
+
+
+                var profileUrl = String.Format("https://{0}/users/{1}", domain, user.Id.ToString());
                 message += String.Format("**[{0}]({1})** \n --- \n\n", nickanme, profileUrl);
             }
 

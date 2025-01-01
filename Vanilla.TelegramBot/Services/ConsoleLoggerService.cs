@@ -7,7 +7,7 @@ using Vanilla.TelegramBot.Models;
 
 namespace Vanilla.TelegramBot.Services
 {
-    public class ConsoleLoggerService(IUserService userService) : ILogger
+    public class ConsoleLoggerService(IUserService userService) : Vanilla.TelegramBot.Interfaces.ILogger
     {
         string _logFolderPath = "AppLog";
         public List<LogModel> ReadLogs() => TakeAllLogs();

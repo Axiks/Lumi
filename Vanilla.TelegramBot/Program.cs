@@ -13,6 +13,7 @@ using System;
 using System.Text;
 using Telegram.BotAPI.AvailableTypes;
 using Vanilla.Common;
+using Vanilla.Common.Models;
 using Vanilla.OAuth.Services;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Message_Broker;
@@ -61,14 +62,15 @@ namespace Vanilla.TelegramBot
 
             // Get values from the config given their key and their target type.
             //var settings = config.GetRequiredSection("Settings").Get<SettingsModel>();
-            var settings = new ConfigurationMeneger().Settings;
-            if (settings == null) throw new Exception("No found setting section");
+           /* var settings = new ConfigurationMeneger().Settings;
+            if (settings == null) throw new Exception("No found setting section");*/
 
             //var services = new ServiceCollection();
             //var services = PrepareServices(settings);
 
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.UseUrls("http://localhost:5007");
+
 
 /*            builder.Services.AddMassTransit(x =>
             {
@@ -95,33 +97,65 @@ namespace Vanilla.TelegramBot
             var services = builder.Services;
             //PrepareDB(serviceProvider);
 
-
+            var connectionStringTgBotDb = builder.Configuration.GetConnectionString("tgbotdb");
             services.AddDbContextFactory<ApplicationDbContext>(options =>
-               options.UseNpgsql(settings.TgBotDatabaseConfiguration.ConnectionString),
+               options.UseNpgsql(connectionStringTgBotDb),
                ServiceLifetime.Transient);
 
             services.AddTransient<StorageModule>();
             services.AddTransient<Interfaces.IUserRepository, Repositories.UserRepository>();
             services.AddTransient<IBonusService, BonusService>();
             services.AddTransient<IUserService, Services.UserService>();
-            services.AddSingleton<IBotService, BotService>();
-            services.AddTransient<ILogger, ConsoleLoggerService>();
 
+            //var botAccessToken = builder.Configuration.GetValue<string>("hostnameRQ");
+            services.AddSingleton<IBotService, BotService>();
+
+            services.AddTransient<Vanilla.TelegramBot.Interfaces.ILogger, ConsoleLoggerService>();
+
+            var connectionStringOAuthDb = builder.Configuration.GetConnectionString("oauthdb");
             services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
-               options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
+               options.UseNpgsql(connectionStringOAuthDb),
                ServiceLifetime.Transient);
             services.AddTransient<Vanilla.OAuth.Services.UserRepository>();
             var serviceProvider = services.BuildServiceProvider();
             var oauthRepository = serviceProvider.GetService<Vanilla.OAuth.Services.UserRepository>();
-            services.AddTransient<AuthService>(provider => new AuthService(settings.TokenConfiguration, oauthRepository));
+
+            var tokenPrivateKey = builder.Configuration.GetValue<string>("tokenPrivateKey");
+            var tokenLifetimeSec = builder.Configuration.GetValue<int>("tokenLifetimeSec");
+            var tokenIssuer = builder.Configuration.GetValue<string>("tokenIssuer");
+            var tokenAudience = builder.Configuration.GetValue<string>("tokenAudience");
+            var tokenConfig = new TokenConfiguration {
+                PrivateKey = tokenPrivateKey,
+                LifetimeSec = tokenLifetimeSec,
+                Issuer = tokenIssuer,
+                Audience = tokenAudience
+            };
+            services.AddTransient<AuthService>(provider => new AuthService(tokenConfig, oauthRepository));
 
             services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
-               options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
+               options.UseNpgsql(connectionStringOAuthDb),
                ServiceLifetime.Transient);
 
+
+            var connectionStringCoreDb = builder.Configuration.GetConnectionString("coredb");
             services.AddDbContextFactory<Vanilla.Data.ApplicationDbContext>(options =>
-               options.UseNpgsql(settings.CoreDatabaseConfiguration.ConnectionString),
+               options.UseNpgsql(connectionStringCoreDb),
                ServiceLifetime.Transient);
+
+            /* services.AddDbContextFactory<Vanilla.Data.ApplicationDbContext>(options =>
+                options.UseNpgsql(ConnectionStringDB(builder.Configuration, settings.CoreDatabaseConfiguration.Database)),
+                ServiceLifetime.Transient);
+
+             builder.AddNpgsqlDbContext<Vanilla.Data.ApplicationDbContext>(connectionName: "coredb");
+
+             builder.Services.AddDbContext<ITestDbContext, TestDbContext>(optionsBuilder =>
+             {
+                 optionsBuilder.UseSqlServer(ConnectionString);
+             }, contextLifetime: ServiceLifetime.Singleton);
+
+             builder.EnrichSqlServerDbContext<TestDbContext>();
+ */
+
 
             services.AddTransient<Vanilla_App.Services.Users.Repository.IUserRepository, Vanilla_App.Services.Users.Repository.UserRepository>();
             services.AddTransient<IProjectRepository, ProjectRepository>();
@@ -130,6 +164,8 @@ namespace Vanilla.TelegramBot
 
             serviceProvider = services.BuildServiceProvider();
             PrepareDB(serviceProvider);
+
+            //builder.AddRabbitMQClient(connectionName: "messaging");
 
             builder.Services.AddMassTransit(x =>
             {
@@ -152,11 +188,24 @@ namespace Vanilla.TelegramBot
                         e.ConfigureConsumer<TgMessageConsumer>(context);
                     });
 
-                    cfg.Host(settings.RabitMQConfiguration.Host, "/", h =>
+                   
+/*
+                    var hostnameRQ = builder.Configuration.GetValue<string>("hostnameRQ");
+                    var usernameRQ = builder.Configuration.GetValue<string>("usernameRQ");
+                    var passwordRQ = builder.Configuration.GetValue<string>("passwordRQ");
+                    ushort portRQ = builder.Configuration.GetValue<ushort>("portRQ");*/
+
+                    var connectionStringRQ = builder.Configuration.GetConnectionString("lumi-mq");
+
+                    cfg.Host(connectionStringRQ);
+
+              /*     cfg.Host(hostnameRQ, portRQ, "/", h =>
                     {
-                        h.Username(settings.RabitMQConfiguration.Username);
-                        h.Password(settings.RabitMQConfiguration.Password);
-                    });
+                        h.Username(usernameRQ);
+                        h.Password(passwordRQ);
+                        *//*    h.Username(settings.RabitMQConfiguration.Username);
+                            h.Password(settings.RabitMQConfiguration.Password);*//*
+                    });*/
 
                     /*                cfg.ReceiveEndpoint("tg-user", e =>
                                     {
@@ -198,7 +247,7 @@ namespace Vanilla.TelegramBot
             void RunBotWatchdog()
             {
                 var botService = serviceProvider.GetService<IBotService>();
-                var logger = serviceProvider.GetService<ILogger>();
+                var logger = serviceProvider.GetService<Vanilla.TelegramBot.Interfaces.ILogger>();
                 try
                 {
                     var x = botService.StartListening();
@@ -222,67 +271,14 @@ namespace Vanilla.TelegramBot
 
         }
 
-        public static ServiceCollection PrepareServices(SettingsModel settings)
+/*        static string ConnectionStringDB(ConfigurationManager configurationManager, string dbName)
         {
-            var services = new ServiceCollection();
+            var host = configurationManager.GetValue<string>("hostDB");
+            var username = configurationManager.GetValue<string>("usernameDB");
+            var password = configurationManager.GetValue<string>("passwordDB");
+            return string.Format("Host={0};Database={1};Username={2};Password={3}", Environment.GetEnvironmentVariable("DB_HOST") ?? host, dbName, username, password);
+        }*/
 
-            services.AddMassTransit(x =>
-            {
-                x.AddConsumer<AboutUserConsumer>();
-
-                x.UsingRabbitMq((context, cfg) =>
-                {
-                    cfg.Host("localhost", "/", h => {
-                        h.Username("guest");
-                        h.Password("guest");
-                    });
-
-                    cfg.ConfigureEndpoints(context);
-                });
-
-                x.ConfigureHealthCheckOptions(options =>
-                {
-                    options.Name = "masstransit";
-                    options.MinimalFailureStatus = HealthStatus.Unhealthy;
-                    options.Tags.Add("health");
-                });
-            });
-
-
-
-            services.AddDbContextFactory<ApplicationDbContext>(options =>
-                options.UseNpgsql(settings.TgBotDatabaseConfiguration.ConnectionString),
-                ServiceLifetime.Transient);
-
-            services.AddTransient<Interfaces.IUserRepository, Repositories.UserRepository>();
-            services.AddTransient<IBonusService, BonusService>();
-            services.AddTransient<IUserService, Services.UserService>();
-            services.AddSingleton<IBotService, BotService>();
-            services.AddTransient<ILogger, ConsoleLoggerService>();
-
-            services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
-               options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
-               ServiceLifetime.Transient);
-            services.AddTransient<Vanilla.OAuth.Services.UserRepository>();
-            var serviceProvider = services.BuildServiceProvider();
-            var oauthRepository = serviceProvider.GetService<Vanilla.OAuth.Services.UserRepository>();
-            services.AddTransient<AuthService>(provider => new AuthService(settings.TokenConfiguration, oauthRepository));
-
-            services.AddDbContextFactory<Vanilla.OAuth.ApplicationDbContext>(options =>
-               options.UseNpgsql(settings.OAuthDatabaseConfiguration.ConnectionString),
-               ServiceLifetime.Transient);
-
-            services.AddDbContextFactory<Vanilla.Data.ApplicationDbContext>(options =>
-               options.UseNpgsql(settings.CoreDatabaseConfiguration.ConnectionString),
-               ServiceLifetime.Transient);
-
-            services.AddTransient<Vanilla_App.Services.Users.Repository.IUserRepository, Vanilla_App.Services.Users.Repository.UserRepository>();
-            services.AddTransient<IProjectRepository, ProjectRepository>();
-            services.AddTransient<Vanilla_App.Services.UserService>();
-            services.AddTransient<IProjectService, ProjectService>();
-
-            return services;
-        }
 
         public static void PrepareDB(ServiceProvider serviceProvider)
         {
@@ -304,7 +300,7 @@ namespace Vanilla.TelegramBot
         }
 
 
-        async static void RunMinimalApi(string[] args, ServiceProvider serviceProvider)
+/*        async static void RunMinimalApi(string[] args, ServiceProvider serviceProvider)
         {
             var userService = serviceProvider.GetService<IUserService>();
             var projectsService = serviceProvider.GetService<IProjectService>();
@@ -405,7 +401,7 @@ namespace Vanilla.TelegramBot
 
 
             app.Run();
-        }
+        }*/
 
 
 

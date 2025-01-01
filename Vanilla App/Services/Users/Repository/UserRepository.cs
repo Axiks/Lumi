@@ -5,10 +5,11 @@ using Vanilla.Data.Entities;
 using Vanilla_App.Services.Projects;
 using Vanilla_App.Module;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 
 namespace Vanilla_App.Services.Users.Repository
 {
-    public class UserRepository(ApplicationDbContext _dbContext, StorageModule _storageModule) : IUserRepository
+    public class UserRepository(ApplicationDbContext _dbContext, StorageModule _storageModule, IConfiguration configuration) : IUserRepository
     {
 
         public async Task<List<ProjectModel>> GetProjectsAsync(Guid userId)
@@ -98,7 +99,8 @@ namespace Vanilla_App.Services.Users.Repository
 
             _dbContext.SaveChanges();
 
-            return new ProfileImage { FileName = filename, Id = userImageEntity.Id };
+            var domaintorageName = new Uri(configuration.GetValue<string>("cdnDomain")).ToString() + "storage/";
+            return new ProfileImage { FileName = filename, Id = userImageEntity.Id, FileHref = domaintorageName + filename };
         }
 
         public void RemoveProfileImage(Guid userId, Guid imageId)

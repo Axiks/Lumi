@@ -23,46 +23,34 @@ namespace Vanilla.TelegramBot.Services
     public class BotService : IBotService
     {
         private readonly TelegramBotClient _botClient;
-        private readonly SettingsModel _settings;
         //private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
         private readonly IProjectService _projectService;
         private readonly IBonusService _bonusService;
 
-        private readonly ILogger _logger;
+        private readonly Vanilla.TelegramBot.Interfaces.ILogger _logger;
 
         private readonly InlineSearchService _inlineSearchService;
 
         private List<UserContextModel> _usersContext = new List<UserContextModel>();
 
-        public BotService(IUserService userService, IProjectService projectService, ILogger logger, IBonusService bonusService)
+        public BotService(IUserService userService, IProjectService projectService, Vanilla.TelegramBot.Interfaces.ILogger logger, IBonusService bonusService, IConfiguration configuration)
         {
             _userService = userService;
             _projectService = projectService;
             _logger = logger;
             _bonusService = bonusService;
 
+            var botToken = configuration.GetValue<string>("botAccessToken");
+            var webDomainName = configuration.GetValue<string>("domain");
+            var cdnDomainName = configuration.GetValue<string>("cdnDomain");
 
-            ConfigurationMeneger confManager = new ConfigurationMeneger();
-            var _settings = confManager.Settings;
-
-/*            // Build a config object, using env vars and JSON providers.
-            IConfigurationRoot config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
-
-            // Get values from the config given their key and their target type.
-            _settings = config.GetRequiredSection("Settings").Get<SettingsModel>();*/
-            //if (_settings == null) throw new Exception("No found setting section");
-
-            string botToken = Environment.GetEnvironmentVariable("ACCESS_TOKEN") ?? _settings.BotAccessToken;
             _botClient = new TelegramBotClient(botToken);
 
-            var domainName = _settings.Domain;
+            //var domainName = _settings.Domain;
 
 
-            _inlineSearchService = new InlineSearchService(_botClient, _projectService, _userService, domainName);
+            _inlineSearchService = new InlineSearchService(_botClient, _projectService, _userService, webDomainName, cdnDomainName);
 
             _logger.WriteLog("Init bot service", LogType.Information);
         }

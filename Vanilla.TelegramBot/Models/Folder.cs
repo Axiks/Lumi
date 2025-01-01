@@ -9,7 +9,7 @@ namespace Vanilla.TelegramBot.Models
 {
     public class Folder : IFolder
     {
-        readonly ILogger _logger;
+        readonly Vanilla.TelegramBot.Interfaces.ILogger _logger;
 
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
@@ -18,7 +18,7 @@ namespace Vanilla.TelegramBot.Models
         readonly List<IPage> _pages;
         readonly List<int> _sendMessages;
         private bool _isReadyMoveToNextPage;
-        public Folder(List<IPage> pages, TelegramBotClient botClient, UserContextModel userContext, ILogger logger)
+        public Folder(List<IPage> pages, TelegramBotClient botClient, UserContextModel userContext, Vanilla.TelegramBot.Interfaces.ILogger logger)
         {
             _logger = logger;
             _userContext = userContext;

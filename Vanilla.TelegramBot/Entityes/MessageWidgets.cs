@@ -85,27 +85,11 @@ namespace Vanilla.TelegramBot.Entityes
         {
             var pullOptions = new List<InputPollOption>
                 {
-                    new InputPollOption
-                    {
-                        Text = FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.InDevelopment) + " " +  userContext.ResourceManager.GetString(DevelopmentStatusEnum.InDevelopment.ToString()),
-                    },
-                    new InputPollOption
-                    {
-                        Text = FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.Developed) + " " + userContext.ResourceManager.GetString(DevelopmentStatusEnum.Developed.ToString())
-                    },
-                    new InputPollOption
-                    {
-                        Text = FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.PlannedToDevelop) + " " + userContext.ResourceManager.GetString(DevelopmentStatusEnum.PlannedToDevelop.ToString())
-                    },
-                    new InputPollOption
-                    {
-                        Text = FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.Abandoned) + " " +  userContext.ResourceManager.GetString(DevelopmentStatusEnum.Abandoned.ToString())
-                    }
-                    ,
-                    new InputPollOption
-                    {
-                        Text = FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.Frozen) + " " +  userContext.ResourceManager.GetString(DevelopmentStatusEnum.Frozen.ToString())
-                    }
+                    new InputPollOption(FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.InDevelopment) + " " +  userContext.ResourceManager.GetString(DevelopmentStatusEnum.InDevelopment.ToString())),
+                    new InputPollOption(FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.Developed) + " " + userContext.ResourceManager.GetString(DevelopmentStatusEnum.Developed.ToString())),
+                    new InputPollOption(FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.PlannedToDevelop) + " " + userContext.ResourceManager.GetString(DevelopmentStatusEnum.PlannedToDevelop.ToString())),
+                    new InputPollOption(FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.Abandoned) + " " +  userContext.ResourceManager.GetString(DevelopmentStatusEnum.Abandoned.ToString())),
+                    new InputPollOption(FormationHelper.GetEmojiStatus(DevelopmentStatusEnum.Frozen) + " " +  userContext.ResourceManager.GetString(DevelopmentStatusEnum.Frozen.ToString()))
                 };
 
             var pollParameters = new SendPollArgs(chatId, userContext.ResourceManager.GetString("PoolDescription"), pullOptions);

@@ -11,7 +11,7 @@ namespace Vanilla.TelegramBot.Pages.Projects
     internal class AboutProjectFolder : AbstractFolder, IFolder
     {
         const string? folderName = "Проекти";
-        public AboutProjectFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger, bool isWithCannelButton, IProjectService projectService) : base(botClient, userContext, userService, logger, isWithCannelButton, folderName: folderName)
+        public AboutProjectFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, Vanilla.TelegramBot.Interfaces.ILogger logger, bool isWithCannelButton, IProjectService projectService) : base(botClient, userContext, userService, logger, isWithCannelButton, folderName: folderName)
         {
             var user = userContext.User;
             //var projectCreateModel = new BotCreateProjectModel(user.UserId, user.TelegramId);

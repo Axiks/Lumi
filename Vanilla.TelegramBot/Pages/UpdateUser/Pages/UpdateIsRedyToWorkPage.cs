@@ -86,14 +86,8 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
         {
             var pullOptions = new List<InputPollOption>
                 {
-                    new InputPollOption
-                    {
-                        Text = BoolPoolAnswerEnum.Yes.ToString(),
-                    },
-                    new InputPollOption
-                    {
-                        Text = BoolPoolAnswerEnum.No.ToString(),
-                    },
+                    new InputPollOption(BoolPoolAnswerEnum.Yes.ToString()),
+                    new InputPollOption(BoolPoolAnswerEnum.No.ToString()),
                 };
 
             return pullOptions;

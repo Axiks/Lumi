@@ -15,7 +15,7 @@ namespace Vanilla.TelegramBot.Pages.CreateUser
     internal class UserCreateProfileFolder : AbstractFolder, IFolder
     {
         const string? folderName = "Профіль";
-        public UserCreateProfileFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger) : base(botClient, userContext, userService, logger, isWithCannelButton: false, folderName: folderName)
+        public UserCreateProfileFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, Vanilla.TelegramBot.Interfaces.ILogger logger) : base(botClient, userContext, userService, logger, isWithCannelButton: false, folderName: folderName)
         {
             var userModel = userContext.UpdateUserContext;
 

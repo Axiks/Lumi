@@ -5,13 +5,14 @@ using Vanilla.TelegramBot.Entityes;
 using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.UI;
 using Vanilla.TelegramBot.UI.Widgets;
 using Vanilla_App.Services.Projects;
 using UserModel = Vanilla.TelegramBot.Models.UserModel;
 
 namespace Vanilla.TelegramBot.Services
 {
-    public class InlineSearchService(TelegramBotClient _botClient, IProjectService _projectService, IUserService _userService, string _domainName)
+    public class InlineSearchService(TelegramBotClient _botClient, IProjectService _projectService, IUserService _userService, string _webDomainName, string _cdnDomainName)
     {
         public void InlineSearch(Update update, UserContextModel userContext)
         {
@@ -132,14 +133,14 @@ namespace Vanilla.TelegramBot.Services
                 var imgUrl = _botClient.BuildFileDownloadLink(file);*/
 
                 //var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + ".jpg";
-                var profileImgUrl = "https://"+ _domainName + "/storage/" + user.Images.First().TgMediaId + ".jpg";
+                var profileImgUrl = _cdnDomainName + "/storage/" + user.Images.First().TgMediaId + ".jpg";
 
                 inputMessage.LinkPreviewOptions = new Telegram.BotAPI.AvailableTypes.LinkPreviewOptions
                 {
                     PreferLargeMedia = true,
                     ShowAboveText = true,
                     //Url = "https://img.freepik.com/premium-vector/smile-girl-anime-error-404-page-found_150972-827.jpg"
-                    Url = profileImgUrl
+                    Url = profileImgUrl,
                 };
             }
             inputMessage.ParseMode = "HTML";
@@ -147,19 +148,23 @@ namespace Vanilla.TelegramBot.Services
             var description = "🐱 @" + user.Username;
 
 
+            var keyboard = Keyboards.ToProfileKeypoard(userContext, _webDomainName + "/users/" + user.UserId);
             var result = new InlineQueryResultArticle
             {
                 Id = ResultId,
                 Title = name,
                 Description = description,
                 InputMessageContent = inputMessage,
+                ReplyMarkup = keyboard
                 //ThumbnailUrl = "https://avatarfiles.alphacoders.com/293/293990.jpg",
             };
 
             if (user.Images is not null && user.Images.Count() > 0)
             {
-                var profileImgUrl = "https://"+ _domainName + "/storage/" + user.Images.First().TgMediaId + ".jpg";
+                var profileImgUrl = _cdnDomainName + "/storage/" + user.Images.First().TgMediaId + ".jpg";
                 result.ThumbnailUrl = profileImgUrl;
+                result.Url = _webDomainName + "/users/" + user.UserId;
+                result.HideUrl = true;
             }
 
             return result;

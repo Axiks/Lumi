@@ -1,4 +1,5 @@
-﻿using Vanilla_App.Services.Bonus.Repository;
+﻿using Microsoft.Extensions.Configuration;
+using Vanilla_App.Services.Bonus.Repository;
 
 namespace Vanilla_App.Services.Bonus
 {
@@ -6,9 +7,12 @@ namespace Vanilla_App.Services.Bonus
     {
         private IBonusRepository _repository { get; init; }
         private List<long> _usersWithBonus { get; }
-        public BonusService()
+        public BonusService(IConfiguration configuration)
         {
-            _repository = new BonusRepository();
+            var provisionBonusApiUrl = configuration.GetValue<string>("provisionBonusApiUrl");
+            var provisionBonusApiAccessToken = configuration.GetValue<string>("provisionBonusApiAccessToken");
+
+            _repository = new BonusRepository(provisionBonusApiUrl, provisionBonusApiAccessToken);// temp
             //_repository = new TestBonusRepository();
             _usersWithBonus = _repository.GetUsersWithBonus();
         }

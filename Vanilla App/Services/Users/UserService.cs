@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Configuration;
 using Vanilla.Data.Entities;
 using Vanilla_App.Module;
 using Vanilla_App.Services.Projects;
@@ -8,7 +8,7 @@ using Vanilla_App.Services.Users.Repository;
 
 namespace Vanilla_App.Services
 {
-    public class UserService(IUserRepository _coreUserRepository, IProjectRepository _projectRepository, Vanilla.OAuth.Services.UserRepository _oauthUserService) : IUserService
+    public class UserService(IUserRepository _coreUserRepository, IProjectRepository _projectRepository, Vanilla.OAuth.Services.UserRepository _oauthUserService, IConfiguration configuration) : IUserService
     {
         public async Task<List<UserModel>> GetUsers()
         {
@@ -90,7 +90,7 @@ namespace Vanilla_App.Services
             return await _coreUserRepository.GetProjectsAsync(user.Id);
         }
 
-        private static UserModel ToUserModelMapper(UserEntity entity, Vanilla.OAuth.Models.BasicUserModel OAuthUser) => new UserModel
+        private UserModel ToUserModelMapper(UserEntity entity, Vanilla.OAuth.Models.BasicUserModel OAuthUser) => new UserModel
         {
             Id = entity.Id,
             About = entity.About,
@@ -100,9 +100,11 @@ namespace Vanilla_App.Services
             ProfileImages = ImagesEntityToProfileImagesMapper(entity.ProfileImages),
         };
 
-        private static List<ProfileImage> ImagesEntityToProfileImagesMapper(List<ImageEntity>? imagesEntity)
+        private List<ProfileImage> ImagesEntityToProfileImagesMapper(List<ImageEntity>? imagesEntity)
         {
-            if(imagesEntity is null) return new List<ProfileImage> { };
+            var domaintorageName = new Uri(configuration.GetValue<string>("cdnDomain")).ToString() + "storage/";
+
+            if (imagesEntity is null) return new List<ProfileImage> { };
 
             var images = new List<ProfileImage>();
 
@@ -112,7 +114,8 @@ namespace Vanilla_App.Services
                     new ProfileImage
                     {
                         Id = imageEntity.Id,
-                        FileName = imageEntity.FileName
+                        FileName = imageEntity.FileName,
+                        FileHref = domaintorageName + imageEntity.FileName
                     }
                 );
             }

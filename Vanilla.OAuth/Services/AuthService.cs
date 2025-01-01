@@ -4,7 +4,6 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using Vanilla.Common.Models;
-using Vanilla.OAuth.Interfaces;
 using Vanilla.OAuth.Models;
 
 namespace Vanilla.OAuth.Services
@@ -17,15 +16,6 @@ namespace Vanilla.OAuth.Services
         {
             _tokenConfig = tokenSetting;
             _userRepository = userRepository;
-            /*// Build a config object, using env vars and JSON providers.
-            IConfigurationRoot config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
-
-            // Get values from the config given their key and their target type.
-            settings = config.GetRequiredSection("Settings").Get<Settings>();
-            if (settings == null) throw new Exception("No found setting section");*/
         }
         public string GenerateToken(Guid userId)
         {

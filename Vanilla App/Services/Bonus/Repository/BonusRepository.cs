@@ -8,7 +8,7 @@ namespace Vanilla_App.Services.Bonus.Repository
     {
         readonly IBonusApi _api;
         readonly string Token;
-        public BonusRepository()
+        public BonusRepository(string url, string token)
         {
             /*
                         var setting = new RefitSettings
@@ -21,13 +21,13 @@ namespace Vanilla_App.Services.Bonus.Repository
 
                         _api = RestService.For<IBonusApi>(refit);*/
 
-            ConfigurationMeneger confManager = new ConfigurationMeneger();
-            var _settings = confManager.Settings.ProvisionBonusApiConfiguration;
-            Token = _settings.Token;
+            //ConfigurationMeneger confManager = new ConfigurationMeneger();
+            //var _settings = confManager.Settings.ProvisionBonusApiConfiguration;
+            Token = token;
 
             try
             {
-                _api = RestService.For<IBonusApi>(_settings.Url);
+                _api = RestService.For<IBonusApi>(url);
             }
             catch (Exception e)
             {

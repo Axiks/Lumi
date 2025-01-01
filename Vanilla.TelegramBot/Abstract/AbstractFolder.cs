@@ -12,7 +12,7 @@ namespace Vanilla.TelegramBot.Abstract
 {
     public abstract class AbstractFolder : IFolder
     {
-        readonly ILogger _logger;
+        readonly Vanilla.TelegramBot.Interfaces.ILogger _logger;
 
         readonly TelegramBotClient _botClient;
         readonly UserContextModel _userContext;
@@ -43,7 +43,7 @@ namespace Vanilla.TelegramBot.Abstract
         string? _folderName;
 
 
-        public AbstractFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, ILogger logger, bool isWithCannelButton = true, string folderName = null)
+        public AbstractFolder(TelegramBotClient botClient, UserContextModel userContext, IUserService userService, Vanilla.TelegramBot.Interfaces.ILogger logger, bool isWithCannelButton = true, string folderName = null)
         {
             _logger = logger;
             _userContext = userContext;
