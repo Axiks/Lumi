@@ -164,7 +164,7 @@ namespace Vanilla.TelegramBot.Services
                 var profileImgUrl = _cdnDomainName + "/storage/" + user.Images.First().TgMediaId + ".jpg";
                 result.ThumbnailUrl = profileImgUrl;
                 result.Url = _webDomainName + "/users/" + user.UserId;
-                result.HideUrl = true;
+                //result.HideUrl = true;
             }
 
             return result;

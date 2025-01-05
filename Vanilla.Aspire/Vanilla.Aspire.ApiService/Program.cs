@@ -104,8 +104,10 @@ class UserAPI
 
     void RouteRegistration()
     {
-        var path = Path.Combine(Directory.GetCurrentDirectory(), @"../../", "storage");
-        var filePath = new PhysicalFileProvider(path);
+        var rootPath = Path.Combine(Directory.GetCurrentDirectory(), @"../../");
+        var storagePath = Path.Combine(rootPath, "storage");
+        //System.IO.Directory.CreateDirectory(storagePath);
+        var filePath = new PhysicalFileProvider(storagePath);
 
         _app.UseStaticFiles(new StaticFileOptions
         {

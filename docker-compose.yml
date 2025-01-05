@@ -1,21 +1,110 @@
-version: '3.4'
-
 services:
-  lumi-core-service:
-    image: lumi-app:latest
-    depends_on:
-        - "lumi_db"
-    build: .
+  aspire-dashboard:
+    container_name: "aspire-dashboard"
+    image: "mcr.microsoft.com/dotnet/aspire-dashboard:9.0"
     environment:
-        ACCESS_TOKEN: "${ACCESS_TOKEN}"
-        DOTNET_ENVIRONMENT: Docker-Production
-    volumes:
-      - ./applog:/app/AppLog
-      - ./storage:/app/storage
+      DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
+    ports:
+    - target: 18888
+      published: 18888
+    restart: unless-stopped
     networks:
         - lumi-net-dev
+
+  lumi-apiservice-service:
+    container_name: "apiservice"
+    image: "lumi/apiservice:latest"
+    build:
+      context: .
+      dockerfile: Vanilla.Aspire/Vanilla.Aspire.ApiService/Dockerfile
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "80"
+      DOTNET_ENVIRONMENT: "${DOTNET_ENVIRONMENT}"
+      ConnectionStrings__coredb: $COREDB_CONNECTION_STRING
+      ConnectionStrings__oauthdb: $OAUTH_CONNECTION_STRING
+      ConnectionStrings__lumi-mq: $RABBITMQ_CONNECTION_STRING
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "apiservice"
+      cdnDomain: $CDN_DOMAIN
+    # ports:
+    # - target: 80
+    #   published: 10000
+    restart: unless-stopped
+    volumes:
+      - ./storage:/storage
+    networks:
+        - lumi-net-dev
+    depends_on:
+        - "lumi-mq"
+        - "lumi-db" 
   
-  lumi_db:
+  lumi-webfrontend-service:
+    container_name: "webfrontend"
+    # image: "lumi/webfrontend:latest"
+    build:
+      context: .
+      dockerfile: Vanilla.Aspire/Vanilla.Aspire.Web/Dockerfile
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      Kestrel__Endpoints__https__Url: "https://*:8080"
+      services__apiservice__http__0: "http://apiservice:80"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "webfrontend"
+      # ConnectionStrings__apiservice: "https://apiservice:8083"
+    # ports:
+    # - target: 8080
+    #   published: 10002
+    restart: unless-stopped
+    networks:
+        - lumi-net-dev
+    depends_on:
+        - "lumi-apiservice-service"
+  
+  lumi-telegrambot-service:
+    container_name: "telegrambot"
+    # image: "lumi/telegrambot:latest"
+    build:
+      context: .
+      dockerfile: Vanilla.TelegramBot/Dockerfile
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      DOTNET_ENVIRONMENT: "${DOTNET_ENVIRONMENT}"
+      ConnectionStrings__coredb: $COREDB_CONNECTION_STRING
+      ConnectionStrings__oauthdb: $OAUTH_CONNECTION_STRING
+      ConnectionStrings__tgbotdb: $TGBOT_CONNECTION_STRING
+      ConnectionStrings__lumi-mq: $RABBITMQ_CONNECTION_STRING
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_SERVICE_NAME: "telegrambot"
+      domain: $WEB_DOMAIN
+      cdnDomain: $CDN_DOMAIN
+      botAccessToken: $BOT_ACCESS_TOKEN
+      provisionBonusApiUrl: $PROVISION_BONUS_API_DOMAIN
+      provisionBonusApiAccessToken: $PROVISION_BONUS_API_ACCESS_TOKEN
+      tokenPrivateKey: ${TOKEN_PRIVATE_KEY}
+      tokenLifetimeSec: $TOKEN_LIFETIME_SEC
+      tokenIssuer: ${TOKEN_ISSUER}
+      tokenAudience: ${TOKEN_AUDIENCE}
+    restart: unless-stopped
+    volumes:
+      - ./storage:/app/storage
+      - ./applog:/app/AppLog
+    networks:
+        - lumi-net-dev
+    depends_on:
+        - "lumi-mq"
+        - "lumi-db"
+  
+  lumi-db:
+    container_name: "lumi-db"
     image: postgres:latest
     ports:
       - "5434:5432"
@@ -25,32 +114,32 @@ services:
       - pgconf:/etc/postgresql
       - pglog:/var/log/postgresql
     environment:
-        POSTGRES_DB: "${DB_NAME}"
-        POSTGRES_USER: "${DB_USERNAME}"
-        POSTGRES_PASSWORD: "${DB_PASSWORD}"
+        POSTGRES_DB: $DB_NAME
+        POSTGRES_USER: $DB_USERNAME
+        POSTGRES_PASSWORD: $DB_PASSWORD
     networks:
         - lumi-net-dev
 
-  lumi-rabbitmq:
+  lumi-mq:
+    container_name: "lumi-mq"
     image: rabbitmq:4.0.0-management
-    container_name: rabbitmq
     ports:
-      - 5672:5672
+      # - 5672:5672
       - 15672:15672
     volumes:
       - ./rabbitmq_data:/var/lib/rabbitmq
+    environment:
+        RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
+        RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
     networks:
         - lumi-net-dev
 
   lumi-tunnel:
-    container_name: cloudflared-tunnel
     image: cloudflare/cloudflared
-    depends_on:
-        - "lumi-core-service"
     restart: unless-stopped
     command: tunnel run
     environment:
-      TUNNEL_TOKEN: "${TUNNEL_TOKEN}"
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
     networks:
         - lumi-net-dev
 
