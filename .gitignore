@@ -372,3 +372,5 @@ log.txt
 aspirate-output/
 /Vanilla.Aspire/Vanilla.Aspire.AppHost/appsettings.Development.json
 /Vanilla.Aspire/Vanilla.Aspire.AppHost/appsettings.Production.json
+/docker-compose-oldd.yml
+/Dockerfile
