@@ -1,19 +1,16 @@
 services:
   aspire-dashboard:
-    container_name: "aspire-dashboard"
     image: "mcr.microsoft.com/dotnet/aspire-dashboard:9.0"
     profiles: [development]
     environment:
       DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
     ports:
     - target: 18888
-      published: 18888
     restart: unless-stopped
     networks:
         - lumi-net-dev
 
   lumi-apiservice-service:
-    container_name: "apiservice"
     image: "lumi/apiservice:latest"
     build:
       context: .
@@ -44,7 +41,6 @@ services:
         - "lumi-db" 
   
   lumi-webfrontend-service:
-    container_name: "webfrontend"
     # image: "lumi/webfrontend:latest"
     build:
       context: .
@@ -69,7 +65,6 @@ services:
         - "lumi-apiservice-service"
   
   lumi-telegrambot-service:
-    container_name: "telegrambot"
     # image: "lumi/telegrambot:latest"
     build:
       context: .
@@ -105,15 +100,14 @@ services:
         - "lumi-db"
   
   lumi-db:
-    container_name: "lumi-db"
     image: postgres:latest
     # ports:
     #   - "5434:5432"
     restart: always
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
-      - pgconf:/etc/postgresql
-      - pglog:/var/log/postgresql
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/pgconf:/etc/postgresql
+      - ./postgres/pglog:/var/log/postgresql
     environment:
         POSTGRES_DB: $DB_NAME
         POSTGRES_USER: $DB_USERNAME
@@ -122,7 +116,6 @@ services:
         - lumi-net-dev
 
   lumi-mq:
-    container_name: "lumi-mq"
     image: rabbitmq:4.0.0-management
     # ports:
     #   # - 5672:5672
@@ -147,12 +140,6 @@ services:
 networks:
  lumi-net-dev:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.32.0.0/16
-
-volumes:
-  pgconf:
-    driver: local
-  pglog:
-    driver: local
+    # ipam:
+    #   config:
+    #     - subnet: 172.32.0.0/16
