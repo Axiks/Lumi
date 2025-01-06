@@ -1,8 +1,8 @@
-name: Deploy
+name: Deploy-Deve;opment
 
 on:
   push:
-    branches: [ make-aspire-old ]
+    branches: [ devops ]
 
 jobs:
   deploy:
@@ -11,10 +11,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: alex-ac/github-action-ssh-docker-compose@master
+    - uses: Axiks/github-action-ssh-docker-compose@master
       name: Docker-Compose Remote Deployment
       with:
         ssh_host: ${{ secrets.DEPLOY_HOST }}
         ssh_private_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         ssh_user: ${{ secrets.DEPLOY_USERNAME }}
-        docker_compose_prefix: lumi
+        docker_compose_prefix: lumi-devops
+        github_token: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
+        github_branch_name: devops
+        env_file_name: development.env
