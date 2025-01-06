@@ -10,23 +10,31 @@
 }
 else
 {
-    <table class="table">
+    <table>
+        <caption>Users list</caption>
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-            </tr>
+            <tr><th>Username</th></tr>
         </thead>
         <tbody>
             @foreach (var user in users)
             {
                 <tr>
-                    <td><a href="/users/@user.Id">@user.Id</a></td>
-                    <td>@user.Nickname</td>
+                    <td>    
+                        <a class="is-vertical-align" href="/users/@user.Id">
+                            @if (user.ProfileImages != null && user.ProfileImages.Count > 0)
+                            {
+                                <img style="height: 42px; width: 42px; object-fit: cover; border-radius: 10%;" src="@user.ProfileImages.First().FileHref">
+                            }
+                            <text style="padding-left: 10px">@user.Nickname</text>
+                            @* <span class="tag is-right text-right is-rounded">2</span> *@
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+
+
 }
 
 @code {

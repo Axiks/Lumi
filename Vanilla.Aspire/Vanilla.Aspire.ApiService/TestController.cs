@@ -69,7 +69,6 @@ namespace Vanilla.Aspire.ApiService
             //var json = JsonSerializer.Serialize(user);
 
             return Ok(user);
-            return Ok(user);
         }
 
         [HttpGet("{userId:guid}/projects")]

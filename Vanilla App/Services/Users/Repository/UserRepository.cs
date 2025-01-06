@@ -64,7 +64,7 @@ namespace Vanilla_App.Services.Users.Repository
             return user;
         }
 
-        public List<UserEntity> GetAll() => _dbContext.Users.ToList();
+        public List<UserEntity> GetAll() => _dbContext.Users.Include(x => x.ProfileImages).ToList();
 
         public void Delete(Guid userId)
         {

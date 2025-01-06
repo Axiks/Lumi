@@ -1,3 +1,4 @@
+using Prometheus;
 using Vanilla.Aspire.ServiceDefaults;
 using Vanilla.Aspire.Web;
 using Vanilla.Aspire.Web.Components;
@@ -38,6 +39,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseMetricServer();
+app.UseHttpMetrics();
 
 app.UseHttpsRedirection();
 
