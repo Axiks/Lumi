@@ -2,6 +2,7 @@ services:
   aspire-dashboard:
     container_name: "aspire-dashboard"
     image: "mcr.microsoft.com/dotnet/aspire-dashboard:9.0"
+    profiles: [development]
     environment:
       DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
     ports:
