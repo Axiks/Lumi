@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Vanilla App\Vanilla.Core.csproj" />
     <ProjectReference Include="..\Vanilla.Aspire.ApiService\Vanilla.Aspire.ApiService.csproj" />
     <ProjectReference Include="..\Vanilla.Aspire.ServiceDefaults\Vanilla.Aspire.ServiceDefaults.csproj" />
