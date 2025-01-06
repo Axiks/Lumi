@@ -51,7 +51,7 @@ services:
       OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
       Kestrel__Endpoints__https__Url: "https://*:8080"
-      services__apiservice__http__0: "http://apiservice:80"
+      services__apiservice__http__0: "http://lumi-apiservice-service:80"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
       OTEL_SERVICE_NAME: "webfrontend"
       # ConnectionStrings__apiservice: "https://apiservice:8083"
