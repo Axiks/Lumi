@@ -107,11 +107,11 @@ services:
   lumi-db:
     container_name: "lumi-db"
     image: postgres:latest
-    ports:
-      - "5434:5432"
+    # ports:
+    #   - "5434:5432"
     restart: always
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
       - pgconf:/etc/postgresql
       - pglog:/var/log/postgresql
     environment:
@@ -124,9 +124,9 @@ services:
   lumi-mq:
     container_name: "lumi-mq"
     image: rabbitmq:4.0.0-management
-    ports:
-      # - 5672:5672
-      - 15672:15672
+    # ports:
+    #   # - 5672:5672
+    #   - 15672:15672
     volumes:
       - ./rabbitmq_data:/var/lib/rabbitmq
     environment:
@@ -152,8 +152,6 @@ networks:
         - subnet: 172.32.0.0/16
 
 volumes:
-  pgdata:
-    driver: local
   pgconf:
     driver: local
   pglog:
