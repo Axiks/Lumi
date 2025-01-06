@@ -374,3 +374,5 @@ aspirate-output/
 /Vanilla.Aspire/Vanilla.Aspire.AppHost/appsettings.Production.json
 /docker-compose-oldd.yml
 /Dockerfile
+/development.env
+/production.env
