@@ -2,7 +2,7 @@ name: Deploy-Production
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   deploy:
@@ -19,5 +19,5 @@ jobs:
         ssh_user: ${{ secrets.DEPLOY_USERNAME }}
         docker_compose_prefix: lumi-production
         github_token: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
-        github_branch_name: main
+        github_branch_name: master
         env_file_name: production.env
