@@ -376,3 +376,4 @@ aspirate-output/
 /Dockerfile
 /development.env
 /production.env
+/postgres-data
