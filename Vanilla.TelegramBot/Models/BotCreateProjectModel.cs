@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vanilla.Common.Enums;
+﻿using Vanilla.Common.Enums;
 
 namespace Vanilla.TelegramBot.Models
 {
@@ -14,12 +8,13 @@ namespace Vanilla.TelegramBot.Models
         public readonly long TelegramUserId;
         public String? Name { get; set; }
         public String? Description { get; set; }
-        public DevelopmentStatusEnum? DevelopStatus { get; set; }
+        public DevelopmentStatusEnum? DevelopmentStatus { get; set; }
         public string PollIdDevelopmentStatus { get; set; }
         public List<string>? Links { get; set; }
         public List<int> SendedMessages { get; set; } = new List<int>();
 
-        public BotCreateProjectModel(Guid UserId, long TelegramUserId) {
+        public BotCreateProjectModel(Guid UserId, long TelegramUserId)
+        {
             this.UserId = UserId;
             this.TelegramUserId = TelegramUserId;
         }

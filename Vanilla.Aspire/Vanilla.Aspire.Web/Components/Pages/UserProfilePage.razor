@@ -1,0 +1,110 @@
+﻿@page "/users/{id:guid}"
+@using Vanilla.Aspire.ApiService.Models
+@using Vanilla.Common.Enums
+
+@inject UsersApiClient UsersApi
+@inject ProjectsApiClient ProjectsApi
+
+<PageTitle>User profile</PageTitle>
+
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @if (user.ProfileImages is not null)
+    {
+        <div class="is-horizontal-align is-left scrollmenu">
+            @foreach (var image in user.ProfileImages)
+            {
+                <img style="height: 250px; border-radius: 15%;" src="@image.FileHref" alt="@user.Nickname photo">
+            }
+        </div>
+    }
+
+    <p>
+        <strong style="font-size:x-large;">@user.Nickname</strong>
+        <a class="is-vertical-align" href="http://t.me/@user.TelegramData.Username">@@@user.TelegramData.Username</a>
+    </p>
+    <p>@user.About</p>
+    @if (user.Links is not null)
+    {
+        @foreach (var link in user.Links)
+        {
+            <a class="is-vertical-align" href="@link">@GetDomain(@link)</a>
+        }
+    }
+
+    <h2>Projects</h2>
+    @if(projects is not null && projects.Length > 0)
+    {
+        @foreach (var project in projects)
+        {
+            <hr>
+            <p>
+                <strong>@project.Name</strong>
+                <em>@HumanProjectStatus(@project.DevelopmentStatus)</em>
+            </p>
+            <p>@project.Description</p>
+            <p>
+            @foreach (var link in project.Links)
+            {
+                    <a class="is-vertical-align" target="_blank" href="@link"><Img src="https://icongr.am/clarity/link.svg?size=24" />@GetDomain(@link)</a>
+            }
+            </p>
+
+        }
+    }
+    else
+    {
+        <p>No projects yet</p>
+    }
+
+
+}
+
+@code {
+    [Parameter]
+    public Guid id { get; set; }
+
+    UserModel? user;
+    Vanilla_App.Services.Projects.ProjectModel[]? projects;
+
+    string GetDomain(string url)
+    {
+        Uri myUri = new Uri(url);
+        return myUri.Host;
+    }
+
+    string HumanProjectStatus(DevelopmentStatusEnum status)
+    {
+        switch (status)
+        {
+            case DevelopmentStatusEnum.PlannedToDevelop:
+                return "📘 Planned to develop";
+                break;
+            case DevelopmentStatusEnum.InDevelopment:
+                return "📒 In development";
+                break;
+            case DevelopmentStatusEnum.Developed:
+                return "📗 Developed";
+                break;
+            case DevelopmentStatusEnum.Abandoned:
+                return "📕 Abandoned";
+                break;
+            case DevelopmentStatusEnum.Frozen:
+                return "📙 Frozen    ";
+                break;
+            default:
+                return "undefined";
+        }
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UsersApi.GetUserByIdAsync(id);
+        projects = await ProjectsApi.GetUserProjectsAsync(id);
+    }
+}

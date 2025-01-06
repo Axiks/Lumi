@@ -1,0 +1,23 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ devops ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: Axiks/github-action-ssh-docker-compose@master
+      name: Docker-Compose Remote Deployment
+      with:
+        ssh_host: ${{ secrets.DEPLOY_HOST }}
+        ssh_private_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+        ssh_user: ${{ secrets.DEPLOY_USERNAME }}
+        docker_compose_prefix: lumi
+        github_token: ${{ secrets.DEPLOY_GITHUB_TOKEN }}
+        github_branch_name: devops
+        env_file_name: development.env

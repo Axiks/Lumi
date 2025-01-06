@@ -361,3 +361,19 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Vanilla.Common/appsettings.json
+/Vanilla.Common/appsettings.Development.json
+/Vanilla.Common/appsettings.Docker-Production.json
+/.env
+/applog/log.txt
+/storage
+/rabbitmq_data
+log.txt
+aspirate-output/
+/Vanilla.Aspire/Vanilla.Aspire.AppHost/appsettings.Development.json
+/Vanilla.Aspire/Vanilla.Aspire.AppHost/appsettings.Production.json
+/docker-compose-oldd.yml
+/Dockerfile
+/development.env
+/production.env
+/postgres-data

@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json.schemastore.org/aspire-8.0.json",
+  "resources": {
+    "hostDB": {
+      "type": "parameter.v0",
+      "value": "{hostDB.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string",
+          "secret": true
+        }
+      }
+    },
+    "usernameDB": {
+      "type": "parameter.v0",
+      "value": "{usernameDB.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string",
+          "secret": true
+        }
+      }
+    },
+    "passwordDB": {
+      "type": "parameter.v0",
+      "value": "{passwordDB.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string",
+          "secret": true
+        }
+      }
+    },
+    "portDB": {
+      "type": "parameter.v0",
+      "value": "{portDB.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "lumi-db": {
+      "type": "container.v0",
+      "connectionString": "Host={lumi-db.bindings.tcp.host};Port={lumi-db.bindings.tcp.port};Username={usernameDB.value};Password={passwordDB.value}",
+      "image": "docker.io/library/postgres:17.0",
+      "volumes": [
+        {
+          "name": "vanilla.aspire.apphost-1f0bb6afa8-lumi-db-data",
+          "target": "/var/lib/postgresql/data",
+          "readOnly": false
+        }
+      ],
+      "env": {
+        "POSTGRES_HOST_AUTH_METHOD": "scram-sha-256",
+        "POSTGRES_INITDB_ARGS": "--auth-host=scram-sha-256 --auth-local=scram-sha-256",
+        "POSTGRES_USER": "{usernameDB.value}",
+        "POSTGRES_PASSWORD": "{passwordDB.value}"
+      },
+      "bindings": {
+        "tcp": {
+          "scheme": "tcp",
+          "protocol": "tcp",
+          "transport": "tcp",
+          "targetPort": 5432
+        }
+      }
+    },
+    "coredb": {
+      "type": "value.v0",
+      "connectionString": "{lumi-db.connectionString};Database=lumi_core_db"
+    },
+    "oauthdb": {
+      "type": "value.v0",
+      "connectionString": "{lumi-db.connectionString};Database=lumi_oauth_db"
+    },
+    "tgbotdb": {
+      "type": "value.v0",
+      "connectionString": "{lumi-db.connectionString};Database=lumi_tg_bot_db"
+    },
+    "hostnameRQ": {
+      "type": "parameter.v0",
+      "value": "{hostnameRQ.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string",
+          "secret": true
+        }
+      }
+    },
+    "usernameRQ": {
+      "type": "parameter.v0",
+      "value": "{usernameRQ.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string",
+          "secret": true
+        }
+      }
+    },
+    "passwordRQ": {
+      "type": "parameter.v0",
+      "value": "{passwordRQ.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string",
+          "secret": true
+        }
+      }
+    },
+    "portRQ": {
+      "type": "parameter.v0",
+      "value": "{portRQ.inputs.value}",
+      "inputs": {
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "lumi-mq": {
+      "type": "container.v0",
+      "connectionString": "amqp://{usernameRQ.value}:{passwordRQ.value}@{lumi-mq.bindings.tcp.host}:{lumi-mq.bindings.tcp.port}",
+      "image": "docker.io/library/rabbitmq:4.0-management",
+      "env": {
+        "RABBITMQ_DEFAULT_USER": "{usernameRQ.value}",
+        "RABBITMQ_DEFAULT_PASS": "{passwordRQ.value}"
+      },
+      "bindings": {
+        "tcp": {
+          "scheme": "tcp",
+          "protocol": "tcp",
+          "transport": "tcp",
+          "targetPort": 5672
+        },
+        "management": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "targetPort": 15672
+        }
+      }
+    },
+    "apiservice": {
+      "type": "project.v0",
+      "path": "../Vanilla.Aspire.ApiService/Vanilla.Aspire.ApiService.csproj",
+      "env": {
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY": "in_memory",
+        "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
+        "HTTP_PORTS": "{apiservice.bindings.http.targetPort}",
+        "DOTNET_ENVIRONMENT": "Development",
+        "ConnectionStrings__coredb": "{coredb.connectionString}",
+        "ConnectionStrings__oauthdb": "{oauthdb.connectionString}",
+        "ConnectionStrings__lumi-mq": "{lumi-mq.connectionString}"
+      },
+      "bindings": {
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http"
+        },
+        "https": {
+          "scheme": "https",
+          "protocol": "tcp",
+          "transport": "http"
+        }
+      }
+    },
+    "webfrontend": {
+      "type": "project.v0",
+      "path": "../Vanilla.Aspire.Web/Vanilla.Aspire.Web.csproj",
+      "env": {
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY": "in_memory",
+        "ASPNETCORE_FORWARDEDHEADERS_ENABLED": "true",
+        "Kestrel__Endpoints__https__Url": "https://*:{webfrontend.bindings.https.targetPort}",
+        "Kestrel__Endpoints__http__Url": "http://*:{webfrontend.bindings.http.targetPort}",
+        "services__apiservice__http__0": "{apiservice.bindings.http.url}",
+        "services__apiservice__https__0": "{apiservice.bindings.https.url}"
+      },
+      "bindings": {
+        "https": {
+          "scheme": "https",
+          "protocol": "tcp",
+          "transport": "http",
+          "targetPort": 8080,
+          "external": true
+        },
+        "http": {
+          "scheme": "http",
+          "protocol": "tcp",
+          "transport": "http",
+          "targetPort": 8080,
+          "external": true
+        }
+      }
+    },
+    "telegrambot": {
+      "type": "project.v0",
+      "path": "../../Vanilla.TelegramBot/Vanilla.TelegramBot.csproj",
+      "env": {
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES": "true",
+        "OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY": "in_memory",
+        "DOTNET_ENVIRONMENT": "Development",
+        "ConnectionStrings__coredb": "{coredb.connectionString}",
+        "ConnectionStrings__oauthdb": "{oauthdb.connectionString}",
+        "ConnectionStrings__tgbotdb": "{tgbotdb.connectionString}",
+        "ConnectionStrings__lumi-mq": "{lumi-mq.connectionString}"
+      }
+    },
+    "cloudflare-lumi-tunnel": {
+      "type": "container.v0",
+      "image": "cloudflare/cloudflared:latest",
+      "args": [
+        "tunnel",
+        "run"
+      ],
+      "env": {
+        "services__webfrontend__https__0": "{webfrontend.bindings.https.url}",
+        "services__webfrontend__http__0": "{webfrontend.bindings.http.url}",
+        "TUNNEL_TOKEN": "eyJhIjoiZjc4NzAxZTE1MzA5ZmIwYjFhN2M2MmQwMWE3OTdiZTYiLCJ0IjoiYTZjYjBlNGItMTFjMS00NmMxLWJhMDMtMmMzZThkNzYxMjdiIiwicyI6Ik4yWTFOekUwTTJVdE9EaGtaUzAwWVRVekxUazFabVF0WldNME9HSTBNelJoTkdFNCJ9"
+      }
+    }
+  }
+}

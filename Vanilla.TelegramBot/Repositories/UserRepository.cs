@@ -24,6 +24,7 @@ namespace Vanilla.TelegramBot.Repositories
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 LanguageCode = user.LanguageCode,
+                IsHasProfile = user.IsHasProfile
             };
             await _dbContext.AddAsync(userEntity);
             await _dbContext.SaveChangesAsync();
@@ -33,21 +34,32 @@ namespace Vanilla.TelegramBot.Repositories
 
         public async Task<UserCreateResponseModel?> GetUserAsync(Guid userId)
         {
-            var userEntity = await _dbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            var userEntity = await _dbContext.Users.Include(x => x.Images).FirstOrDefaultAsync(x => x.UserId == userId);
             if (userEntity is null) return null;
             return MapperHelper.UserEntityToUserCreateResponseModel(userEntity);
         }
 
         public async Task<UserCreateResponseModel?> GetUserAsync(long telegramId)
         {
-            var userEntity = await _dbContext.Users.FirstOrDefaultAsync(x => x.TelegramId == telegramId);
+            var userEntity = await _dbContext.Users.Include(x => x.Images).FirstOrDefaultAsync(x => x.TelegramId == telegramId);
             if (userEntity is null) return null;
             return MapperHelper.UserEntityToUserCreateResponseModel(userEntity);
         }
 
         public async Task<List<UserCreateResponseModel>> GetUsersAsync(string username)
         {
-            var usersEntity = _dbContext.Users.Where(x => x.Username == username).ToList();
+            var usersEntity = _dbContext.Users.Where(x => x.Username == username).Include(x => x.Images).ToList();
+            var users = new List<UserCreateResponseModel>();
+            foreach (var userEntity in usersEntity)
+            {
+                users.Add(MapperHelper.UserEntityToUserCreateResponseModel(userEntity));
+            }
+            return users;
+        }
+
+        public async Task<List<UserCreateResponseModel>> GetUsersAsync()
+        {
+            var usersEntity = _dbContext.Users.Include(x => x.Images).ToList();
             var users = new List<UserCreateResponseModel>();
             foreach (var userEntity in usersEntity)
             {
@@ -67,6 +79,22 @@ namespace Vanilla.TelegramBot.Repositories
         {
             var userEntity = await _dbContext.Users.FirstAsync(x => x.UserId == user.UserId);
             if (user.Username is not null) userEntity.Username = user.Username;
+            if (user.LanguageCode is not null) userEntity.LanguageCode = user.LanguageCode;
+            if (user.Username is not null) userEntity.Username = user.Username;
+            if (user.FirstName is not null) userEntity.FirstName = user.FirstName;
+            if (user.LastName is not null) userEntity.LastName = user.LastName;
+            userEntity.IsHasProfile = user.IsHasProfile;
+
+            if (user.Images is not null)
+            {
+                userEntity.Images = new List<ImagesEntity>();
+                foreach (var image in user.Images)
+                {
+                    userEntity.Images.Add(new ImagesEntity { TgMediaId = image.TgMediaId, CoreId = image.CoreId });
+                }
+            } 
+
+            _dbContext.Update(userEntity);
             await _dbContext.SaveChangesAsync();
             return MapperHelper.UserEntityToUserCreateResponseModel(userEntity);
         }

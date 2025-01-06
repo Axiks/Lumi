@@ -1,14 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
-using System.Threading.Tasks;
+using Vanilla.Common.Models;
 using Vanilla.OAuth.Models;
 
 namespace Vanilla.OAuth.Services
@@ -16,20 +11,17 @@ namespace Vanilla.OAuth.Services
     public class AuthService
     {
         public readonly TokenConfiguration _tokenConfig;
-        public AuthService(TokenConfiguration tokenSetting) {
-            _tokenConfig = tokenSetting;
-            /*// Build a config object, using env vars and JSON providers.
-            IConfigurationRoot config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
-
-            // Get values from the config given their key and their target type.
-            settings = config.GetRequiredSection("Settings").Get<Settings>();
-            if (settings == null) throw new Exception("No found setting section");*/
-        }
-        public string GenerateToken(BasicUserModel user)
+        public readonly UserRepository _userRepository;
+        public AuthService(TokenConfiguration tokenSetting, UserRepository userRepository)
         {
+            _tokenConfig = tokenSetting;
+            _userRepository = userRepository;
+        }
+        public string GenerateToken(Guid userId)
+        {
+            var user = _userRepository.GetUserAsync(userId).Result;
+            if (user == null) throw new Exception("Token generation denied. User with this ID not found");
+
             var handler = new JwtSecurityTokenHandler();
 
             var privateKey = Encoding.UTF8.GetBytes(_tokenConfig.PrivateKey);
@@ -89,7 +81,7 @@ namespace Vanilla.OAuth.Services
             var ci = new ClaimsIdentity();
 
             ci.AddClaim(new Claim("id", user.Id.ToString()));
-            if(user.Nickname is not null) ci.AddClaim(new Claim(ClaimTypes.Name, user.Nickname));
+            if (user.Nickname is not null) ci.AddClaim(new Claim(ClaimTypes.Name, user.Nickname));
 
             return ci;
         }

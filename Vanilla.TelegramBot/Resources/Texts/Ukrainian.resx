@@ -127,13 +127,31 @@
 Особлива подяка всім, хто допомагає розробляти цього бота.
 
 Створено учасником спільноти &lt;a href="https://t.me/include_anime"&gt;Програмісти і печеньки&lt;/a&gt;
-Ви можете зв'язатися з автором тут: &lt;a href="https://t.me/Yumikki"&gt;@Yumikki&lt;/a&gt;</value>
+Знайти розробників можете тут &lt;a href="https://t.me/LumiFanbase"&gt;@LumiFanbase&lt;/a&gt;</value>
+  </data>
+  <data name="AboutKey" xml:space="preserve">
+    <value>Про мене</value>
+  </data>
+  <data name="Accept" xml:space="preserve">
+    <value>Підтвердити</value>
+  </data>
+  <data name="ActivatedBonusesLabel" xml:space="preserve">
+    <value>Активовані бонуси ({0}) 🔭</value>
   </data>
   <data name="AddOwnProject" xml:space="preserve">
     <value>Додати власний проект</value>
   </data>
   <data name="AddProject" xml:space="preserve">
     <value>Додати проект</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Вернутись</value>
+  </data>
+  <data name="BonusSytemBtn" xml:space="preserve">
+    <value>Мої бонуси</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Відмінити</value>
   </data>
   <data name="CanceledOperation" xml:space="preserve">
     <value>Попередню дію скасовано</value>
@@ -146,6 +164,12 @@
   </data>
   <data name="Create" xml:space="preserve">
     <value>Створити</value>
+  </data>
+  <data name="CreateProfile" xml:space="preserve">
+    <value>Створити профіль</value>
+  </data>
+  <data name="CreateProject" xml:space="preserve">
+    <value>Створити проект</value>
   </data>
   <data name="CreateProjectInitMess" xml:space="preserve">
     <value>Як називається твій проект?</value>
@@ -179,7 +203,8 @@
   <data name="CreateProkectSuccessMessage" xml:space="preserve">
     <value>
 
-&lt;b&gt;Я успішно записала ваш неймовірний проект&lt;/b&gt;
+&lt;b&gt;Я успішно зберегла ваш неймовірний проект&lt;/b&gt;
+
 🔎 Тепер будь-хто зможе його знайти через inline пошук
 </value>
   </data>
@@ -195,14 +220,29 @@
   <data name="Developed" xml:space="preserve">
     <value>Розроблено</value>
   </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Редагувати</value>
+  </data>
   <data name="FindThisProjectBtn" xml:space="preserve">
     <value>Знайти через inline пошук</value>
   </data>
   <data name="Frozen" xml:space="preserve">
     <value>Заморожено</value>
   </data>
+  <data name="GetBonus" xml:space="preserve">
+    <value>Отримати бонус</value>
+  </data>
+  <data name="IAcceptOrders" xml:space="preserve">
+    <value>✨ Приймаю замовлення</value>
+  </data>
+  <data name="Images" xml:space="preserve">
+    <value>Зображення</value>
+  </data>
   <data name="InDevelopment" xml:space="preserve">
     <value>У розробці</value>
+  </data>
+  <data name="IsRedyToWork" xml:space="preserve">
+    <value>Готовність до співпраці</value>
   </data>
   <data name="Links" xml:space="preserve">
     <value>Посилання</value>
@@ -211,10 +251,28 @@
     <value>Посилання &lt;i&gt;{0}&lt;/i&gt; є не вірним. Спробуй ще раз</value>
   </data>
   <data name="MainMenu" xml:space="preserve">
-    <value>Головне меню</value>
+    <value>Відкрити меню</value>
+  </data>
+  <data name="MainMenuSendMes" xml:space="preserve">
+    <value>Оберіть дію з меню</value>
+  </data>
+  <data name="MyProfile" xml:space="preserve">
+    <value>Мій профіль</value>
+  </data>
+  <data name="MyProfileUpdate" xml:space="preserve">
+    <value>Оновити профіль</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Ім'я</value>
+  </data>
+  <data name="Nickname" xml:space="preserve">
+    <value>Нікнейм</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ні</value>
+  </data>
+  <data name="Pass" xml:space="preserve">
+    <value>Пропустити</value>
   </data>
   <data name="PlannedToDevelop" xml:space="preserve">
     <value>В планах</value>
@@ -222,19 +280,34 @@
   <data name="PoolDescription" xml:space="preserve">
     <value>На якому етапі розробки знаходиться ваш проект?</value>
   </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Профіль</value>
+  </data>
   <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
     <value>Проект було видалено</value>
+  </data>
+  <data name="Registration" xml:space="preserve">
+    <value>Реєстрація</value>
+  </data>
+  <data name="ReloadUserContext" xml:space="preserve">
+    <value>Перезапустити Lumi</value>
+  </data>
+  <data name="SaveProject" xml:space="preserve">
+    <value>Зберегти проект</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Пошук проектів</value>
   </data>
   <data name="ServerError" xml:space="preserve">
-    <value>Оуу
+    <value>&lt;b&gt;Ой-йой.. 500&lt;/b&gt;
+Виникла внутрішня помилка серверу
 
-Відбулась внутрішня помилка серверу
-Якщо бот, надалі, не працюватиме належним чином, зв'яжіться з {0}
+Якщо Лумі, надалі, не працюватиме належним чином, повідомте про це у &lt;a href="https://t.me/LumiFanbase"&gt;Lumi fanbase&lt;/a&gt;
 
-Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
+Error ID: &lt;code&gt;{1}&lt;/code&gt;</value>
+  </data>
+  <data name="Spend" xml:space="preserve">
+    <value>Витратити</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Етап розробки</value>
@@ -244,6 +317,9 @@ Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
 
 Виглядає як моє повідомлення!! 
 &lt;b&gt;Не можу його прийняти&lt;/b&gt;</value>
+  </data>
+  <data name="True" xml:space="preserve">
+    <value>Вірно</value>
   </data>
   <data name="UnexpectedInput" xml:space="preserve">
     <value>Некоректний ввід</value>
@@ -297,6 +373,15 @@ Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
 
 Я безмежно рада бачити тебе тут! ❤️</value>
   </data>
+  <data name="WelcomeNewUser" xml:space="preserve">
+    <value>Я тут, щоб допомогти тобі поширювати свої проекти де завгодно та з ким завгодно, і знайти однодумців, які підтримають тебе, і твої ідеї! 🎨✨
+
+🌟 Перед початком нашої подорожі, тобі необхідно створити профіль!
+
+💡&lt;b&gt;Бажаєш дізнатися, що створили інші?&lt;/b&gt; Легко! 
+
+🔍Введи @{1} тут або в будь-якому іншому чаті чи каналі. Надихайся ідеями наших учасників і відкривай для себе нові проекти!</value>
+  </data>
   <data name="WelcomeUserMessage" xml:space="preserve">
     <value>Привіт {0}!
 
@@ -307,5 +392,8 @@ Error ID: &lt;b&gt;{1}&lt;/b&gt;</value>
   </data>
   <data name="WorkRecoveryMes" xml:space="preserve">
     <value>Вибачте за незручності. Бот відновив свою роботу</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Так</value>
   </data>
 </root>
