@@ -1,0 +1,17 @@
+{
+  "projectPath": ".",
+  "outputPath": "aspirate-output",
+  "containerImageTags": [
+    "latest"
+  ],
+  "imagePullPolicy": "Always",
+  "containerBuilder": "docker",
+  "containerRepositoryPrefix": "lumi",
+  "outputFormat": "compose",
+  "disableSecrets": true,
+  "privateRegistryUrl": "localhost:5000",
+  "privateRegistryEmail": "aspir8@aka.ms",
+  "withPrivateRegistry": true,
+  "includeDashboard": true,
+  "processAllComponents": true
+}

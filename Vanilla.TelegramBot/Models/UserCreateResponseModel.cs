@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Vanilla.TelegramBot.Models
+﻿namespace Vanilla.TelegramBot.Models
 {
     public class UserCreateResponseModel
     {
@@ -14,6 +8,8 @@ namespace Vanilla.TelegramBot.Models
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? LanguageCode { get; set; }
+        public List<ImageModel>? Images { get; set; }
         public required DateTime CreatedAt { get; set; }
+        public bool IsHasProfile { get; set; }
     }
 }

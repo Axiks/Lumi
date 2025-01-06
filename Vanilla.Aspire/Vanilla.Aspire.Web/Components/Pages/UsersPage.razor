@@ -1,0 +1,39 @@
+﻿@page "/users"
+
+@inject UsersApiClient UsersApi
+
+<PageTitle>Users</PageTitle>
+
+@if (users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td><a href="/users/@user.Id">@user.Id</a></td>
+                    <td>@user.Nickname</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    Vanilla_App.Services.Users.UserModel[]? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UsersApi.GetUsersAsync();
+    }
+}

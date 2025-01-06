@@ -5,6 +5,13 @@
       "environmentVariables": {
         "DB_HOST": "localhost"
       }
+    },
+    "Development": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DB_HOST": "localhost",
+        "DOTNET_ENVIRONMENT": "Development"
+      }
     }
   }
 }

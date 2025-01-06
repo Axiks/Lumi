@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vanilla.TelegramBot.Entityes;
+﻿using Vanilla.TelegramBot.Entityes;
 using Vanilla.TelegramBot.Models;
 
 namespace Vanilla.TelegramBot.Helpers
@@ -20,9 +15,29 @@ namespace Vanilla.TelegramBot.Helpers
                 FirstName = userEnity.FirstName,
                 LastName = userEnity.LastName,
                 CreatedAt = userEnity.CreatedAt,
+                Images = ImageEntityesToUserImages(userEnity.Images),
+                IsHasProfile = userEnity.IsHasProfile,
             };
 
             return userModel;
+        }
+
+        private static ImageModel ImageEntityToUserImage(ImagesEntity imageEntity) => new ImageModel
+        {
+            TgMediaId = imageEntity.TgMediaId,
+        };
+
+        private static List<ImageModel>? ImageEntityesToUserImages(List<ImagesEntity> imageEntities)
+        {
+            if(imageEntities is null) return null;
+
+            var images = new List<ImageModel>();
+            foreach (var imageEntity in imageEntities)
+            {
+                images.Add(ImageEntityToUserImage(imageEntity));
+            }
+
+            return images;
         }
     }
 }

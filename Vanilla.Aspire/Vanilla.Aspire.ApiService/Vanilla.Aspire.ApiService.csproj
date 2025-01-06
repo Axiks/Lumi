@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.39.1" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Vanilla App\Vanilla.Core.csproj" />
+    <ProjectReference Include="..\..\Vanilla.Data\Vanilla.Data.csproj" />
+    <ProjectReference Include="..\..\Vanilla.OAuth\Vanilla.OAuth.csproj" />
+    <ProjectReference Include="..\..\Vanilla.TelegramBot\Vanilla.TelegramBot.csproj" />
+    <ProjectReference Include="..\Vanilla.Aspire.ServiceDefaults\Vanilla.Aspire.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>

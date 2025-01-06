@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vanilla.Data.Entities;
-using Vanilla_App.Models;
+﻿using Vanilla.Data.Entities;
+using Vanilla_App.Services.Projects;
 
 namespace Vanilla_App.Helpers
 {

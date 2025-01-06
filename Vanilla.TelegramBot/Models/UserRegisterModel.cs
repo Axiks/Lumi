@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Vanilla.TelegramBot.Models
+﻿namespace Vanilla.TelegramBot.Models
 {
     public class UserRegisterModel
     {
@@ -12,6 +6,9 @@ namespace Vanilla.TelegramBot.Models
         public string? Username { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public string? About { get; set; }
+        public List<string>? Links { get; set; }
+        public bool? IsRadyForOrders { get; set; }
         public string? LanguageCode { get; set; }
     }
 }
