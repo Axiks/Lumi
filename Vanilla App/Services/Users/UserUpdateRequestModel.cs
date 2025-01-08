@@ -8,6 +8,7 @@ namespace Vanilla_App.Services.Users
 {
     public struct UserUpdateRequestModel
     {
+        public string? Nickname { get; set; }
         public string? About { get; set; }
         public List<string>? Links { get; set; }
         public bool? IsRadyForOrders { get; set; }

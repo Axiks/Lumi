@@ -65,7 +65,12 @@ namespace Vanilla_App.Services
                 IsRadyForOrders = update.IsRadyForOrders,
             });
 
-            return ToUserModelMapper(entity, OAthUser);
+            var updatetOAthUser = await _oauthUserService.UpdateUserAsync(userId, new Vanilla.OAuth.Models.UserUpdateRequestModel
+            {
+                NickName = update.Nickname ?? OAthUser.Nickname
+            });
+
+            return ToUserModelMapper(entity, updatetOAthUser);
         }
 
         public async Task<bool> DeleteUser(Guid userId)

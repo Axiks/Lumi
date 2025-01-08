@@ -28,13 +28,19 @@ else
         <a class="is-vertical-align" href="http://t.me/@user.TelegramData.Username">@@@user.TelegramData.Username</a>
     </p>
     <p>@user.About</p>
+    @if (user.IsRadyForOrders is true)
+    {
+        <p>✨ Accepts orders</p>
+    }
     @if (user.Links is not null)
     {
+        @* <p>You can find me here:</p> *@
         @foreach (var link in user.Links)
         {
             <a class="is-vertical-align" href="@link">@GetDomain(@link)</a>
         }
     }
+
 
     <h2>Projects</h2>
     @if(projects is not null && projects.Length > 0)
