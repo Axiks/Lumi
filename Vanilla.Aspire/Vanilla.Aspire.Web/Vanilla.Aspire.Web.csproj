@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Vanilla.Aspire.ServiceDefaults\Vanilla.Aspire.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Pages\NewFolder\" />
+  </ItemGroup>
+
 </Project>

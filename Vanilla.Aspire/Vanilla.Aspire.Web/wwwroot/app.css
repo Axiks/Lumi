@@ -1,4 +1,4 @@
-h1:focus {
+/*h1:focus {
     outline: none;
 }
 
@@ -22,7 +22,7 @@ h1:focus {
 
     .blazor-error-boundary::after {
         content: "An error has occurred."
-    }
+    }*/
 
 
 div.scrollmenu {

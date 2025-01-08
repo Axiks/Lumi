@@ -112,6 +112,7 @@ namespace Vanilla.TelegramBot.Services
 
             var upcoreUser = await _coreUserService.UpdateUser(localUser.UserId, new Vanilla_App.Services.Users.UserUpdateRequestModel
             {
+                Nickname = user.Nickname ?? coreUser.Nickname,
                 About = user.About ?? coreUser.About,
                 Links = user.Links ?? coreUser.Links,
                 IsRadyForOrders = user.IsRadyForOrders ?? coreUser.IsRadyForOrders,
