@@ -65,7 +65,7 @@ public static class Extensions
                 metrics
                 .AddPrometheusExporter();
 
-                //metrics.AddMeter("TelegramBot");
+                metrics.AddMeter("TelegramBot");
             })
             .WithTracing(tracing =>
             { 

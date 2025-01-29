@@ -173,6 +173,7 @@ services:
       - '--enable-feature=exemplar-storage'
     # ports:
     #   - 9090:9090
+    user: "${UID}:${GID}"
     networks:
       - lumi-net-dev
     restart: always
@@ -192,6 +193,7 @@ services:
       # - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       # - GF_AUTH_DISABLE_LOGIN_FORM=true
       - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+    user: "${UID}:${GID}"
     ports:
       - "3018:3000"
     depends_on:

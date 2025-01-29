@@ -34,10 +34,10 @@ exporters:
   #   tls:
   #     insecure: true
 
-  otlp/aspire:
-    endpoint: aspire-dashboard:18889
-    tls:
-      insecure: true
+  # otlp/aspire:
+  #   endpoint: aspire-dashboard:18889
+  #   tls:
+  #     insecure: true
 
   otlp/jager:
     endpoint: jaeger:4317
@@ -54,14 +54,14 @@ service:
     metrics:
       receivers: [ otlp ]
       processors: [ batch ]
-      exporters: [ prometheus, otlp/aspire ]
+      exporters: [ prometheus ]
     
     traces:
       receivers: [ otlp ]
       # processors: [ batch ]
-      exporters: [ otlp/jager, otlp/aspire ]
+      exporters: [ otlp/jager ]
     
     logs:
       receivers: [ otlp ]
       processors: [ batch, resource ]
-      exporters: [ loki, otlp/aspire ]
+      exporters: [ loki ]
