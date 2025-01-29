@@ -377,3 +377,4 @@ aspirate-output/
 /development.env
 /production.env
 /postgres-data
+/infrastructure
