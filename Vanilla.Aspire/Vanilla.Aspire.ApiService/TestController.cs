@@ -44,7 +44,7 @@ namespace Vanilla.Aspire.ApiService
         [HttpGet]
         public async Task<ActionResult> GetAll(Guid userId)
         {
-            var users = await userService.GetUsers();
+            var users = await userService.GetUsersAsync();
 
             return Ok(users);
         }
@@ -53,7 +53,7 @@ namespace Vanilla.Aspire.ApiService
         public async Task<ActionResult> Get(Guid userId)
         {
             var tgUser = await brokerClient.GetResponse<TgUserResponse>(new TgUserRequest { UserId = userId });
-            var correUser = await userService.GetUser(userId);
+            var correUser = await userService.GetUserOrDefaultAsync(userId);
 
             var user = new Models.UserModel
             {

@@ -315,6 +315,9 @@ This is my message!!!
 
 Write it yourself</value>
   </data>
+  <data name="ThisFeatureIsOnlyForRegisteredUsers" xml:space="preserve">
+    <value>This feature is only for registered users.</value>
+  </data>
   <data name="True" xml:space="preserve">
     <value>True</value>
   </data>

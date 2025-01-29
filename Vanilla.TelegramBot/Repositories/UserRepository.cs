@@ -32,7 +32,7 @@ namespace Vanilla.TelegramBot.Repositories
             return MapperHelper.UserEntityToUserCreateResponseModel(userEntity);
         }
 
-        public async Task<UserCreateResponseModel?> GetUserAsync(Guid userId)
+        public async Task<UserCreateResponseModel?> GetUserOrDefaultAsync(Guid userId)
         {
             var userEntity = await _dbContext.Users.Include(x => x.Images).FirstOrDefaultAsync(x => x.UserId == userId);
             if (userEntity is null) return null;
@@ -68,7 +68,7 @@ namespace Vanilla.TelegramBot.Repositories
             return users;
         }
 
-        public async void RemoveUserAsync(Guid userId)
+        public async void DeleteUserAsync(Guid userId)
         {
             var user = await _dbContext.Users.FirstAsync(x => x.UserId == userId);
             _dbContext.Remove(user);

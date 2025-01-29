@@ -2,31 +2,20 @@
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
-using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.Pages.UpdateUser.Models;
 using Vanilla.TelegramBot.UI;
 
 namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 {
-    internal class UpdateUserImagesPage : IPage
+    internal class UpdateUserImagesPage(TelegramBotClient _botClient, UserContextModel _userContext, List<int> _sendMessages, UserActionContextModel _updateUserActionContextModel) : IPage
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
         public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
         public event CompliteHandler? CompliteEvent;
 
-        readonly TelegramBotClient _botClient;
-        readonly UserContextModel _userContext;
-        readonly List<int> _sendMessages;
-
         readonly string InitMessage = "Покажи декілька світлин\n\n<i>Це можуть бути як і твої роботи, так і будь-які інші світлини котрі можна показати</i>";
-
-        public UpdateUserImagesPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages)
-        {
-            _botClient = botClient;
-            _userContext = userContext;
-            _sendMessages = sendMessages;
-        }
 
         void IPage.SendInitMessage()
         {
@@ -44,7 +33,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
         void ReinitObj()
         {
             //_dataContext.ImagesId = new List<string>();
-            _userContext.User.Images = new List<ImageModel>();
+            _updateUserActionContextModel.Images = new List<ImageModel>();
             _userContext.FinishUploadingPhotosEvent += ToNextPage;
         }
 
@@ -64,6 +53,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
         {
             if (update.Message is not null && update.Message.Photo is not null)
             {
+                //_updateUserActionContextModel.Images = new List<ImageModel>();
                 AddImageId(update);
             }
             else if (update.CallbackQuery.Data == "pass") CompliteEvent.Invoke();
@@ -95,7 +85,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 
             var maxSizeImg = update.Message.Photo.OrderBy(x => x.FileSize).Last();
             var id = maxSizeImg.FileId;
-            _userContext.User.Images.Add(new ImageModel { TgMediaId = id });
+            _updateUserActionContextModel.Images.Add(new ImageModel { TgMediaId = id });
 
             /*imagesData.Remove(original);
 
@@ -118,7 +108,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 
         void MessageSendHelper(string text, InlineKeyboardMarkup? keyboard = null)
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.GetPassKeypoard(_userContext), parseMode: "HTML");
+            var mess = _botClient.SendMessage(_userContext.UpdateUser.TgId, text, replyMarkup: Keyboards.GetPassKeypoard(_userContext), parseMode: "HTML");
             _sendMessages.Add(mess.MessageId);
         }
 

@@ -13,7 +13,7 @@ namespace Vanilla.TelegramBot.Services
         public List<LogModel> ReadLogs() => TakeAllLogs();
 
         public Guid WriteLog(string message,
-            LogType logType, Guid? UserId = null,
+            LogType logType, Guid? UserId = null, long? UserTgId = null,
             [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
             [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0
@@ -27,6 +27,7 @@ namespace Vanilla.TelegramBot.Services
                 MemberName = memberName,
                 FilePath = sourceFilePath,
                 LineNumber = sourceLineNumber,
+                UserTgId = UserTgId,
                 CreateAt = DateTime.UtcNow,
             };
             if(UserId != null) log.UserId = UserId;
@@ -96,7 +97,7 @@ namespace Vanilla.TelegramBot.Services
 
         string MakeLogStringHelper(LogModel log)
         {
-            UserModel? user = log.UserId is not null ? userService.GetUser((Guid)log.UserId).Result : null;
+            UserModel? user = log.UserId is not null ? userService.GetUserAsync((Guid)log.UserId).Result : null;
             var userName = user is not null ? user.Username ?? user.TelegramId.ToString() : "";
 
             return String.Format("{0} & {1} :3 {2} t: {3} user: {4}, m: {5}, p: {6}, l: {7}",

@@ -76,7 +76,8 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         ///Особлива подяка всім, хто допомагає розробляти цього бота.
         ///
         ///Створено учасником спільноти &lt;a href=&quot;https://t.me/include_anime&quot;&gt;Програмісти і печеньки&lt;/a&gt;
-        ///Знайти розробників можете тут &lt;a href=&quot;https://t.me/LumiFanbase&quot;&gt;@LumiFanbase&lt;/a&gt;.
+        ///Знайти розробників можете тут &lt;a href=&quot;https://t.me/LumiFanbase&quot;&gt;@LumiFanbase&lt;/a&gt;
+        ///Сайт проекту: &lt;a href=&quot;{0}&quot;&gt;{1}&lt;/a&gt;.
         /// </summary>
         internal static string About {
             get {
@@ -600,6 +601,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string ThiIsMyMessageValidationMess {
             get {
                 return ResourceManager.GetString("ThiIsMyMessageValidationMess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ця функція лише для зареєстрованих користувачів..
+        /// </summary>
+        internal static string ThisFeatureIsOnlyForRegisteredUsers {
+            get {
+                return ResourceManager.GetString("ThisFeatureIsOnlyForRegisteredUsers", resourceCulture);
             }
         }
         

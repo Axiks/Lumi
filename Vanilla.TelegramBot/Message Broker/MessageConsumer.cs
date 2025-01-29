@@ -42,7 +42,7 @@ namespace Vanilla.TelegramBot.Message_Broker
 
             _logger.LogInformation("Consuming message: " + message);
 
-            var tgUser = await _userService.GetUser(context.Message.UserId);
+            var tgUser = await _userService.GetUserAsync(context.Message.UserId);
 
             if (tgUser == null)
                 throw new InvalidOperationException("Telegram User not found");

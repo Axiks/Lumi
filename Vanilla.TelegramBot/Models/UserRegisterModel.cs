@@ -4,6 +4,7 @@
     {
         public required long TelegramId { get; set; }
         public string? Username { get; set; }
+        public required string Nickname { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? About { get; set; }

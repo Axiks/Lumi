@@ -19,7 +19,6 @@ namespace Vanilla.TelegramBot.Abstract
         readonly IUserService _userService;
 
         List<IPage> _pagesCatalog;
-        //public abstract List<IPage> _pagesCatalog { get; }
 
         List<(short, short, List<IPage>)> _pagesVolumes;
         internal List<int> _sendMessages;
@@ -27,8 +26,6 @@ namespace Vanilla.TelegramBot.Abstract
         short _previousIndex; // can be event bug
         short _index;
         List<IPage> _pages;
-
-        private readonly BotUpdateUserModel _userModel;
 
         public event CloseFolderEventHandler? CloseFolderEvent;
 
@@ -56,10 +53,6 @@ namespace Vanilla.TelegramBot.Abstract
             _index = 0;
             _sendMessages = new List<int>();
             _sendedMessages = new List<SendedMessageModel>();
-
-            _userContext.UpdateUserContext = _userContext.UpdateUserContext is null ? new BotUpdateUserModel() : _userContext.UpdateUserContext;
-            _userModel = _userContext.UpdateUserContext;
-
         }
 
         public void InitPagesCatalog(List<IPage> pagesCatalog)
@@ -94,7 +87,7 @@ namespace Vanilla.TelegramBot.Abstract
 
             //var taskName = _folderName is not null ? _folderName : "Run task";
             var taskName = _folderName is not null ? _folderName : new EmojiRandomizer().Take();
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, taskName, replyMarkup: replyKeyboard, parseMode: "HTML");
+            var mess = _botClient.SendMessage(_userContext.UpdateUser.TgId, taskName, replyMarkup: replyKeyboard, parseMode: "HTML");
 
             _catalogInitMessageId = mess.MessageId;
             //_sendMessages.Add(mess.MessageId);
@@ -124,7 +117,7 @@ namespace Vanilla.TelegramBot.Abstract
                     }
                     else
                     {
-                        _botClient.DeleteMessage(_userContext.User.TelegramId, update.Message.MessageId);
+                        _botClient.DeleteMessage(_userContext.UpdateUser.TgId, update.Message.MessageId);
                     }
                 }
                 else
@@ -273,7 +266,7 @@ namespace Vanilla.TelegramBot.Abstract
         void InternallException(Exception ex)
         {
 
-            var exeptionId = _logger.WriteLog(ex.Message, LogType.Error, UserId: _userContext.User.UserId);
+            var exeptionId = _logger.WriteLog(ex.Message, LogType.Error, UserTgId: _userContext.UpdateUser.TgId);
 
             var errorMessage = string.Format(_userContext.ResourceManager.GetString("ServerError"), "@Yumikki", exeptionId);
         }
@@ -330,14 +323,14 @@ namespace Vanilla.TelegramBot.Abstract
 
         void MessageSendHelper(string text)
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, parseMode: "HTML");
+            var mess = _botClient.SendMessage(_userContext.UpdateUser.TgId, text, parseMode: "HTML");
             _sendMessages.Add(mess.MessageId);
         }
 
         void ClearMessages()
         {
             if (_sendMessages.Count() <= 0) return;
-            _botClient.DeleteMessages(_userContext.User.TelegramId, _sendMessages);
+            _botClient.DeleteMessages(_userContext.UpdateUser.TgId, _sendMessages);
             _sendMessages.Clear();
         }
 
@@ -353,7 +346,7 @@ namespace Vanilla.TelegramBot.Abstract
             if (_sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.NextAction).Count() > 0)
             {
                 var messagesToRemove = _sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.NextAction).Select(x => x.messageId);
-                _botClient.DeleteMessages(_userContext.User.TelegramId, messagesToRemove);
+                _botClient.DeleteMessages(_userContext.UpdateUser.TgId, messagesToRemove);
             }
         }
 
@@ -362,7 +355,7 @@ namespace Vanilla.TelegramBot.Abstract
             if (_sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.NextMessage).Count() > 0)
             {
                 var messagesToRemove = _sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.NextMessage).Select(x => x.messageId);
-                _botClient.DeleteMessages(_userContext.User.TelegramId, messagesToRemove);
+                _botClient.DeleteMessages(_userContext.UpdateUser.TgId, messagesToRemove);
             }
         }
 
@@ -371,7 +364,7 @@ namespace Vanilla.TelegramBot.Abstract
             if (_sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.ClosePage).Count() > 0)
             {
                 var messagesToRemove = _sendedMessages.Where(x => x.method == DeleteMessageMethodEnum.ClosePage).Select(x => x.messageId);
-                _botClient.DeleteMessages(_userContext.User.TelegramId, messagesToRemove);
+                _botClient.DeleteMessages(_userContext.UpdateUser.TgId, messagesToRemove);
             }
         }
 
@@ -380,14 +373,14 @@ namespace Vanilla.TelegramBot.Abstract
         {
             if (_sendedMessages.Exists(x => x.method != DeleteMessageMethodEnum.None))
             {
-                _botClient.DeleteMessages(_userContext.User.TelegramId, _sendedMessages.Where(x => x.method != DeleteMessageMethodEnum.None).Select(x => x.messageId));
+                _botClient.DeleteMessages(_userContext.UpdateUser.TgId, _sendedMessages.Where(x => x.method != DeleteMessageMethodEnum.None).Select(x => x.messageId));
             }
 
             ClearMessages();
-            if (_catalogInitMessageId is not null) _botClient.DeleteMessage(_userContext.User.TelegramId, _catalogInitMessageId ?? 0);
+            if (_catalogInitMessageId is not null) _botClient.DeleteMessage(_userContext.UpdateUser.TgId, _catalogInitMessageId ?? 0);
 
             CloseFolderEvent.Invoke();
-            _logger.WriteLog("Success exit from folder", LogType.Information, UserId: _userContext.User.UserId);
+            _logger.WriteLog("Success exit from folder", LogType.Information, UserTgId: _userContext.UpdateUser.TgId);
         }
 
         public void CloseFolder() => ExitFromFolder();

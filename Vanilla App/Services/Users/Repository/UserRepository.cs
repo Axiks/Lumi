@@ -26,7 +26,7 @@ namespace Vanilla_App.Services.Users.Repository
 
         public UserEntity Create(CoreUserCreateRequestModel create)
         {
-            if (_dbContext.Users.Any(x => x.Id == create.UserId)) throw new Exception("User with this ID exist");
+            if (_dbContext.Users.Any(x => x.Id == create.UserId)) throw new ArgumentException("User with this ID exist");
 
             var user = new UserEntity
             {
@@ -44,7 +44,7 @@ namespace Vanilla_App.Services.Users.Repository
 
         public UserEntity Update(Guid userId, CoreUserUpdateRequestModel update)
         {
-            if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
+            //if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
 
             var user = _dbContext.Users.Include(x => x.ProfileImages).First(x => x.Id == userId);
             user.About = update.About ?? user.About;
@@ -58,34 +58,37 @@ namespace Vanilla_App.Services.Users.Repository
 
         public UserEntity Get(Guid userId)
         {
-            if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
+            //if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
 
             var user = _dbContext.Users.Include(x => x.ProfileImages).First(x => x.Id == userId);
             return user;
         }
 
+        public UserEntity? GetOrDefault(Guid userId) => _dbContext.Users.Include(x => x.ProfileImages).FirstOrDefault(x => x.Id == userId);
+
         public List<UserEntity> GetAll() => _dbContext.Users.Include(x => x.ProfileImages).ToList();
 
-        public void Delete(Guid userId)
+        public async Task Delete(Guid userId)
         {
-            if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
+            //if (await _dbContext.Users.AnyAsync(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
 
-            var user = _dbContext.Users.Include(x => x.ProfileImages).First(x => x.Id == userId);
+            var user = await _dbContext.Users.Include(x => x.ProfileImages).FirstAsync(x => x.Id == userId);
 
             if(user.ProfileImages is not null)
             {
                 foreach(var image in user.ProfileImages)
                 {
-                    RemoveProfileImage(userId, image.Id);
+                    await RemoveProfileImage(userId, image.Id);
                 }
             }
 
             _dbContext.Remove(user);
+            await _dbContext.SaveChangesAsync();
         }
 
         public ProfileImage AddProfileImage(Guid userId, DownloadFileRequestModel downloadFileRequestModel)
         {
-            if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
+            //if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
 
             var filename = _storageModule.DownloadFile(downloadFileRequestModel).Result;
 
@@ -103,16 +106,15 @@ namespace Vanilla_App.Services.Users.Repository
             return new ProfileImage { FileName = filename, Id = userImageEntity.Id, FileHref = domaintorageName + filename };
         }
 
-        public void RemoveProfileImage(Guid userId, Guid imageId)
+        public async Task RemoveProfileImage(Guid userId, Guid imageId)
         {
-            if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
+            ///if (_dbContext.Users.Any(x => x.Id == userId) == false) throw new Exception("User with this ID exist");
 
-            var userImage = _dbContext.Users.Include(x => x.ProfileImages).First(x => x.Id == userId).ProfileImages.FirstOrDefault(x => x.Id == imageId);
-
-            _storageModule.RemoveFile(userImage.FileName);
-
+            var userImage = _dbContext.Users.Include(x => x.ProfileImages).First(x => x.Id == userId).ProfileImages.First(x => x.Id == imageId);
             _dbContext.Remove(userImage);
-            _dbContext.SaveChanges();
+
+            await _storageModule.RemoveFile(userImage.FileName);
+            await _dbContext.SaveChangesAsync();
         }
 
     }

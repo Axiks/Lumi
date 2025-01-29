@@ -1,4 +1,5 @@
-﻿using Telegram.BotAPI.AvailableTypes;
+﻿using System.Resources;
+using Telegram.BotAPI.AvailableTypes;
 using Vanilla.TelegramBot.Models;
 using Vanilla_App.Services.Projects;
 
@@ -179,9 +180,9 @@ namespace Vanilla.TelegramBot.UI
             return replyMarkuppp;
         }
 
-        public static InlineKeyboardMarkup GetCreateProfileKeypoard(UserContextModel userContext)
+        public static InlineKeyboardMarkup GetCreateProfileKeypoard(ResourceManager resourceManager)
         {
-            var passBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("CreateProfile"));
+            var passBtn = new InlineKeyboardButton(text: resourceManager.GetString("CreateProfile"));
             passBtn.CallbackData = "CreateProfile";
 
             var replyMarkuppp = new InlineKeyboardMarkup
@@ -415,6 +416,66 @@ namespace Vanilla.TelegramBot.UI
                                             }
                }
            );
+
+            return replyMarkuppp;
+        }
+
+
+        public static InlineKeyboardMarkup GetSwitchPageKeypoard(ResourceManager resourceManager)
+        {
+            var nickname = new InlineKeyboardButton(text: resourceManager.GetString("Nickname"));
+            var about = new InlineKeyboardButton(text: resourceManager.GetString("AboutKey"));
+            var isRedy = new InlineKeyboardButton(text: resourceManager.GetString("IsRedyToWork"));
+            var links = new InlineKeyboardButton(text: resourceManager.GetString("Links"));
+            var images = new InlineKeyboardButton(text: resourceManager.GetString("Images"));
+            var back = new InlineKeyboardButton(text: resourceManager.GetString("Back"));
+
+            nickname.CallbackData = "nickname";
+            about.CallbackData = "about";
+            isRedy.CallbackData = "isRedyToWork";
+            links.CallbackData = "links";
+            images.CallbackData = "images";
+            back.CallbackData = "back";
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        nickname,
+                        about,
+                    },
+                    new InlineKeyboardButton[]{
+                        links,
+                        images
+                    },
+                    new InlineKeyboardButton[]{
+                        isRedy
+                    },
+                }
+            );
+
+            return replyMarkuppp;
+        }
+
+        public static InlineKeyboardMarkup GetBasicKeypoard(ResourceManager resourceManager)
+        {
+            var acceptBtn = new InlineKeyboardButton(text: resourceManager.GetString("True"));
+            var editBtn = new InlineKeyboardButton(text: resourceManager.GetString("Edit"));
+
+            acceptBtn.CallbackData = "true";
+            editBtn.CallbackData = "edit";
+
+            var replyMarkuppp = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                                                acceptBtn
+                                            },
+                    new InlineKeyboardButton[]{
+                                                editBtn
+                                            },
+                }
+            );
 
             return replyMarkuppp;
         }

@@ -9,12 +9,13 @@ namespace Vanilla_App.Services.Users.Repository
         public Task<List<ProjectModel>> GetProjectsAsync(Guid userId);
         public List<UserEntity> GetAll();
         public UserEntity Get(Guid userId);
+        public UserEntity? GetOrDefault(Guid userId);
         public UserEntity Create(CoreUserCreateRequestModel update);
         public UserEntity Update(Guid userId, CoreUserUpdateRequestModel update);
-        public void Delete(Guid userId);
+        public Task Delete(Guid userId);
 
 
         public ProfileImage AddProfileImage(Guid userId, DownloadFileRequestModel downloadFileRequestModel);
-        public void RemoveProfileImage(Guid userId, Guid imageId);
+        public Task RemoveProfileImage(Guid userId, Guid imageId);
     }
 }

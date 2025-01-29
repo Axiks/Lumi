@@ -1,34 +1,53 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Vanilla.Aspire</a>
+﻿@* <div class="top-row ps-3 navbar navbar-dark"> *@
+@*     <div class="container-fluid"> *@
+@*         <a class="navbar-brand" href="">Vanilla.Aspire</a> *@
+@*     </div> *@
+@* </div> *@
+
+@* <input type="checkbox" title="Navigation menu" class="navbar-toggler" /> *@
+
+@* <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()"> *@
+@*     <nav class="flex-column"> *@
+@*         <div class="nav-item px-3"> *@
+@*             <NavLink class="nav-link" href="" Match="NavLinkMatch.All"> *@
+@*                 <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home *@
+@*             </NavLink> *@
+@*         </div> *@
+
+@*         <div class="nav-item px-3"> *@
+@*             <NavLink class="nav-link" href="counter"> *@
+@*                 <span class="bi bi-plus-square-fill" aria-hidden="true"></span> Counter *@
+@*             </NavLink> *@
+@*         </div> *@
+
+@*         <div class="nav-item px-3"> *@
+@*             <NavLink class="nav-link" href="weather"> *@
+@*                 <span class="bi bi-list-nested" aria-hidden="true"></span> Weather *@
+@*             </NavLink> *@
+@*         </div> *@
+@*         <div class="nav-item px-3"> *@
+@*             <NavLink class="nav-link" href="users"> *@
+@*                 <span class="bi bi-list-nested" aria-hidden="true"></span> Users *@
+@*             </NavLink> *@
+@*         </div> *@
+@*     </nav> *@
+@* </div> *@
+
+<nav class="nav">
+    <div class="nav-left">
+        <a style="font-size: 2em" href="/">Lumi <i class="clearfix" style="font-size: 0.4em;">beta</i></a>
     </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="users">
-                <span class="bi bi-list-nested" aria-hidden="true"></span> Users
-            </NavLink>
-        </div>
-    </nav>
-</div>
+    <div class="nav-center">
+        <a href="/">Home</a>
+        <a href="/users/">Members</a>
+    </div>
+    <div class="nav-right">
+        <a href="https://t.me/lumilumibot" class="button icon outline is-horizontal-align is-center" style="background-color: #ffffff; color: black">
+            Add yourself
+        </a>
+        <a href="https://t.me/LumiFanbase" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff">
+            Telegram
+            <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon">
+        </a>
+    </div>
+</nav>

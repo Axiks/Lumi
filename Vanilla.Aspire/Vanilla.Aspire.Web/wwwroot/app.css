@@ -1,4 +1,4 @@
-/*h1:focus {
+﻿/*h1:focus {
     outline: none;
 }
 
@@ -42,3 +42,20 @@ div.scrollmenu img {
     div.scrollmenu img:hover {
         background-color: #e1e1e19c;
     }*/
+
+/*html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1 0 auto;
+}
+
+.footer {
+    flex-shrink: 0;
+}*/

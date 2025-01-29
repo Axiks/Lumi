@@ -588,6 +588,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This feature is only for registered users..
+        /// </summary>
+        internal static string ThisFeatureIsOnlyForRegisteredUsers {
+            get {
+                return ResourceManager.GetString("ThisFeatureIsOnlyForRegisteredUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to True.
         /// </summary>
         internal static string True {

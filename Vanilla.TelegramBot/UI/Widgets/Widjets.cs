@@ -2,6 +2,8 @@
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.Pages;
+using Vanilla.TelegramBot.Pages.UpdateUser.Models;
 using Vanilla_App.Services.Bonus;
 
 namespace Vanilla.TelegramBot.UI.Widgets
@@ -9,6 +11,21 @@ namespace Vanilla.TelegramBot.UI.Widgets
     public static class Widjets
     {
         //public static string AboutUser(long chatId, TelegramBotClient botClient, ResourceManager resourceManager, UserModel userModel, ReplyMarkup? replyMarkup = null)
+        public static string AboutUser(ResourceManager resourceManager, UserActionContextModel updateUserModel)
+        {
+            var InitMessage = "<b>{0}</b>\n\n{1}\n\n{2}\n\nЗнайти мене можеш тут:\n\n{3}\n\n";
+
+            var links = new List<string>();
+            if (updateUserModel.Links is not null) links.AddRange(updateUserModel.Links);
+            if (updateUserModel.Username is not null) links.Add("@" + updateUserModel.Username);
+            var linkStr = String.Join(", ", links);
+
+            var text = string.Format(InitMessage, updateUserModel.Nickname, updateUserModel.About, updateUserModel.IsRadyForOrders == true ? resourceManager.GetString("IAcceptOrders") : "", linkStr);
+
+            return text;
+
+        }
+
         public static string AboutUser(ResourceManager resourceManager, Models.UserModel userModel)
         {
             var InitMessage = "<b>{0}</b>\n\n{1}\n\n{2}\n\nЗнайти мене можеш тут:\n\n{3}\n\n";
@@ -22,6 +39,15 @@ namespace Vanilla.TelegramBot.UI.Widgets
 
             return text;
 
+        }
+
+        public static SendMessageArgs ThisFeatureIsOnlyForRegisteredUsers (long chatId, ResourceManager resourceManager)
+        {
+            var message = resourceManager.GetString("ThisFeatureIsOnlyForRegisteredUsers");
+            var keyboard = Keyboards.GetCreateProfileKeypoard(resourceManager);
+            return new SendMessageArgs(chatId, message) {
+                ReplyMarkup = keyboard
+            };
         }
 
 

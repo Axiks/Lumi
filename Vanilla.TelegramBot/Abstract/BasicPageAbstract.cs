@@ -17,7 +17,7 @@ namespace Vanilla.TelegramBot.Abstract
         public event CompliteHandler? CompliteEvent;
         public event ChangePagesFlowByPagesEventHandler? ChangePagesFlowByPagesPagesEvent;
 
-        public long ChatId = userContext.User.TelegramId;
+        public long ChatId = userContext.UpdateUser.TgId;
 
         List<ActionFrame> _inputActionsList = new List<ActionFrame>();
 

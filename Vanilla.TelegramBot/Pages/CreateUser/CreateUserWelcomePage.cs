@@ -67,7 +67,7 @@ namespace Vanilla.TelegramBot.Pages.CreateUser
 
         void MessageSendHelper(string text)
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.GetCreateProfileKeypoard(_userContext), parseMode: "HTML");
+            var mess = _botClient.SendMessage(_userContext.UpdateUser.TgId, text, replyMarkup: Keyboards.GetCreateProfileKeypoard(_userContext.ResourceManager), parseMode: "HTML");
             _sendedMessages.Add(new SendedMessageModel(mess.MessageId, Common.Enums.DeleteMessageMethodEnum.ClosePage));
         }
     }

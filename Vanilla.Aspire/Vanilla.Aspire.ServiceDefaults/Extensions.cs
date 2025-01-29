@@ -5,6 +5,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 
@@ -43,20 +44,59 @@ public static class Extensions
             logging.IncludeScopes = true;
         });
 
-        builder.Services.AddOpenTelemetry()
+        var otel = builder.Services.AddOpenTelemetry();
+
+        otel
+            .WithLogging(logging =>
+            {
+                if (builder.Environment.IsDevelopment())  logging
+                /* Note: ConsoleExporter is used for demo purpose only. In production
+                   environment, ConsoleExporter should be replaced with other exporters
+                   (e.g. OTLP Exporter). */
+                .AddConsoleExporter();
+            })
             .WithMetrics(metrics =>
             {
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddRuntimeInstrumentation();
+                    .AddRuntimeInstrumentation()
+                    .AddProcessInstrumentation();
+
+                metrics
+                .AddPrometheusExporter();
+
+                //metrics.AddMeter("TelegramBot");
             })
             .WithTracing(tracing =>
-            {
-                tracing.AddAspNetCoreInstrumentation()
-                    // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
-                    //.AddGrpcClientInstrumentation()
-                    .AddHttpClientInstrumentation();
+            { 
+                if (builder.Environment.IsDevelopment()) tracing.SetSampler<AlwaysOnSampler>();
+
+                tracing
+                //.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("ProductService"))
+                .AddAspNetCoreInstrumentation()
+                // Uncomment the following line to enable gRPC instrumentation (requires the OpenTelemetry.Instrumentation.GrpcNetClient package)
+                //.AddGrpcClientInstrumentation()
+                .AddHttpClientInstrumentation()
+                //.SetResourceBuilder(
+                //    ResourceBuilder.CreateDefault()
+                //        .AddService("Tracing.NET"))
+                /*              .AddOtlpExporter(otlpOptions =>
+                              {
+                                  otlpOptions.Endpoint = new Uri(tracingOtlpEndpoint);
+                              })
+                              .AddConsoleExporter();*/
+                //.AddJaegerExporter()
+                //            .AddJaegerExporter(jaegerOptions =>
+                //            {
+                //                jaegerOptions.AgentHost = "localhost";  // Update with your Jaeger host if necessary
+                //                jaegerOptions.AgentPort = 4317;         // Default Jaeger agent port
+                //            });
+
+                //if(builder.Environment.IsDevelopment()) tracing.AddConsoleExporter();
+                .AddEntityFrameworkCoreInstrumentation();
             });
+            //.ConfigureResource(resource => resource
+            //    .AddService(serviceName: builder.Environment.ApplicationName));
 
         builder.AddOpenTelemetryExporters();
 
@@ -79,6 +119,8 @@ public static class Extensions
         //       .UseAzureMonitor();
         //}
 
+        //builder.Services.AddOpenTelemetry().WithMetrics(x => x.AddPrometheusExporter());
+
         return builder;
     }
 
@@ -93,6 +135,9 @@ public static class Extensions
 
     public static WebApplication MapDefaultEndpoints(this WebApplication app)
     {
+        app.UseOpenTelemetryPrometheusScrapingEndpoint();
+        app.MapPrometheusScrapingEndpoint();
+
         // Adding health checks endpoints to applications in non-development environments has security implications.
         // See https://aka.ms/dotnet/aspire/healthchecks for details before enabling these endpoints in non-development environments.
         if (app.Environment.IsDevelopment())

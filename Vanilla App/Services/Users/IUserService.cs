@@ -5,13 +5,13 @@ namespace Vanilla_App.Services.Users
 {
     public interface IUserService
     {
-        Task<UserModel> GetUser(Guid userId);
-        Task<List<UserModel>> GetUsers();
-        Task<UserModel> CreateUser(UserCreateRequestModel update);
-        Task<UserModel> UpdateUser(Guid userId, UserUpdateRequestModel update);
-        Task<bool> DeleteUser(Guid userId);
+        Task<UserModel> GetUserOrDefaultAsync(Guid userId);
+        Task<List<UserModel>> GetUsersAsync();
+        Task<UserModel> CreateUserAsync(UserCreateRequestModel update);
+        Task<UserModel> UpdateUserAsync(Guid userId, UserUpdateRequestModel update);
+        Task<bool> DeleteUserAsync(Guid userId);
 
-        Task<ProfileImage> AddProfileImage(Guid userId, DownloadFileRequestModel image);
-        Task<bool> RemoveProfileImage(Guid userId, Guid imageId);
+        Task<ProfileImage> AddProfileImageAsync(Guid userId, DownloadFileRequestModel image);
+        Task<bool> RemoveProfileImageAsync(Guid userId, Guid imageId);
     }
 }

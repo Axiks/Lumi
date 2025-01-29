@@ -1,0 +1,25 @@
+global:
+  scrape_interval:     10s
+  evaluation_interval: 10s
+
+scrape_configs:
+  - job_name: 'web server'
+    scheme: https
+    static_configs:
+      - targets: [ 'lumi-webfrontend-service:8080']
+    tls_config:
+      insecure_skip_verify: true
+
+  - job_name: 'cdn server'
+    scheme: http
+    static_configs:
+      - targets: [ 'lumi-apiservice-service:80']
+    tls_config:
+      insecure_skip_verify: true
+
+  - job_name: 'telegram bot server'
+    scheme: http
+    static_configs:
+      - targets: [ 'lumi-telegrambot-service:8080']
+    tls_config:
+      insecure_skip_verify: true

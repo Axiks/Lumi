@@ -5,30 +5,21 @@ using Telegram.BotAPI.GettingUpdates;
 using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
+using Vanilla.TelegramBot.Pages.UpdateUser.Models;
 using Vanilla.TelegramBot.UI;
 
 namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 {
-    internal class UpdateUserLinksPage : IPage
+    internal class UpdateUserLinksPage(TelegramBotClient _botClient, UserContextModel _userContext, List<int> _sendMessages, UserActionContextModel _updateUserActionContextModel) : IPage
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
         public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
         public event CompliteHandler? CompliteEvent;
 
-        readonly TelegramBotClient _botClient;
-        readonly UserContextModel _userContext;
-        readonly List<int> _sendMessages;
 
         readonly string InitMessage = "Залиш декілька посилань\n\nЦе можуть бути посилання на соц мережі, блоги, чи сторінки з твоїми проектами.\r\nМожна залишити декілька посилань, розділяючи їх через кому \",\"";
 
-        public UpdateUserLinksPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages)
-        {
-            _botClient = botClient;
-            _userContext = userContext;
-            _sendMessages = sendMessages;
-        }
-
-        void IPage.SendInitMessage() => MessageSendHelper(InitMessage, _userContext.User.Links);
+        void IPage.SendInitMessage() => MessageSendHelper(InitMessage, _updateUserActionContextModel.Links);
 
         void IPage.InputHendler(Update update)
         {
@@ -96,7 +87,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
             }
             else if (update.Message is not null && update.Message.Text is not null)
             {
-                _userContext.User.Links = new List<string>(FormationHelper.Links(update.Message!.Text!, _userContext));
+                _updateUserActionContextModel.Links = new List<string>(FormationHelper.Links(update.Message!.Text!, _userContext));
                 CompliteEvent.Invoke();
             }
             else ValidationErrorEvent.Invoke("action not recognized");
@@ -113,7 +104,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
                 for (int i = 1; i < links.Count(); i++) myLinksStr += links[i];
             }
 
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.GetPassKeypoard(_userContext), parseMode: "HTML");
+            var mess = _botClient.SendMessage(_userContext.UpdateUser.TgId, text, replyMarkup: Keyboards.GetPassKeypoard(_userContext), parseMode: "HTML");
             _sendMessages.Add(mess.MessageId);
         }
 

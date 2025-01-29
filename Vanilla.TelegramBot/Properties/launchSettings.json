@@ -1,13 +1,18 @@
 {
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "Vanilla.TelegramBot": {
       "commandName": "Project",
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5008",
       "environmentVariables": {
         "DB_HOST": "localhost"
       }
     },
     "Development": {
       "commandName": "Project",
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5008",
       "environmentVariables": {
         "DB_HOST": "localhost",
         "DOTNET_ENVIRONMENT": "Development"

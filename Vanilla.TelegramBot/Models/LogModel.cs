@@ -10,6 +10,7 @@ namespace Vanilla.TelegramBot.Models
         public string? FilePath { get; set; }
         public int? LineNumber { get; set; }
         public Guid? UserId { get; set; }
+        public long? UserTgId { get; set; }
         public required LogType LogType { get; set; }
         public required DateTime CreateAt { get; set; }
     }

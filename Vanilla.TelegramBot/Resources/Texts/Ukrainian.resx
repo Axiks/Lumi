@@ -127,7 +127,8 @@
 Особлива подяка всім, хто допомагає розробляти цього бота.
 
 Створено учасником спільноти &lt;a href="https://t.me/include_anime"&gt;Програмісти і печеньки&lt;/a&gt;
-Знайти розробників можете тут &lt;a href="https://t.me/LumiFanbase"&gt;@LumiFanbase&lt;/a&gt;</value>
+Знайти розробників можете тут &lt;a href="https://t.me/LumiFanbase"&gt;@LumiFanbase&lt;/a&gt;
+Сайт проекту: &lt;a href="{0}"&gt;{1}&lt;/a&gt;</value>
   </data>
   <data name="AboutKey" xml:space="preserve">
     <value>Про мене</value>
@@ -317,6 +318,9 @@ Error ID: &lt;code&gt;{1}&lt;/code&gt;</value>
 
 Виглядає як моє повідомлення!! 
 &lt;b&gt;Не можу його прийняти&lt;/b&gt;</value>
+  </data>
+  <data name="ThisFeatureIsOnlyForRegisteredUsers" xml:space="preserve">
+    <value>Ця функція лише для зареєстрованих користувачів.</value>
   </data>
   <data name="True" xml:space="preserve">
     <value>Вірно</value>

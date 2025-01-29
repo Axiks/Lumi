@@ -1,15 +1,4 @@
 services:
-  aspire-dashboard:
-    image: "mcr.microsoft.com/dotnet/aspire-dashboard:9.0"
-    # profiles: [development]
-    environment:
-      DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
-    ports:
-    - target: 18888
-    restart: unless-stopped
-    networks:
-        - lumi-net-dev
-
   lumi-apiservice-service:
     image: "lumi/apiservice:latest"
     build:
@@ -25,7 +14,7 @@ services:
       ConnectionStrings__coredb: $COREDB_CONNECTION_STRING
       ConnectionStrings__oauthdb: $OAUTH_CONNECTION_STRING
       ConnectionStrings__lumi-mq: $RABBITMQ_CONNECTION_STRING
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       OTEL_SERVICE_NAME: "apiservice"
       cdnDomain: $CDN_DOMAIN
     # ports:
@@ -33,7 +22,7 @@ services:
     #   published: 10000
     restart: unless-stopped
     volumes:
-      - ./storage:/storage
+      - ./infrastructure/app/storage:/storage
     networks:
         - lumi-net-dev
     depends_on:
@@ -52,12 +41,12 @@ services:
       ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
       Kestrel__Endpoints__https__Url: "https://*:8080"
       services__apiservice__http__0: "http://lumi-apiservice-service:80"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       OTEL_SERVICE_NAME: "webfrontend"
       # ConnectionStrings__apiservice: "https://apiservice:8083"
-    # ports:
-    # - target: 8080
-    #   published: 10002
+    ports:
+    - target: 8080
+      published: 10002
     restart: unless-stopped
     networks:
         - lumi-net-dev
@@ -78,7 +67,7 @@ services:
       ConnectionStrings__oauthdb: $OAUTH_CONNECTION_STRING
       ConnectionStrings__tgbotdb: $TGBOT_CONNECTION_STRING
       ConnectionStrings__lumi-mq: $RABBITMQ_CONNECTION_STRING
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://aspire-dashboard:18889"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
       OTEL_SERVICE_NAME: "telegrambot"
       domain: $WEB_DOMAIN
       cdnDomain: $CDN_DOMAIN
@@ -89,10 +78,13 @@ services:
       tokenLifetimeSec: $TOKEN_LIFETIME_SEC
       tokenIssuer: ${TOKEN_ISSUER}
       tokenAudience: ${TOKEN_AUDIENCE}
+    ports:
+    - target: 8080
+      published: 10008
     restart: unless-stopped
     volumes:
-      - ./storage:/app/storage
-      - ./applog:/app/AppLog
+      - ./infrastructure/app/storage:/app/storage
+      - ./infrastructure/app/applog:/app/AppLog
     networks:
         - lumi-net-dev
     depends_on:
@@ -105,9 +97,9 @@ services:
     #   - "5434:5432"
     restart: always
     volumes:
-      - ./postgres/data:/var/lib/postgresql/data
-      - ./postgres/pgconf:/etc/postgresql
-      - ./postgres/pglog:/var/log/postgresql
+      - ./infrastructure/postgres/data:/var/lib/postgresql/data
+      - ./infrastructure/postgres/pgconf:/etc/postgresql
+      - ./infrastructure/postgres/pglog:/var/log/postgresql
     environment:
         POSTGRES_DB: $DB_NAME
         POSTGRES_USER: $DB_USERNAME
@@ -121,7 +113,7 @@ services:
     #   # - 5672:5672
     #   - 15672:15672
     volumes:
-      - ./rabbitmq_data:/var/lib/rabbitmq
+      - ./infrastructure/rabbitmq_data:/var/lib/rabbitmq
     environment:
         RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
         RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
@@ -137,9 +129,106 @@ services:
     networks:
         - lumi-net-dev
 
+  # aspire-dashboard:
+  #   image: "mcr.microsoft.com/dotnet/aspire-dashboard:9.0"
+  #   # profiles: [development]
+  #   environment:
+  #     DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
+  #   ports:
+  #   - target: 18888
+  #   restart: unless-stopped
+  #   networks:
+  #       - lumi-net-dev
+
+  otel-collector:
+    container_name: otelcollector
+    image: otel/opentelemetry-collector-contrib:latest
+    command: [ --config=/etc/otel-collector-config.yml ]
+    volumes:
+      - ./config/otel-collector-config.yml:/etc/otel-collector-config.yml
+    depends_on:
+      - prometheus
+      - loki
+      # - tempo
+    # ports:
+    #   - "4317:4317" # OTLP gRPC receiver
+    #   - "4318:4318" # OTLP http receiver
+      #   - 1888:1888 # pprof extension
+      # - 8888:8888 # Prometheus metrics exposed by the collector for itself
+      # - 8889:8889 # Prometheus exporter metrics for applications
+      #   - 13133:13133 # health_check extension      
+      #   - 55679:55679 # zpages extension
+    networks:
+        - lumi-net-dev
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      # - ./config/prometheus/etc:/etc/prometheus/:rw
+      - ./infrastructure/prometheus/prometheus_data:/prometheus:rw
+      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--web.enable-remote-write-receiver'
+      - '--enable-feature=exemplar-storage'
+    # ports:
+    #   - 9090:9090
+    networks:
+      - lumi-net-dev
+    restart: always
+
+
+
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ./infrastructure/grafana/grafana-storage/:/var/lib/grafana
+      # - ./grafana/home:/usr/share/grafana
+      - ./infrastructure/grafana/logs:/var/log/grafana
+      - ./infrastructure/grafana/lib/:/var/lib/grafana
+      - ./config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+    environment:
+      # - GF_AUTH_ANONYMOUS_ENABLED=true
+      # - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      # - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - lumi-net-dev
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=:9411
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - 6831:6831/udp
+      # - 6832:6832/udp
+      # - 5778:5778
+      - 16686:16686
+      - 14268:14268
+      # - 14269:14269
+      # - 14250:14250
+      # - 9411:9411
+      # - 4317:4317
+      # - 4318:4318
+    networks:
+      - lumi-net-dev
+
+  loki:
+    image: grafana/loki:2.9.2
+    # ports:
+    #   - "3100:3100"
+    volumes:
+      - ./infrastructure/loki/loki-data:/loki/
+      - ./config/loki-config.yaml:/etc/loki/local-config.yaml:ro
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+        - lumi-net-dev
+
 networks:
  lumi-net-dev:
     driver: bridge
-    # ipam:
-    #   config:
-    #     - subnet: 172.32.0.0/16

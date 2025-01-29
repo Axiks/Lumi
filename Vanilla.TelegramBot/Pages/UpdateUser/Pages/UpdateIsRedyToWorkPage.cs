@@ -1,46 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.BotAPI;
+﻿using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
-using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.Common.Enums;
-using Vanilla.TelegramBot.Entityes;
-using Vanilla.TelegramBot.Helpers;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
-using Vanilla.TelegramBot.UI;
+using Vanilla.TelegramBot.Pages.UpdateUser.Models;
 
 namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 {
-    internal class UpdateIsRedyToWorkPage : IPage
+    internal class UpdateIsRedyToWorkPage(TelegramBotClient _botClient, UserContextModel _userContext, List<int> _sendMessages, UserActionContextModel _updateUserActionContextModel) : IPage
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
         public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
         public event CompliteHandler? CompliteEvent;
 
-        readonly TelegramBotClient _botClient;
-        readonly UserContextModel _userContext;
-        readonly List<int> _sendMessages;
-
         readonly string InitMessage = "Чи ви приймаєте комерційні замовлення?";
 
-        public UpdateIsRedyToWorkPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages)
-        {
-            _botClient = botClient;
-            _userContext = userContext;
-            _sendMessages = sendMessages;
-        }
 
         void IPage.SendInitMessage()
         {
             var pullOptions = GetPollOptions();
-            var pollArgs = new SendPollArgs(_userContext.User.TelegramId, InitMessage, pullOptions);
+            var pollArgs = new SendPollArgs(_userContext.UpdateUser.TgId, InitMessage, pullOptions);
             pollArgs.IsAnonymous = false;
             //pollArgs.ReplyMarkup = Keyboards.CannelKeyboard(_userContext);
 
@@ -79,7 +60,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 
             var selectedOption = boolPoolAnswer[optionIndex];
 
-            _userContext.User.IsRadyForOrders = selectedOption == BoolPoolAnswerEnum.Yes ? true : false;
+            _updateUserActionContextModel.IsRadyForOrders = selectedOption == BoolPoolAnswerEnum.Yes ? true : false;
         }
 
         List<InputPollOption> GetPollOptions()

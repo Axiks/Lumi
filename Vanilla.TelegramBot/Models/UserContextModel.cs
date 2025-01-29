@@ -1,6 +1,8 @@
-﻿using System.Resources;
+﻿using System.Collections.Generic;
+using System.Resources;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Resources.Texts;
+using Vanilla.TelegramBot.Services.Bot_Service;
 
 namespace Vanilla.TelegramBot.Models
 {
@@ -8,25 +10,46 @@ namespace Vanilla.TelegramBot.Models
 
     public class UserContextModel
     {
-        public readonly UserModel User;
+        public readonly UpdateUserData UpdateUser;
+        public UserModel? User;
         public IFolder? Folder { get; set; }
-
+        public CoreMessageMenager MessageMenager { get; init; }
 
         readonly ResourceManager _resourceManager;
         public ResourceManager ResourceManager { get { return _resourceManager; } }
 
+        public UserContextModel(UpdateUserData updateUser)
+        {
+            updateUser.LanguageCode = "ua"; // temp fix
+            _resourceManager = updateUser.LanguageCode == "ua" || updateUser.LanguageCode == "ru" ? new ResourceManager("Vanilla.TelegramBot.Resources.Texts.Ukrainian", typeof(Ukrainian).Assembly) : new ResourceManager("Vanilla.TelegramBot.Resources.Texts.English", typeof(English).Assembly);
 
-        public List<int> SendMessages { get; set; } = new List<int>(); // delete in future
-        public BotUpdateUserModel? UpdateUserContext { get; set; } // delete in future
+            MessageMenager = new CoreMessageMenager();
+            UpdateUser = updateUser;
+        }
 
-
-
-        public UserContextModel(UserModel user)
+        public UserContextModel(UpdateUserData updateUser, UserModel user)
         {
             user.LanguageCode = "ua"; // temp fix
             _resourceManager = user.LanguageCode == "ua" || user.LanguageCode == "ru" ? new ResourceManager("Vanilla.TelegramBot.Resources.Texts.Ukrainian", typeof(Ukrainian).Assembly) : new ResourceManager("Vanilla.TelegramBot.Resources.Texts.English", typeof(English).Assembly);
 
+            MessageMenager = new CoreMessageMenager();
             User = user;
+            UpdateUser = updateUser;
+        }
+
+        //public bool IsHasProfile => User is not null;
+        public List<RoleEnum> Roles
+        {
+            get
+            {
+                List<RoleEnum> roles = new List<RoleEnum>();
+                if (User is not null) roles.Add(RoleEnum.User);
+                else roles.Add(RoleEnum.Anonim);
+
+                if(UpdateUser.IsAdmin is true) roles.Add(RoleEnum.Admin);
+
+                return roles;
+            }
         }
 
 
@@ -45,6 +68,10 @@ namespace Vanilla.TelegramBot.Models
             timer.Elapsed += (sender, e) => timer.Dispose();
             timer.Start();
         }
+
+
+        //public List<int> SendMessages { get; set; } = new List<int>(); // delete in future
+        //public BotUpdateUserModel? UpdateUserContext { get; set; } // delete in future
 
     }
 }

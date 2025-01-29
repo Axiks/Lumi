@@ -11,6 +11,7 @@ COPY ["Vanilla.Common/", "Vanilla.Common/"]
 COPY ["Vanilla.Data/", "Vanilla.Data/"]
 COPY ["Vanilla.OAuth/", "Vanilla.OAuth/"]
 COPY ["Vanilla.TelegramBot/", "Vanilla.TelegramBot/"]
+COPY ["Vanilla.Aspire/Vanilla.Aspire.ServiceDefaults/", "Vanilla.Aspire/Vanilla.Aspire.ServiceDefaults/"]
 
 WORKDIR /src/Vanilla.TelegramBot
 RUN dotnet restore "./Vanilla.TelegramBot.csproj"

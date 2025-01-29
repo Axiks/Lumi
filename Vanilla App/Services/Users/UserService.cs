@@ -10,30 +10,47 @@ namespace Vanilla_App.Services
 {
     public class UserService(IUserRepository _coreUserRepository, IProjectRepository _projectRepository, Vanilla.OAuth.Services.UserRepository _oauthUserService, IConfiguration configuration) : IUserService
     {
-        public async Task<List<UserModel>> GetUsers()
+        public async Task<List<UserModel>> GetUsersAsync()
         {
             var users = new List<UserModel>();
 
             var entities = _coreUserRepository.GetAll();
             foreach (var entity in entities) {
-                var OAuthUser = await _oauthUserService.GetUserAsync(entity.Id);
-                users.Add(ToUserModelMapper(entity, OAuthUser));
+                try
+                {
+                    var OAuthUser = await _oauthUserService.GetUserAsync(entity.Id);
+                    users.Add(ToUserModelMapper(entity, OAuthUser));
+                }
+                catch
+                {
+                    throw new Exception("User don`t found in OAuth service. User ID: " + entity.Id);
+                }
             }
 
             return users;
         }
 
-        public async Task<UserModel> GetUser(Guid userId)
+        public async Task<UserModel> GetUserAsync(Guid userId)
         {
-            // oauth
             var OAthUser = await _oauthUserService.GetUserAsync(userId);
             var entity = _coreUserRepository.Get(userId);
 
-            var user = ToUserModelMapper(entity, OAthUser);
-            return user;
+            return ToUserModelMapper(entity, OAthUser);
         }
 
-        public async Task<UserModel> CreateUser(UserCreateRequestModel create)
+        public async Task<UserModel?> GetUserOrDefaultAsync(Guid userId)
+        {
+            // oauth
+            var OAthUser = await _oauthUserService.GetUserOrDefaultAsync(userId);
+            if (OAthUser is null) return null;
+
+            var entity = _coreUserRepository.GetOrDefault(userId);
+            if (entity is null) return null;
+
+            return ToUserModelMapper(entity, OAthUser);
+        }
+
+        public async Task<UserModel> CreateUserAsync(UserCreateRequestModel create)
         {
             // oauth
             var OAthUser = await _oauthUserService.CreateUserAsync(new Vanilla.OAuth.Models.UserCreateRequestModel
@@ -53,7 +70,7 @@ namespace Vanilla_App.Services
             return ToUserModelMapper(entity, OAthUser);
         }
 
-        public async Task<UserModel> UpdateUser(Guid userId, UserUpdateRequestModel update)
+        public async Task<UserModel> UpdateUserAsync(Guid userId, UserUpdateRequestModel update)
         {
             // oauth
             var OAthUser = await _oauthUserService.GetUserAsync(userId);
@@ -73,17 +90,17 @@ namespace Vanilla_App.Services
             return ToUserModelMapper(entity, updatetOAthUser);
         }
 
-        public async Task<bool> DeleteUser(Guid userId)
+        public async Task<bool> DeleteUserAsync(Guid userId)
         {
             // oauth
-            _oauthUserService.DeleteUser(userId);
+            _oauthUserService.DeleteUserAsync(userId);
 
             //Core
             // delete the all user projects
-            foreach (var project in _coreUserRepository.GetProjectsAsync(userId).Result)
-            {
-                _projectRepository.Delete(project.Id);
-            }
+            //foreach (var project in await _coreUserRepository.GetProjectsAsync(userId))
+            //{
+            //    _projectRepository.Delete(project.Id);
+            //}
 
             _coreUserRepository.Delete(userId);
 
@@ -132,12 +149,12 @@ namespace Vanilla_App.Services
 
 
 
-        public async Task<ProfileImage> AddProfileImage(Guid userId, DownloadFileRequestModel fileRequest)
+        public async Task<ProfileImage> AddProfileImageAsync(Guid userId, DownloadFileRequestModel fileRequest)
         {
             return _coreUserRepository.AddProfileImage(userId, fileRequest);
         }
 
-        public async Task<bool> RemoveProfileImage(Guid userId, Guid imageId)
+        public async Task<bool> RemoveProfileImageAsync(Guid userId, Guid imageId)
         {
             _coreUserRepository.RemoveProfileImage(userId, imageId);
 

@@ -12,7 +12,7 @@ using UserModel = Vanilla.TelegramBot.Models.UserModel;
 
 namespace Vanilla.TelegramBot.Services
 {
-    public class InlineSearchService(TelegramBotClient _botClient, IProjectService _projectService, IUserService _userService, string _webDomainName, string _cdnDomainName)
+    public class InlineSearchModule(TelegramBotClient _botClient, IProjectService _projectService, IUserService _userService, string _webDomainName, string _cdnDomainName)
     {
         public void InlineSearch(Update update, UserContextModel userContext)
         {
@@ -35,24 +35,9 @@ namespace Vanilla.TelegramBot.Services
             // Make items list
             var fullResultItemsList = new List<InlineQueryResult>();
 
-
-/*            var testUrl = "https://agronews.ua/news/eksperty-nazvaly-najkrashhi-sorty-ogirkiv-dlya-vidkrytogo-gruntu/";
-            var inputMessageTest = new InputTextMessageContent(testUrl);
-
-            var testItem = new InlineQueryResultArticle
-            {
-                Id = Guid.NewGuid().ToString() ,
-                Title = "Teswt ttile",
-                Description = "Link to test profile",
-                Url= testUrl,
-                HideUrl = true,
-                InputMessageContent = inputMessageTest,
-            };
-            fullResultItemsList.Add(testItem);*/
-
             var users = new List<UserModel>();
 
-            if (userContext.User.IsHasProfile && !inline.Query.Contains("@"))
+            if (userContext.Roles.Contains(RoleEnum.User) && !inline.Query.Contains("@"))
             {
                 // Past current user profile
                 var curentUser = userContext.User;
@@ -64,11 +49,11 @@ namespace Vanilla.TelegramBot.Services
                 var username = inline.Query.Substring(1).Split(" ")[0];
 
                 // All profiles
-                if (username == "") users.AddRange(_userService.GetUsers().Result.Where(x => x.IsHasProfile == true));
+                if (username == "") users.AddRange(_userService.GetUsersAsync().Result.Where(x => x.IsHasProfile == true));
                 else
                 {
                     // By username profile
-                    var usersByUsername = _userService.FindByUsername(username).Result.Where(x => x.IsHasProfile == true).ToList();
+                    var usersByUsername = _userService.FindByUsernameAsync(username).Result.Where(x => x.IsHasProfile == true).ToList();
                     if (usersByUsername.Count > 0) users.Add(usersByUsername.First());
                 }
 
@@ -114,7 +99,7 @@ namespace Vanilla.TelegramBot.Services
                 StartParameter = "start",
             };
 
-            var inlineButton = userContext is not null && userContext.User.IsHasProfile == true ? inlineAddOwnProjectButton : inlineRegistrationButton;
+            var inlineButton = userContext is not null && userContext.Roles.Contains(RoleEnum.User) == true ? inlineAddOwnProjectButton : inlineRegistrationButton;
 
             _botClient.AnswerInlineQuery(inlineQueryId: inline.Id, results: resultItemsList, button: inlineButton, nextOffset: offsetResId, cacheTime: 24);
         }
@@ -126,13 +111,8 @@ namespace Vanilla.TelegramBot.Services
             var messageContent = Widjets.AboutUser(userContext.ResourceManager, user);
             var inputMessage = new InputTextMessageContent(messageContent);
 
-            //var img = user.Images is not null && user.Images.Count() > 0 ? user.Images.First().TgUrl : "https://img.freepik.com/premium-vector/smile-girl-anime-error-404-page-found_150972-827.jpg";
             if (user.Images is not null && user.Images.Count() > 0)
             {
-                /*var file = _botClient.GetFile(user.Images.First().TgMediaId);
-                var imgUrl = _botClient.BuildFileDownloadLink(file);*/
-
-                //var profileImgUrl = "https://dev-lumi.neko3.space/storage/" + user.Images.First().TgMediaId + ".jpg";
                 var profileImgUrl = _cdnDomainName + "/storage/" + user.Images.First().TgMediaId + ".jpg";
 
                 inputMessage.LinkPreviewOptions = new Telegram.BotAPI.AvailableTypes.LinkPreviewOptions
@@ -148,16 +128,17 @@ namespace Vanilla.TelegramBot.Services
             var description = "🐱 @" + user.Username;
 
 
-            var keyboard = Keyboards.ToProfileKeypoard(userContext, _webDomainName + "/users/" + user.UserId);
             var result = new InlineQueryResultArticle
             {
                 Id = ResultId,
                 Title = name,
                 Description = description,
                 InputMessageContent = inputMessage,
-                ReplyMarkup = keyboard
                 //ThumbnailUrl = "https://avatarfiles.alphacoders.com/293/293990.jpg",
             };
+            var keyboard = Keyboards.ToProfileKeypoard(userContext, _webDomainName + "/users/" + user.UserId);
+            if(userContext.Roles.Contains(RoleEnum.User)) result.ReplyMarkup = keyboard;
+
 
             if (user.Images is not null && user.Images.Count() > 0)
             {
@@ -172,7 +153,7 @@ namespace Vanilla.TelegramBot.Services
 
         InlineQueryResultArticle GetInlineProjectProfile(ProjectModel project, string ResultId, UserContextModel userContextModel)
         {
-            var owner = _userService.GetUser(project.OwnerId).Result;
+            var owner = _userService.GetUserAsync(project.OwnerId).Result;
             var ownerName = owner.Username is not null ? "@" + owner.Username : owner.FirstName;
 
             var developStatusEmoji = FormationHelper.GetEmojiStatus(project.DevelopmentStatus);
@@ -208,7 +189,7 @@ namespace Vanilla.TelegramBot.Services
             else if (query.Contains("@")) projects = SearchProjectsByUsername(query);
             else projects = SearchProjectsByName(query);
 
-            if (userContextModel.User.IsHasProfile) projects = UserProjectsToTopHelper(projects, userContextModel.User.UserId);
+            if (userContextModel.Roles.Contains(RoleEnum.User)) projects = UserProjectsToTopHelper(projects, userContextModel.User.UserId);
 
             return projects;
         }
@@ -240,7 +221,7 @@ namespace Vanilla.TelegramBot.Services
         List<ProjectModel> SearchProjectsByUsername(string query)
         {
             var username = query.Substring(1).Split(" ")[0];
-            var users = _userService.FindByUsername(username).Result;
+            var users = _userService.FindByUsernameAsync(username).Result;
 
             var userSerchQuery = query.Split(" ");
             var q = userSerchQuery.Length > 1 ? string.Concat(userSerchQuery.Skip(1).ToArray()) : null;

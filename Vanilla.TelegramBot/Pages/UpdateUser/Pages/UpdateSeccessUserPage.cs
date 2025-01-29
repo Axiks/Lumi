@@ -6,27 +6,19 @@ using Vanilla.TelegramBot.Models;
 
 namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 {
-    internal class UpdateSeccessUserPage : IPage
+    internal class UpdateSeccessUserPage(TelegramBotClient _botClient, UserContextModel _userContext, IUserService _userService, List<int> _sendMessages) : IPage
     {
         public event ValidationErrorEventHandler? ValidationErrorEvent;
         public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
         public event CompliteHandler? CompliteEvent;
 
-        readonly TelegramBotClient _botClient;
-        readonly UserContextModel _userContext;
-        readonly List<int> _sendMessages;
-
         readonly string InitMessage = "Твої дані були успішно оновленні!";
 
-        public UpdateSeccessUserPage(TelegramBotClient botClient, UserContextModel userContext, List<int> sendMessages)
-        {
-            _botClient = botClient;
-            _userContext = userContext;
-            _sendMessages = sendMessages;
-        }
 
         void IPage.SendInitMessage()
         {
+            //ReloadUserContext();
+
             MessageSendHelper(InitMessage);
             CompliteEvent.Invoke();
         }
@@ -38,9 +30,16 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
 
         void MessageSendHelper(string text)
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, parseMode: "HTML");
+            var mess = _botClient.SendMessage(_userContext.UpdateUser.TgId, text, parseMode: "HTML");
 
             //_sendMessages.Add(mess.MessageId);
+        }
+
+        async Task ReloadUserContext()
+        {
+            var user = await _userService.SignInUserAsync(_userContext.UpdateUser.TgId);
+            //var user = await _userService.GetUser(_userContext.UpdateUser.TgId);
+            _userContext.User = user;
         }
     }
 }

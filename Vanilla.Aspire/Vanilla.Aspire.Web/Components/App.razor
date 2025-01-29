@@ -12,26 +12,21 @@
     <HeadOutlet />
 </head>
 
-<body class="container">
-    <nav class="nav">
-        <div class="nav-left">
-            <a style="font-size: 2em" href="/">Lumi <i class="clearfix" style="font-size: 0.4em;">beta</i></a>
-        </div>
-        <div class="nav-center">
-            <a href="/">Home</a>
-            <a href="/users/">Members</a>
-        </div>
-        <div class="nav-right">
-            <a href="https://t.me/lumilumibot" class="button icon outline is-horizontal-align is-center" style="background-color: #ffffff; color: black">
-                Add yourself
-             </a>
-            <a href="https://t.me/LumiFanbase" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff">
-                Telegram
-                <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon">
-            </a>
-        </div>
-    </nav>
-    <Routes />
+<body class="container is-full-screen" style="display: flex; flex-direction: column; justify-content: space-between;">
+
+
+            <main class="content">
+                <Vanilla.Aspire.Web.Components.Layout.NavMenu />
+                <Routes />
+            </main>
+
+
+    <footer class="text-center">
+        <p>2025 Lumi; <i>Service for creative sparks ⭐</i></p>
+    </footer>
+
+
+
     <script src="_framework/blazor.web.js"></script>
 </body>
 
