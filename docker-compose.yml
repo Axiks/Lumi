@@ -182,10 +182,10 @@ services:
   grafana:
     image: grafana/grafana
     volumes:
-      - ./infrastructure/grafana/grafana-storage/:/var/lib/grafana
+      - ./infrastructure/grafana/grafana-storage/:/var/lib/grafana:rw
       # - ./grafana/home:/usr/share/grafana
-      - ./infrastructure/grafana/logs:/var/log/grafana
-      - ./infrastructure/grafana/lib/:/var/lib/grafana
+      - ./infrastructure/grafana/logs:/var/log/grafana:rw
+      - ./infrastructure/grafana/lib/:/var/lib/grafana:rw
       - ./config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
     environment:
       # - GF_AUTH_ANONYMOUS_ENABLED=true
