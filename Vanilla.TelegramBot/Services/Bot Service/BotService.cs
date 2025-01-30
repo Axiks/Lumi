@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Telegram.BotAPI;
+﻿using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.Extensions;
 using Telegram.BotAPI.GettingUpdates;
@@ -118,7 +117,8 @@ namespace Vanilla.TelegramBot.Services
 
                             DiagnosticsConfig.RequestCounter.Add(
                                 1,
-                                new KeyValuePair<string, object?>("TelegramBot.core.request.date", DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffZ"))
+                                new KeyValuePair<string, object?>("TelegramBot.core.request.date", DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffZ")),
+                                new KeyValuePair<string, object?>("TelegramBot.core.request.data", update)
                             );
 
                             continue;
@@ -152,7 +152,8 @@ namespace Vanilla.TelegramBot.Services
                             new KeyValuePair<string, object?>("TelegramBot.core.request.count.user.tgId", currentUserContext.UpdateUser.TgId),
                             new KeyValuePair<string, object?>("TelegramBot.core.request.count.user.Role", string.Join(",", currentUserContext.Roles)),
                             new KeyValuePair<string, object?>("TelegramBot.core.request.count.user.Id", currentUserContext.User is not null? currentUserContext.User.UserId : "null"),
-                            new KeyValuePair<string, object?>("TelegramBot.core.request.date", DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffZ"))
+                            new KeyValuePair<string, object?>("TelegramBot.core.request.date", DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffZ")),
+                            new KeyValuePair<string, object?>("TelegramBot.core.request.data", update)
                         );
 
                         new BotMiddleware(_botClient, update, currentUserContext);
@@ -183,7 +184,8 @@ namespace Vanilla.TelegramBot.Services
                             new KeyValuePair<string, object?>("TelegramBot.search.request.count.user.tgId", userContext.UpdateUser.TgId),
                             new KeyValuePair<string, object?>("TelegramBot.search.request.count.user.Role", string.Join(",", userContext.Roles)),
                             new KeyValuePair<string, object?>("TelegramBot.search.request.count.user.Id", userContext.User is not null ? userContext.User.UserId : "null"),
-                            new KeyValuePair<string, object?>("TelegramBot.search.request.date", DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffZ"))
+                            new KeyValuePair<string, object?>("TelegramBot.search.request.date", DateTime.UtcNow.ToString("yyyy-MM-ddThh:mm:ss.fffZ")),
+                            new KeyValuePair<string, object?>("TelegramBot.core.request.data", update)
                         );
 
                 _inlineSearchModule.InlineSearch(update, userContext);
@@ -209,7 +211,7 @@ namespace Vanilla.TelegramBot.Services
                 return;
             }
 
-            if(GuardHelper(userContext, RoleEnum.Anonim)) {
+            if(GuardHelper(userContext, RoleEnum.Anonim, "END")) {
                 /* You need to register. */
 
                 _botClient.SendMessage(chatId: userContext.UpdateUser.TgId, text: "You need to register.", parseMode: "HTML");
@@ -246,7 +248,7 @@ namespace Vanilla.TelegramBot.Services
 
             if (Helpers.ValidatorHelpers.CallbackBtnActionValidate(update, "AddProject"))
             {
-                if (GuardHelper(userContext, RoleEnum.Anonim))
+                if (GuardHelper(userContext, RoleEnum.Anonim, "AddProject"))
                 {
                     SendOnlyForRegisterUserMessage();
                     return false;
@@ -258,7 +260,7 @@ namespace Vanilla.TelegramBot.Services
             }
             else if (Helpers.ValidatorHelpers.CallbackBtnActionValidate(update, "MainMenu"))
             {
-                if (GuardHelper(userContext, RoleEnum.Anonim))
+                if (GuardHelper(userContext, RoleEnum.Anonim, "MainMenu"))
                 {
                     SendOnlyForRegisterUserMessage();
                     return false;
@@ -286,7 +288,7 @@ namespace Vanilla.TelegramBot.Services
             }
             else if (Helpers.ValidatorHelpers.CallbackBtnActionValidate(update, "CreateProfile"))
             {
-                if (GuardHelper(userContext, RoleEnum.User))
+                if (GuardHelper(userContext, RoleEnum.User, "CreateProfile"))
                 {
                     var message = _botClient.SendMessage(userContext.UpdateUser.TgId, "Denied. User is already registered");
                     userContext.MessageMenager.Add(message.MessageId);
@@ -316,17 +318,17 @@ namespace Vanilla.TelegramBot.Services
                 {
                     userContext.Folder.CloseFolder();
 
-                    if (GuardHelper(userContext, RoleEnum.User)) OpenMainMenu(userContext);
+                    if (GuardHelper(userContext, RoleEnum.User, "OpenMainMenu")) OpenMainMenu(userContext);
                 }
                 else
                 {
-                    if (GuardHelper(userContext, RoleEnum.User)) OpenMainMenu(userContext);
+                    if (GuardHelper(userContext, RoleEnum.User, "OpenMainMenu")) OpenMainMenu(userContext);
                 }
                 return true;
             }
 
             //if (userContext.IsHasProfile is false) return false;
-            if(GuardHelper(userContext, RoleEnum.Anonim)) return false;
+            if(GuardHelper(userContext, RoleEnum.Anonim, "Is False")) return false;
 
             //var chatId = userContext.UpdateUser.TgId; //also fix
 
@@ -756,11 +758,11 @@ namespace Vanilla.TelegramBot.Services
             }
         }
 
-        bool GuardHelper(UserContextModel userContext, RoleEnum role)
+        bool GuardHelper(UserContextModel userContext, RoleEnum role, string pathname)
         {
             if(userContext.Roles.Contains(role)) return true;
 
-            _systemLogger.LogWarning("Access denied for: {USERTGID} {ROLELIST}; Expected:", userContext.UpdateUser.TgId, userContext.Roles.ToString(), role.ToString());
+            _systemLogger.LogWarning("Access denied for: {USERTGID} {ROLELIST}; Path: {PATH_NAME}; Expected: {ROLE}", userContext.UpdateUser.TgId, userContext.Roles.ToString(), pathname, role.ToString());
             return false;
         }
 

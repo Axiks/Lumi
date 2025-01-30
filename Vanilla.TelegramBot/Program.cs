@@ -1,7 +1,6 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using OpenTelemetry.Resources;
 using Vanilla.Aspire.ServiceDefaults;
 using Vanilla.Common.Models;
 using Vanilla.OAuth.Services;
@@ -12,12 +11,12 @@ using Vanilla_App.Module;
 using Vanilla_App.Services.Bonus;
 using Vanilla_App.Services.Projects;
 using Vanilla_App.Services.Projects.Repository;
-using Serilog;
 
 namespace Vanilla.TelegramBot
 {
     public class Program
     {
+        const int SleepTimeSec = 10;
         public static void Main(string[] args)
         {
             Console.WriteLine("Hello, Lumi TG bot server");
@@ -111,21 +110,7 @@ namespace Vanilla.TelegramBot
             });
 
 
-            //builder.Services.AddOpenTelemetry()
-            //    .ConfigureResource(resource => resource.AddService(DiagnosticsConfig.ServiceName))
-            //    .WithMetrics(metrics =>
-            //    {
-            //        metrics.AddMeter(DiagnosticsConfig.Meter.Name);
-            //    });
-
             var app = builder.Build();
-            //if (!app.Environment.IsDevelopment())
-            //{
-            //    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //    app.UseHsts();
-            //}
-            //app.UseHttpsRedirection();
             app.MapDefaultEndpoints();
 
             app.RunAsync();
@@ -138,7 +123,7 @@ namespace Vanilla.TelegramBot
             void RunBotWatchdog()
             {
                 var botService = serviceProvider.GetService<IBotService>();
-                var logger = serviceProvider.GetService<Vanilla.TelegramBot.Interfaces.ILogger>();
+                var logger = serviceProvider.GetService<ILogger<Program>>();
                 try
                 {
                     var x = botService.StartListening();
@@ -147,10 +132,10 @@ namespace Vanilla.TelegramBot
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    logger.WriteLog(ex.Message, Common.Enums.LogType.Error);
+                    logger.LogError(new EventId(), exception: ex, message: "Crytical core error");
 
                     int i = 1;
-                    while (i < 30)
+                    while (i < SleepTimeSec)
                     {
                         Thread.Sleep(1000);
                         Console.WriteLine("Sleep sec: " + i.ToString());

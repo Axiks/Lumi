@@ -153,9 +153,9 @@ namespace Vanilla.TelegramBot.UI
                     new InlineKeyboardButton[]{
                         topicLinkBtn
                     },
-                    new InlineKeyboardButton[]{
-                        reloadUserContextBtn
-                    },
+                    //new InlineKeyboardButton[]{
+                    //    reloadUserContextBtn
+                    //},
                 }
             );
 
