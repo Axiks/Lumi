@@ -453,6 +453,25 @@ namespace Vanilla.TelegramBot.Services
 
                 return true;
             }
+            else if (update.Message.Text == "/start start")
+            {
+
+                //// First chat message fix
+                if (HasProfile)
+                {
+                    _botClient.SendMessage(update.Message.Chat.Id, "You have profile", parseMode: "HTML");
+                    return true;
+                }
+
+                var username = update.Message.Chat.FirstName ?? update.Message.Chat.Username ?? "";
+                string welcomeMessage = string.Format(userContext.ResourceManager.GetString("WelcomeNewUser"), username, _botClient.GetMe().Username);
+
+                var keyboard = Keyboards.GetCreateProfileKeypoardWithSearch(userContext);
+                var messageObj = _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: keyboard, parseMode: "HTML");
+                userContext.MessageMenager.Add(messageObj.MessageId);
+
+                return true;
+            }
             else if (update.Message.Text == "/start addProject")
             {
                 if (!HasProfile)
@@ -713,6 +732,7 @@ namespace Vanilla.TelegramBot.Services
         // Dev func
         public bool DeleteUser(string username)
         {
+            username = username.Split("@").Last();
             var user = _userService.FindByUsernameAsync(username).Result.FirstOrDefault();
             if (user != null) return false;
             _userService.DeleteUserAsync(user.UserId);
