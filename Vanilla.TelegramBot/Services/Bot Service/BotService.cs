@@ -471,8 +471,12 @@ namespace Vanilla.TelegramBot.Services
 
                 var ms = String.Format(userContext.ResourceManager.GetString("About"), _botInitInfo.SiteUrl, new Uri(_botInitInfo.SiteUrl).Host);
 
-                var commitDate = DateTime.Parse(ThisAssembly.Git.CommitDate).ToString("yyyy-MM-dd HH:mm");
-                ms += String.Format("\n\n<i>Version: {0} {1}</i>", commitDate, ThisAssembly.Git.Commit.ToString());
+                if(ThisAssembly.Git.CommitDate != "" || ThisAssembly.Git.CommitDate.IsNullOrEmpty() is false)
+                {
+                    var commitDate = DateTime.Parse(ThisAssembly.Git.CommitDate).ToString("yyyy-MM-dd HH:mm");
+                    ms += String.Format("\n\n<i>Version: {0} {1}</i>", commitDate, ThisAssembly.Git.Commit.ToString());
+                }
+
                 if (IsAdmin is true) ms += String.Format("\n<i>Environment: {0}</i>", _botInitInfo.Environment);
 
                 _logger.WriteLog(ms, LogType.Information);

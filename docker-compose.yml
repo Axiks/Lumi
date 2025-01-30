@@ -72,6 +72,7 @@ services:
       domain: $WEB_DOMAIN
       cdnDomain: $CDN_DOMAIN
       botAccessToken: $BOT_ACCESS_TOKEN
+      botAdminTgId: $BOT_ADMIN_TG_ID
       provisionBonusApiUrl: $PROVISION_BONUS_API_DOMAIN
       provisionBonusApiAccessToken: $PROVISION_BONUS_API_ACCESS_TOKEN
       tokenPrivateKey: ${TOKEN_PRIVATE_KEY}
