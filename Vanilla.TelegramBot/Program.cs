@@ -132,7 +132,7 @@ namespace Vanilla.TelegramBot
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex);
-                    logger.LogError(new EventId(), exception: ex, message: "Crytical core error");
+                    logger.LogError(new EventId(), exception: ex, message: "Crytical core error; " + ex.Message); //temp fix
 
                     int i = 1;
                     while (i < SleepTimeSec)

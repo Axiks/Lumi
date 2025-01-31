@@ -2,6 +2,7 @@
 {
     internal interface IBonusRepository
     {
+        bool IsOnline();
         List<long> GetUsersWithBonus();
         UserBonusModel GetBonus(string bonusId);
         List<UserBonusModel> GetUserBonuses(long tgId);

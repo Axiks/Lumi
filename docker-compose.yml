@@ -172,8 +172,8 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yaml'
       - '--web.enable-remote-write-receiver'
       - '--enable-feature=exemplar-storage'
-    # ports:
-    #   - 9090:9090
+    ports:
+      - 9090:9090
     user: "${UID}:${GID}"
     networks:
       - lumi-net-dev

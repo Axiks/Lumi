@@ -16,6 +16,8 @@ namespace Vanilla_App.Services.Bonus
             //_repository = new TestBonusRepository();
             _usersWithBonus = _repository.GetUsersWithBonus();
         }
+
+        public bool IsOnline() => _repository.IsOnline();
         public List<UserBonusModel>? GetUserBonuses(long tgId)
         {
             return _repository.GetUserBonuses(tgId);

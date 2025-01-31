@@ -29,7 +29,7 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
 
         int _initMessageId;
 
-        readonly string InitMessage = "Тут ти можеш переглядати, та активовувати бонуси, отримані від інших творців.\n\n<i>На даний момент співпацюємо виключно з <a href='https://t.me/pro_vision_ua'>PRO.Vision</a></i>";
+        readonly string InitMessage = "Тут ти можеш переглядати, та активовувати бонуси, отримані від інших творців.\n\n<i>На даний момент співпацюємо виключно з <a href='https://t.me/pro_vision_ua'>PRO.Vision</a></i>\nБонуси нараховуються згідно програми лояльності креативної майстерні PRO/LAB";
         List<int> _pageSendMessages;
         bool _isChangeBonus;
 
@@ -56,9 +56,15 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             // Server offline fix
             try
             {
-                _bonusService.GetUserBonuses(_userContext.User.TelegramId);
+                //_bonusService.GetUserBonuses(_userContext.User.TelegramId);
+                if (_bonusService.IsOnline() is false) ServerOffline();
             }
             catch (HttpRequestException error)
+            {
+                ServerOffline();
+            }
+
+            void ServerOffline()
             {
                 ProblemWithGetDataFromServerMessage();
                 CompliteEvent.Invoke();
@@ -78,25 +84,16 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
 
         void InitMessageSendHelper(string text)
         {
-
-
-      /*      if(_catalogInitMessageId is null)
-            {
-                var enterMess = _botClient.SendMessage(_userContext.User.TelegramId, "Bonus system", replyMarkup: Keyboards.BackKeyboard(_userContext), parseMode: "HTML");
-                //_sendMessages.Add(enterMess.MessageId);
-                _catalogInitMessageId = enterMess.MessageId;
-            }
-            else
-            {
-                _botClient.EditMessageReplyMarkup(chatId: _userContext.User.TelegramId, messageId: _catalogInitMessageId ?? 0, replyMarkup: Keyboards.BackKeyboard(_userContext));
-            }*/
-
-            //ChangeInlineKeyboardEvent.Invoke(Keyboards.BackKeyboard(_userContext));
-
             if (_isChangeBonus is false)
             {
                 //var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.CannelKeyboard(_userContext, placeholder: _userContext.User.Nickname), parseMode: "HTML");
-                var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: GenerateBonusKeyboard(GetActivatedBonuses(), GetUnactivatedBonuses()), parseMode: "HTML");
+                SendMessageArgs messageArgs = new SendMessageArgs(_userContext.User.TelegramId, text) { 
+                    ParseMode = "HTML"
+                };
+                if (IsUserHaveBonuses() is true) messageArgs.ReplyMarkup = GenerateBonusKeyboard(GetActivatedBonuses(), GetUnactivatedBonuses());
+
+                var mess = _botClient.SendMessage(messageArgs);
+
                 _initMessageId = mess.MessageId;
 
                 _sendedMessages.Add(new SendedMessageModel(mess.MessageId, DeleteMessageMethodEnum.ExitFolder));
@@ -105,7 +102,12 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             }
             else
             {
-                var mess = _botClient.EditMessageReplyMarkup(chatId: _userContext.User.TelegramId, messageId: _initMessageId, replyMarkup: GenerateBonusKeyboard(GetActivatedBonuses(), GetUnactivatedBonuses(), isWithAllBonuses: true));
+                SendMessageArgs messageArgs = new SendMessageArgs(_userContext.User.TelegramId, text)
+                {
+                    ParseMode = "HTML"
+                };
+                if (IsUserHaveBonuses() is true) messageArgs.ReplyMarkup = GenerateBonusKeyboard(GetActivatedBonuses(), GetUnactivatedBonuses(), isWithAllBonuses: true);
+                var mess = _botClient.SendMessage(messageArgs);
             }
         }
 
@@ -186,7 +188,7 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, DeleteMessageMethodEnum.ExitFolder));
         }
 
-        List<UserBonusModel> GetUserBonuses()
+        List<UserBonusModel>? GetUserBonuses()
         {
             return _bonusService.GetUserBonuses(_userContext.User.TelegramId);
         }
@@ -196,7 +198,11 @@ namespace Vanilla.TelegramBot.Pages.Bonus.Pages
             var messageObj = _botClient.SendMessage(mes);
             _sendedMessages.Add(new SendedMessageModel(messageObj.MessageId, DeleteMessageMethodEnum.None));
         }
-
+        bool IsUserHaveBonuses() {
+            var bonuses = GetUserBonuses();
+            if (bonuses.IsNullOrEmpty()) return false;
+            return true;
+        }
         List<UserBonusModel> GetActivatedBonuses() => GetUserBonuses().Where(x => x.IsUsed is false).ToList();
         List<UserBonusModel> GetUnactivatedBonuses() => GetUserBonuses().Where(x => x.IsUsed is true).ToList();
 

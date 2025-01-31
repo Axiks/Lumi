@@ -59,5 +59,7 @@ namespace Vanilla_App.Services.Bonus.Repository
         }
 
         public UserBonusModel GetBonus(string bonusId) => _userBonusModels.FirstOrDefault(x => x.BonusId.Equals(bonusId));
+
+        public bool IsOnline() => true;
     }
 }

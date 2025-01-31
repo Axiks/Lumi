@@ -34,6 +34,22 @@ namespace Vanilla_App.Services.Bonus.Repository
                 var x = e.Message;
             }
         }
+
+        public bool IsOnline()
+        {
+            try
+            {
+                var status = _api.GetHealthStatus().Result;
+                if (status.IsSuccessful is false) return false;
+                if (status.Content.Status != "online") return false;
+            }
+            catch (Exception e)
+            {
+                throw new HttpRequestException($"Server error");
+            }
+
+            return true;
+        }
         public UserBonusModel GetBonus(string bonusId)
         {
             ApiResponse<UserBonusModel> response;
@@ -55,7 +71,7 @@ namespace Vanilla_App.Services.Bonus.Repository
             return response.Content;
         }
 
-        public List<UserBonusModel> GetUserBonuses(long tgId)
+        public List<UserBonusModel>? GetUserBonuses(long tgId)
         {
             ApiResponse<List<UserBonusModel>> response;
 
@@ -70,6 +86,8 @@ namespace Vanilla_App.Services.Bonus.Repository
 
             if (response.IsSuccessful == false)
             {
+                if (response.StatusCode is System.Net.HttpStatusCode.NotFound) return null;
+
                 throw new HttpRequestException($"Failed to fetch bonuses. Status code: {response.StatusCode}");
             }
 
