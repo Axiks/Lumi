@@ -124,11 +124,12 @@
     <value>Метою цього проекту є створення своєрідного "мосту" між творчими особистостями та розвиток наших творчих іскор 🌟.
 
 &lt;b&gt;Дякую&lt;/b&gt;, що ви з нами! ❤️
-Особлива подяка всім, хто допомагає розробляти цього бота.
+Особлива подяка всім, хто допомагає з сторенням даного бота.
 
+Сайт проекту: &lt;a href="{0}"&gt;{1}&lt;/a&gt;
 Створено учасником спільноти &lt;a href="https://t.me/include_anime"&gt;Програмісти і печеньки&lt;/a&gt;
-Знайти розробників можете тут &lt;a href="https://t.me/LumiFanbase"&gt;@LumiFanbase&lt;/a&gt;
-Сайт проекту: &lt;a href="{0}"&gt;{1}&lt;/a&gt;</value>
+Група розробників: &lt;a href="https://t.me/LumiFanbase"&gt;@LumiFanbase&lt;/a&gt;
+</value>
   </data>
   <data name="AboutKey" xml:space="preserve">
     <value>Про мене</value>
@@ -260,8 +261,14 @@
   <data name="MyProfile" xml:space="preserve">
     <value>Мій профіль</value>
   </data>
+  <data name="MyProfilePage" xml:space="preserve">
+    <value>Сторінка мого профілю</value>
+  </data>
   <data name="MyProfileUpdate" xml:space="preserve">
     <value>Оновити профіль</value>
+  </data>
+  <data name="MyProjects" xml:space="preserve">
+    <value>Мої проекти</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Ім'я</value>
@@ -271,6 +278,9 @@
   </data>
   <data name="No" xml:space="preserve">
     <value>Ні</value>
+  </data>
+  <data name="ParticipantsProjects" xml:space="preserve">
+    <value>Проекти наших учасників</value>
   </data>
   <data name="Pass" xml:space="preserve">
     <value>Пропустити</value>
@@ -286,6 +296,9 @@
   </data>
   <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
     <value>Проект було видалено</value>
+  </data>
+  <data name="ProjectSite" xml:space="preserve">
+    <value>Сайт проекту</value>
   </data>
   <data name="Registration" xml:space="preserve">
     <value>Реєстрація</value>
@@ -360,6 +373,9 @@ Error ID: &lt;code&gt;{1}&lt;/code&gt;</value>
   <data name="UserDontHaveProjectsMess" xml:space="preserve">
     <value>У мене ще немає записів про твої проекти, але ми можемо додати їх прямо зараз!</value>
   </data>
+  <data name="ViewingProjects" xml:space="preserve">
+    <value>Перегляд проектів</value>
+  </data>
   <data name="ViewOwnProjects" xml:space="preserve">
     <value>Мої проекти</value>
   </data>
@@ -370,6 +386,8 @@ Error ID: &lt;code&gt;{1}&lt;/code&gt;</value>
 
 💡&lt;b&gt;Бажаєш дізнатися, що створили інші?&lt;/b&gt; Легко! 
 
+🛸Перейди на наш сайт: {2}
+&lt;i&gt;Або&lt;/i&gt;
 🔍Введи @{1} тут або в будь-якому іншому чаті чи каналі. Надихайся ідеями наших учасників і відкривай для себе нові проекти! </value>
   </data>
   <data name="WelcomeMessage" xml:space="preserve">
@@ -384,7 +402,9 @@ Error ID: &lt;code&gt;{1}&lt;/code&gt;</value>
 
 💡&lt;b&gt;Бажаєш дізнатися, що створили інші?&lt;/b&gt; Легко! 
 
-🔍Введи @{1} тут або в будь-якому іншому чаті чи каналі. Надихайся ідеями наших учасників і відкривай для себе нові проекти!</value>
+🛸Перейди на наш сайт: {1}
+&lt;i&gt;Або&lt;/i&gt;
+🔍Введи @{0} тут або в будь-якому іншому чаті чи каналі. Надихайся ідеями наших учасників і відкривай для себе нові проекти!</value>
   </data>
   <data name="WelcomeUserMessage" xml:space="preserve">
     <value>Привіт {0}!

@@ -256,8 +256,14 @@ The name must not exceed 64 characters</value>
   <data name="MyProfile" xml:space="preserve">
     <value>My Profile</value>
   </data>
+  <data name="MyProfilePage" xml:space="preserve">
+    <value>My Profile Page</value>
+  </data>
   <data name="MyProfileUpdate" xml:space="preserve">
     <value>Update Profile</value>
+  </data>
+  <data name="MyProjects" xml:space="preserve">
+    <value>My Projects</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
@@ -267,6 +273,9 @@ The name must not exceed 64 characters</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
+  </data>
+  <data name="ParticipantsProjects" xml:space="preserve">
+    <value>Participants' projects</value>
   </data>
   <data name="Pass" xml:space="preserve">
     <value>Pass</value>
@@ -283,6 +292,9 @@ The name must not exceed 64 characters</value>
   <data name="ProjectHasBeenDeletedMes" xml:space="preserve">
     <value>The project has been deleted</value>
     <comment>Mes</comment>
+  </data>
+  <data name="ProjectSite" xml:space="preserve">
+    <value>Project site</value>
   </data>
   <data name="Registration" xml:space="preserve">
     <value>Registration</value>
@@ -358,6 +370,9 @@ You don't have any projects yet
 
 But you can add it!</value>
   </data>
+  <data name="ViewingProjects" xml:space="preserve">
+    <value>Viewing projects</value>
+  </data>
   <data name="ViewOwnProjects" xml:space="preserve">
     <value>View own projects</value>
   </data>
@@ -381,7 +396,7 @@ I help you save and share your great projects, in a profitable way, anywhere
 
 🌟 Before starting our journey, you need to create a profile!
 
-🔎&lt;b&gt;To check people's projects, it is enough to type @{1} here, or in any other chat and channel&lt;/b&gt;
+🔎&lt;b&gt;To check people's projects, it is enough to type @{0} here, or in any other chat and channel&lt;/b&gt;
 
 I hope you like it here ❤️</value>
   </data>

@@ -1,8 +1,6 @@
 ﻿using Telegram.BotAPI;
 using Telegram.BotAPI.AvailableMethods;
 using Telegram.BotAPI.AvailableTypes;
-using Telegram.BotAPI.GettingUpdates;
-using Telegram.BotAPI.UpdatingMessages;
 using Vanilla.TelegramBot.Abstract;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
@@ -24,12 +22,16 @@ namespace Vanilla.TelegramBot.Pages.User
         public int? _inlineKeyboardId;
         public int? _inlineKeyboardUniqueId;
 
+        string ProfileUrl;
+
         public UserInfoPage(TelegramBotClient botClient, UserContextModel userContextModel, UserModel userInfo, List<SendedMessageModel> sendMessages) : base(botClient, userContextModel, sendMessages)
         {
             _botClient = botClient;
             _userContext = userContextModel;
             _userInfo = userInfo;
             _sendMessages = sendMessages;
+
+            ProfileUrl = userContextModel.ProfileUrl;
         }
 
         public void MessageSendHelper(string text, List<ImageModel>? imagesIist = null)
@@ -65,14 +67,14 @@ namespace Vanilla.TelegramBot.Pages.User
             }
             else
             {;
-                var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.ProfileKeyboard(_userContext), parseMode: "HTML");
+                var mess = _botClient.SendMessage(_userContext.User.TelegramId, text, replyMarkup: Keyboards.ProfileKeyboard(_userContext, ProfileUrl), parseMode: "HTML");
                 AddMessage(mess.MessageId, Common.Enums.DeleteMessageMethodEnum.ClosePage);
             }
         }
 
         public override void InitMessage()
         {
-            var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Мій профіль", replyMarkup: Keyboards.ProfileKeyboard(_userContext), parseMode: "HTML");
+            var mess = _botClient.SendMessage(_userContext.User.TelegramId, "Мій профіль", replyMarkup: Keyboards.ProfileKeyboard(_userContext, ProfileUrl), parseMode: "HTML");
             _inlineKeyboardId = mess.MessageId;
             AddMessage(mess.MessageId, Common.Enums.DeleteMessageMethodEnum.ClosePage);
 

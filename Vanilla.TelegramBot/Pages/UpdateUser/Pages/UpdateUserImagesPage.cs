@@ -4,7 +4,6 @@ using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
 using Vanilla.TelegramBot.Interfaces;
 using Vanilla.TelegramBot.Models;
-using Vanilla.TelegramBot.Pages.UpdateUser.Models;
 using Vanilla.TelegramBot.UI;
 
 namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
@@ -15,7 +14,7 @@ namespace Vanilla.TelegramBot.Pages.UpdateUser.Pages
         public event ChangePagesFlowEventHandler? ChangePagesFlowPagesEvent;
         public event CompliteHandler? CompliteEvent;
 
-        readonly string InitMessage = "Покажи декілька світлин\n\n<i>Це можуть бути як і твої роботи, так і будь-які інші світлини котрі можна показати</i>";
+        readonly string InitMessage = "Покажи декілька світлин\n\n<i>Це можуть бути як і твої роботи, так і будь-які інші світлини котрі можна показати</i>\nПерша світлина буде вашим аватаром";
 
         void IPage.SendInitMessage()
         {

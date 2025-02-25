@@ -22,7 +22,7 @@ services:
     #   published: 10000
     restart: unless-stopped
     volumes:
-      - ./infrastructure/app/storage:/storage
+      - ../Lumi-Data/infrastructure/app/storage:/storage
     networks:
         - lumi-net-dev
     depends_on:
@@ -84,8 +84,8 @@ services:
       published: 10008
     restart: unless-stopped
     volumes:
-      - ./infrastructure/app/storage:/app/storage
-      - ./infrastructure/app/applog:/app/AppLog
+      - ../Lumi-Data/infrastructure/app/storage:/app/storage
+      - ../Lumi-Data/infrastructure/app/applog:/app/AppLog
     networks:
         - lumi-net-dev
     depends_on:
@@ -94,13 +94,13 @@ services:
   
   lumi-db:
     image: postgres:latest
-    # ports:
-    #   - "5434:5432"
+    ports:
+      - "5434:5432"
     restart: always
     volumes:
-      - ./infrastructure/postgres/data:/var/lib/postgresql/data
-      - ./infrastructure/postgres/pgconf:/etc/postgresql
-      - ./infrastructure/postgres/pglog:/var/log/postgresql
+      - ../Lumi-Data/infrastructure/postgres/data:/var/lib/postgresql/data
+      - ../Lumi-Data/infrastructure/postgres/pgconf:/etc/postgresql
+      - ../Lumi-Data/infrastructure/postgres/pglog:/var/log/postgresql
     environment:
         POSTGRES_DB: $DB_NAME
         POSTGRES_USER: $DB_USERNAME
@@ -114,7 +114,7 @@ services:
     #   # - 5672:5672
     #   - 15672:15672
     volumes:
-      - ./infrastructure/rabbitmq_data:/var/lib/rabbitmq
+      - ../Lumi-Data/infrastructure/rabbitmq_data:/var/lib/rabbitmq
     environment:
         RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
         RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
@@ -146,7 +146,7 @@ services:
     image: otel/opentelemetry-collector-contrib:latest
     command: [ --config=/etc/otel-collector-config.yml ]
     volumes:
-      - ./config/otel-collector-config.yml:/etc/otel-collector-config.yml
+      - ../Lumi-Data/config/otel-collector-config.yml:/etc/otel-collector-config.yml
     depends_on:
       - prometheus
       - loki
@@ -166,8 +166,8 @@ services:
     image: prom/prometheus
     volumes:
       # - ./config/prometheus/etc:/etc/prometheus/:rw
-      - ./infrastructure/prometheus/prometheus_data:/prometheus:rw
-      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - ../Lumi-Data/infrastructure/prometheus/prometheus_data:/prometheus:rw
+      - ../Lumi-Data/config/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
     command:
       - '--config.file=/etc/prometheus/prometheus.yaml'
       - '--web.enable-remote-write-receiver'
@@ -184,11 +184,11 @@ services:
   grafana:
     image: grafana/grafana
     volumes:
-      - ./infrastructure/grafana/grafana-storage/:/var/lib/grafana:rw
+      - ../Lumi-Data/infrastructure/grafana/grafana-storage/:/var/lib/grafana:rw
       # - ./grafana/home:/usr/share/grafana
-      - ./infrastructure/grafana/logs:/var/log/grafana:rw
-      - ./infrastructure/grafana/lib/:/var/lib/grafana:rw
-      - ./config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ../Lumi-Data/infrastructure/grafana/logs:/var/log/grafana:rw
+      - ../Lumi-Data/infrastructure/grafana/lib/:/var/lib/grafana:rw
+      - ../Lumi-Data/config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
     environment:
       # - GF_AUTH_ANONYMOUS_ENABLED=true
       # - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -226,8 +226,8 @@ services:
     # ports:
     #   - "3100:3100"
     volumes:
-      - ./infrastructure/loki/loki-data:/loki/
-      - ./config/loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - ../Lumi-Data/infrastructure/loki/loki-data:/loki/
+      - ../Lumi-Data/config/loki-config.yaml:/etc/loki/local-config.yaml:ro
     command: -config.file=/etc/loki/local-config.yaml
     networks:
         - lumi-net-dev

@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject UsersApiClient UsersApi
 
 <PageTitle>Home</PageTitle>
 
@@ -17,38 +18,202 @@
 
 
 
-<div style="padding-block: 2em">
+<div style="padding-block: 1em">
 
-    <p>Ціллю проекту є об’єднання людей навколо наших творчих захоплень.</p>
-    <aside style="padding: 2em">
-        ❗Увага! Проект в експериментальному режимі
+    @* <aside style="padding: 2em"> *@
+    @*     ❗Увага! Проект в експериментальному режимі. <a href="/"><i>Що це значить?</i></a> *@
+    @* </aside> *@
+
+    <h2 id="-">Наші останні іскорки <a href="users">-></a></h2>
+    @if (lastUsers is not null)
+    {
+        <div class="is-horizontal-align is-left scrollmenu">
+            @foreach (var user in lastUsers)
+            {
+                if (user.ProfileImages is not null){
+                    <a href="users/@user.Id" style="margin-inline: 0.4em">
+                        @* <img style="height: 92px; border-radius: 15%;" src="@user.ProfileImages.First().FileHref" alt="@user.Nickname photo"> *@
+
+                        <img style="height: 64px; width: 64px; object-fit: cover; border-radius: 15%; padding: 0px; " src="@user.ProfileImages.First().FileHref">
+                    </a>
+                }
+            }
+        </div>
+    }
+
+    <h2>Це що за покемон? 🐣</h2>
+    <blockquote>
+        Вітаю, тобі поталанило знайти сайт нашої скромної команди!
+        <br>
+        Ми надихаємося ідеями і хочемо просувати цікаві проєкти, щоб їх побачило якомога більше людей.
+        <br>
+        Тут ти зможеш знайти каталог з яскравими творцями та їх покемонами. 
+        <br>
+        <br>
+        Почувайся як вдома :3
+    </blockquote>
+
+    <aside style="padding: 1em">
+        Долучайся до нашого ком'юніті у телеграмі!
+        <a href="@CommunityURL" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff; margin-left: 1em">
+            Lumi Funbase
+            <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon">
+        </a>
     </aside>
 
-    <p>Це платформа для творчих, і не тільки, людей котрі хочуть поділитись своєю, та спостерігати за іншими творчими іскорками.</p>
-    <p>Тут ти можеш знайти для себе цікавих творців, чи навіть друзів, або заявити про себе, і свої творіння на світ. Окрім того, тут можна знайти творців котрі виконують комерційні замовлення.</p>
-    <h2 id="-">Як використовувати?</h2>
-    <h3 id="-">🔭 Пошук учасників та проектів</h3>
-    <ul>
-        <li>Щоб переглянути усіх наших учасників, відкрий <a href="/users">Members</a>, або введи <i>@@lumilumibot</i>  будь-якому телеграм чаті.</li>
-        <li>Щоб розпочати пошук учасників просто введи <i>@@lumilumibot @@username</i> у будь-якому телеграм чаті.</li>
-    </ul>
-    <h3 id="-">🛸 Поширення учасників та проектів</h3>
-    <ul>
-        <li>Щоб поширити проект достатньо скопювати посилання на профіль учаника, або натиснути на потрібний результат пошуку, через @@lumilumibot у будь-якому телеграм чаті.</li>
-    </ul>
-    <h3 id="-">⭐ Реєсрація і добавлення власних проектів</h3>
-    <ul>
-        <li>Щоб добавити себе і свої проекти, пройдіть процес реєстрації через  <a href="https://t.me/lumilumibot" target="_blank">@@lumilumibot</a></li>
-    </ul>
+    @* <p Ціллю проекту є об’єднання людей навколо наших творчих захоплень.</p> *@
+
+    @* <p>Це платформа для творчих, і не тільки, людей котрі бажають поділитись своєю, та спостерігати за іншими творчими іскорками.</p> *@
+    @* <p>Тут ти можеш знайти для себе цікавих творців, чи навіть друзів, або заявити про себе, і свої творіння на світ.  *@
+    @*     @* Окрім того, тут можна знайти творців котрі виконують комерційні замовлення. *@ 
+    @* </p> *@
+    @* <blockquote> *@
+    @*     Долучайся до нашого ком'юніті у телеграмі! *@
+    @*     <a href="https://t.me/LumiFanbase" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff; margin-left: 1em"> *@
+    @*         Lumi Funbase *@
+    @*         <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon"> *@
+    @*     </a> *@
+    @* </blockquote> *@
+    <h2 id="-">З чого почати?</h2>
+    <p>Хочеш знайти для себе цікавих творців і дослідити їх проекти?
+
+        <aside style="padding: 1em">
+            Завітай до розділу
+            <a href="/users" class="button icon outline is-horizontal-align is-center" style="margin-inline: 0.6em">
+                Members
+            </a>
+            або введи <i>@@LumiLumiBot</i> у будь-якому чаті в телеграм.
+        </aside>
+
+    </p>
+
+    <h2 id="-">Ти творець, і хочеш заявити про себе тут?</h2>
+    @* <h2 id="-">Хочеш добавити профіль?</h2> *@
+
+    @* <p>Ти творець, і хочеш заявити про себе тут?</p> *@
+    @* <p>Ти творець, і хочеш заявити про себе тут? Достатньо скористатись нашим ботом! </p> *@
+    @* <aside style="padding: 1em"> *@
+    @*     Тут ти створиш профіль => *@
+    @*     <a href="https://t.me/LumiLumiBot" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff; margin-left: 1em"> *@
+    @*         Lumi Bot *@
+    @*         <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon"> *@
+    @*     </a> *@
+    @* </aside> *@
+
+    @* <aside style="padding: 1em"> *@
+    @*     Створити профіль зможеш через *@
+    @*     <a href="https://t.me/LumiLumiBot" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff; margin-left: 1em"> *@
+    @*         Lumi Bot *@
+    @*         <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon"> *@
+    @*     </a> *@
+    @* </aside> *@
+
+    <aside style="padding-block: 1em; padding-inline: 2em;">
+        @* Достатньо скористатись  *@
+        Достатньо створити профіль через 
+        <a href="@BotChatURL" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff; margin-left: 1em">
+            Lumi Bot
+            <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon">
+        </a>
+    </aside>
+
+
+    @* <blockquote> *@
+    @*     Створити профіль зможеш через нашого бота => *@
+    @*     <a href="https://t.me/LumiLumiBot" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff; margin-left: 1em"> *@
+    @*         Lumi Bot *@
+    @*         <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon"> *@
+    @*     </a> *@
+    @* </blockquote> *@
+    <h2 id="-">Хочеш додати проект?</h2>
+    @* <p>Це дуже поросто!. Достатньо скористатись нашим ботом!</p> *@
+
+    <aside style="padding-block: 1em; padding-inline: 2em;">
+        @* Добавити проект зможеш через *@
+        Це дуже поросто!. Скористайся
+        <a href="@BotChatURL" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff; margin-left: 1em">
+            Lumi Bot
+            <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon">
+        </a>
+    </aside>
+
+    @* <blockquote> *@
+    @*     Добавити проект зможеш через нашого бота => *@
+    @*     <a href="https://t.me/LumiLumiBot" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff; margin-left: 1em"> *@
+    @*         Lumi Bot *@
+    @*         <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon"> *@
+    @*     </a> *@
+    @* </blockquote> *@
+
+    @* <h3>Знайти для себе цікавих творців, і їх проекти</h3> *@
+    @* <p> *@
+    @*     Список усіх учасників знайдеш у розділі <a href="/members">members</a> на нашому сайті. *@
+    @* </p> *@
+    @* <p> *@
+    @*     Або зроби це напряму через телеграм. Просто введи <i>@@lumilumitestbot</i> у будь якому телеграм чаті. *@
+    @* </p> *@
+
+    @* <h4>Пошук</h4> *@
+    @* <p>Знайєш нікнейм творця, або ім'я його проекту? Чудово! Ти легко це зробиш напряму з телеграму.</p> *@
+    @* <p>Увведи <i>@@lumilumitestbot</i> у будь якому телеграм чаті, а потім шуканий нікнейм чи ім'я проекту.</p> *@
+
+    @* <h4>Поширення</h4> *@
+    @*     Сайт і бот *@
+
+
+    @* <h3>Заяви про себе, і свою творчість, перед світом</h3> *@
+    @* <p>Достатньо створити профіль і добавити свої проекти через нашого бота!</p> *@
+    @* <aside style="padding: 2em"> *@
+    @*     Тут ти створиш профіль => *@
+    @*     <a href="https://t.me/LumiLumiBot" class="button icon outline is-horizontal-align is-center" style="background-color: #24A1DE; color: #ffffff; margin-left: 1em"> *@
+    @*         Lumi Bot *@
+    @*         <img src="https://icongr.am/simple/telegram.svg?size=16&amp;color=ffffff" alt="icon"> *@
+    @*     </a> *@
+    @* </aside> *@
+
+
+    
     <h2 id="-">Як ви нас можете підтримати?</h2>
     <ul>
-        <li>Злишити відгук, або пропозицію щодо розвитку нашого проекту в нашій групі <a href="https://t.me/LumiFanbase" target="_blank ">Lumi Funbase</a></li>
+        <li>Злишити відгук, або пропозицію щодо розвитку нашого проекту в нашій групі <a href="@CommunityURL" target="_blank ">Lumi Funbase</a>.</li>
         <li>Взяти безпосередню участь при розробці даного проекту.</li>
         <li>Інформаційна підтримка. Яко молодому проекту, це надзвичайно необхідно!</li>
-        <li>Фінансова підтримка.</li>
+        @* <li>Фінансова підтримка.</li> *@
     </ul>
-    <h2 id="-">Знайти нас можеш тут</h2>
-    <p><a href="https://t.me/LumiFanbase">Lumi Fanbase</a></p>  
+    @* <h2 id="-">Знайти нас зможеш тут</h2> *@
+    @* <ul> *@
+    @*     <li> *@
+    @*         <a href="https://t.me/LumiFanbase">Lumi Fanbase</a> *@
+    @*     </li> *@
+    @* </ul>   *@
+
+    @* <h2 id="-">Як використовувати?</h2> *@
+    @* <h3 id="-">🔭 Пошук учасників та проектів</h3> *@
+    @* <ul> *@
+    @*     <li>Щоб переглянути усіх наших учасників, відкрий <a href="/users">Members</a>, або введи <i>@@lumilumibot</i>  будь-якому телеграм чаті.</li> *@
+    @*     <li>Щоб розпочати пошук учасників просто введи <i>@@lumilumibot @@username</i> у будь-якому телеграм чаті.</li> *@
+    @* </ul> *@
+    @* <h3 id="-">🛸 Поширення учасників та проектів</h3> *@
+    @* <ul> *@
+    @*     <li>Щоб поширити проект достатньо скопювати посилання на профіль учаника, або натиснути на потрібний результат пошуку, через @@lumilumibot у будь-якому телеграм чаті.</li> *@
+    @* </ul> *@
+    @* <h3 id="-">⭐ Реєсрація і добавлення власних проектів</h3> *@
+    @* <ul> *@
+    @*     <li>Щоб добавити себе і свої проекти, пройдіть процес реєстрації через  <a href="https://t.me/lumilumibot" target="_blank">@@lumilumibot</a></li> *@
+    @* </ul> *@
 
 
 </div>
+
+
+@code {
+    String CommunityURL = "https://t.me/LumiFanbase";
+    String BotChatURL = "https://t.me/LumiLumiBot";
+
+    Vanilla_App.Services.Users.UserModel[]? lastUsers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        lastUsers = await UsersApi.GetUsersAsync();
+    }
+}

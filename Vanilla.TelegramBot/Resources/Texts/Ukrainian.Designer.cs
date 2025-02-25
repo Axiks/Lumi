@@ -73,11 +73,12 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         ///   Looks up a localized string similar to Метою цього проекту є створення своєрідного &quot;мосту&quot; між творчими особистостями та розвиток наших творчих іскор 🌟.
         ///
         ///&lt;b&gt;Дякую&lt;/b&gt;, що ви з нами! ❤️
-        ///Особлива подяка всім, хто допомагає розробляти цього бота.
+        ///Особлива подяка всім, хто допомагає з сторенням даного бота.
         ///
+        ///Сайт проекту: &lt;a href=&quot;{0}&quot;&gt;{1}&lt;/a&gt;
         ///Створено учасником спільноти &lt;a href=&quot;https://t.me/include_anime&quot;&gt;Програмісти і печеньки&lt;/a&gt;
-        ///Знайти розробників можете тут &lt;a href=&quot;https://t.me/LumiFanbase&quot;&gt;@LumiFanbase&lt;/a&gt;
-        ///Сайт проекту: &lt;a href=&quot;{0}&quot;&gt;{1}&lt;/a&gt;.
+        ///Група розробників: &lt;a href=&quot;https://t.me/LumiFanbase&quot;&gt;@LumiFanbase&lt;/a&gt;
+        ///.
         /// </summary>
         internal static string About {
             get {
@@ -444,11 +445,29 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Сторінка мого профілю.
+        /// </summary>
+        internal static string MyProfilePage {
+            get {
+                return ResourceManager.GetString("MyProfilePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Оновити профіль.
         /// </summary>
         internal static string MyProfileUpdate {
             get {
                 return ResourceManager.GetString("MyProfileUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Мої проекти.
+        /// </summary>
+        internal static string MyProjects {
+            get {
+                return ResourceManager.GetString("MyProjects", resourceCulture);
             }
         }
         
@@ -476,6 +495,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Проекти наших учасників.
+        /// </summary>
+        internal static string ParticipantsProjects {
+            get {
+                return ResourceManager.GetString("ParticipantsProjects", resourceCulture);
             }
         }
         
@@ -521,6 +549,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string ProjectHasBeenDeletedMes {
             get {
                 return ResourceManager.GetString("ProjectHasBeenDeletedMes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Сайт проекту.
+        /// </summary>
+        internal static string ProjectSite {
+            get {
+                return ResourceManager.GetString("ProjectSite", resourceCulture);
             }
         }
         
@@ -712,6 +749,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Перегляд проектів.
+        /// </summary>
+        internal static string ViewingProjects {
+            get {
+                return ResourceManager.GetString("ViewingProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Мої проекти.
         /// </summary>
         internal static string ViewOwnProjects {
@@ -727,6 +773,8 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         ///
         ///💡&lt;b&gt;Бажаєш дізнатися, що створили інші?&lt;/b&gt; Легко! 
         ///
+        ///🛸Перейди на наш сайт: {2}
+        ///&lt;i&gt;Або&lt;/i&gt;
         ///🔍Введи @{1} тут або в будь-якому іншому чаті чи каналі. Надихайся ідеями наших учасників і відкривай для себе нові проекти! .
         /// </summary>
         internal static string Welcome {
@@ -753,7 +801,9 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         ///
         ///💡&lt;b&gt;Бажаєш дізнатися, що створили інші?&lt;/b&gt; Легко! 
         ///
-        ///🔍Введи @{1} тут або в будь-якому іншому чаті чи каналі. Надихайся ідеями наших учасників і відкривай для себе нові проекти!.
+        ///🛸Перейди на наш сайт: {1}
+        ///&lt;i&gt;Або&lt;/i&gt;
+        ///🔍Введи @{0} тут або в будь-якому іншому чаті чи каналі. Надихайся ідеями наших учасників і відкривай для себе нові проекти!.
         /// </summary>
         internal static string WelcomeNewUser {
             get {

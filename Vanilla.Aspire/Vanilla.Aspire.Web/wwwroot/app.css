@@ -59,3 +59,52 @@ body {
 .footer {
     flex-shrink: 0;
 }*/
+
+/*@import url('fonts/FixelText/FixelText-Regular.otf');*/
+@font-face {
+    font-family: "Fixel-Regular";
+    src: url('/fonts/FixelText/FixelText-Regular.otf')
+}
+
+@font-face {
+    font-family: "Fixel-Light";
+    src: url('/fonts/FixelText/FixelText-Light.otf')
+}
+
+@font-face {
+    font-family: "Fixel-Black";
+    src: url('/fonts/FixelText/FixelText-Black.otf')
+}
+
+@font-face {
+    font-family: "Fixel-Thin";
+    src: url('/fonts/FixelText/FixelText-Thin.otf')
+}
+
+
+@font-face {
+    font-family: "Fixel-Display-Regular";
+    src: url('/fonts/FixelDisplay/FixelDisplay-Regular.otf')
+}
+
+@font-face {
+    font-family: "Fixel-Display-Light";
+    src: url('/fonts/FixelDisplay/FixelDisplay-Light.otf')
+}
+
+@font-face {
+    font-family: "Fixel-Display-Black";
+    src: url('/fonts/FixelDisplay/FixelDisplay-Black.otf')
+}
+
+@font-face {
+    font-family: "Fixel-Display-Thin";
+    src: url('/fonts/FixelDisplay/FixelDisplay-Thin.otf')
+}
+
+:root {
+    --bg-color: #FBFBFB;
+    --bg-secondary-color: #E8DEF8;
+    --color-primary: #6750A4;
+/*    --font-family-sans: Fixel-Regular, Segoe UI, Helvetica Neue, sans-serif;*/
+}

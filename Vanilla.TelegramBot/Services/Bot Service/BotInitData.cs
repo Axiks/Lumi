@@ -11,5 +11,6 @@
         public string UrlToBot => $"https://t.me/{Username}";
         public required string Environment { get; init; }
         public string? SiteUrl { get; init; }
+        public string? UsersProjectUrl { get => SiteUrl + "/users"; }
     }
 }

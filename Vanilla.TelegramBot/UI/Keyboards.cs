@@ -8,17 +8,21 @@ namespace Vanilla.TelegramBot.UI
     public static class Keyboards
     {
         //private readonly static string[] _mainMenuitems = { "Add project", "View own projects" };
-        public static ReplyKeyboardMarkup MainMenu(UserContextModel userContext)
+        public static ReplyKeyboardMarkup MainMenu(UserContextModel userContext, string projectsUrl)
         {
+            var ParticipantsProjectsKey = new KeyboardButton(userContext.ResourceManager.GetString("ParticipantsProjects"));
+            ParticipantsProjectsKey.WebApp = new WebAppInfo(projectsUrl);
+
             KeyboardButton[][] mainMenuKeyboardButtons = new KeyboardButton[][]{
                                         new KeyboardButton[]{
-                                            new KeyboardButton(userContext.ResourceManager.GetString("AddProject")),
+                                            ParticipantsProjectsKey
                                          },// column 1
                                          new KeyboardButton[]{
+                                             new KeyboardButton(userContext.ResourceManager.GetString("AddProject")),
                                              new KeyboardButton(userContext.ResourceManager.GetString("ViewOwnProjects")),
-                                             new KeyboardButton(userContext.ResourceManager.GetString("MyProfile"))
                                           },
                                          new KeyboardButton[]{
+                                            new KeyboardButton(userContext.ResourceManager.GetString("MyProfile")),
                                             new KeyboardButton(userContext.ResourceManager.GetString("BonusSytemBtn")),
                                          },
       
@@ -29,9 +33,15 @@ namespace Vanilla.TelegramBot.UI
             return replyMarkup;
         }
 
-        public static ReplyKeyboardMarkup ProfileKeyboard(UserContextModel userContext)
+        public static ReplyKeyboardMarkup ProfileKeyboard(UserContextModel userContext, string profileUrl)
         {
+            var MyProfileApp = new KeyboardButton(userContext.ResourceManager.GetString("MyProfilePage"));
+            MyProfileApp.WebApp = new WebAppInfo(profileUrl);
+
             KeyboardButton[][] mainMenuKeyboardButtons = new KeyboardButton[][]{
+                                        new KeyboardButton[]{
+                                             MyProfileApp
+                                             },
                                          new KeyboardButton[]{
                                              new KeyboardButton(userContext.ResourceManager.GetString("MyProfileUpdate"))
                                              },
@@ -97,7 +107,7 @@ namespace Vanilla.TelegramBot.UI
             return replyMarkup;
         }
 
-        public static InlineKeyboardMarkup InlineStartMenuKeyboard(UserContextModel userContext)
+        public static InlineKeyboardMarkup InlineStartMenuKeyboard(UserContextModel userContext, string userProjectsUrl)
         {
             var AddProjectBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("AddProject"));
             AddProjectBtn.CallbackData = "AddProject";
@@ -105,10 +115,15 @@ namespace Vanilla.TelegramBot.UI
             MainMenuBtn.CallbackData = "MainMenu";
             var SearchBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Search"));
             SearchBtn.SwitchInlineQueryCurrentChat = "";
+            var ParticipantsProjectBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("ParticipantsProjects"));
+            ParticipantsProjectBtn.Url = userProjectsUrl;
 
             var replyMarkuppp = new InlineKeyboardMarkup
             (
                 new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                                                ParticipantsProjectBtn
+                                            },
                     new InlineKeyboardButton[]{
                                                 AddProjectBtn
                                             },
@@ -119,6 +134,23 @@ namespace Vanilla.TelegramBot.UI
                 }
             );
             return replyMarkuppp;
+        }
+
+        public static InlineKeyboardMarkup InfoKeypoard(UserContextModel userContext, string siteUrl)
+        {
+            var projectSiteBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("ProjectSite"));
+            projectSiteBtn.Url = siteUrl;
+
+            var replyMarkup = new InlineKeyboardMarkup
+            (
+                new InlineKeyboardButton[][]{
+                    new InlineKeyboardButton[]{
+                        projectSiteBtn
+                    },
+                }
+            );
+
+            return replyMarkup;
         }
 
         public static InlineKeyboardMarkup GetPassKeypoard(UserContextModel userContext)
@@ -197,21 +229,25 @@ namespace Vanilla.TelegramBot.UI
             return replyMarkuppp;
         }
 
-        public static InlineKeyboardMarkup GetCreateProfileKeypoardWithSearch(UserContextModel userContext)
+        public static InlineKeyboardMarkup GetCreateProfileKeypoardWithSearch(UserContextModel userContext, string userProjectsUrl)
         {
-            var passBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("CreateProfile"));
-            passBtn.CallbackData = "CreateProfile";
+            var createProgileBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("CreateProfile"));
+            createProgileBtn.CallbackData = "CreateProfile";
 
             var SearchBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("Search"));
             SearchBtn.SwitchInlineQueryCurrentChat = "";
+
+            var ParticipantsProjectBtn = new InlineKeyboardButton(text: userContext.ResourceManager.GetString("ParticipantsProjects"));
+            ParticipantsProjectBtn.Url = userProjectsUrl;
 
             var replyMarkuppp = new InlineKeyboardMarkup
             (
                 new InlineKeyboardButton[][]{
                     new InlineKeyboardButton[]{
-                        passBtn
+                        createProgileBtn
                     },
                     new InlineKeyboardButton[]{
+                        ParticipantsProjectBtn,
                         SearchBtn
                     },
                 }

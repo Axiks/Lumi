@@ -76,7 +76,7 @@ namespace Vanilla.TelegramBot.Services
             }
             
 
-            _userContextMenager = new UserContextMenager();
+            _userContextMenager = new UserContextMenager(_botInitInfo.SiteUrl);
             _inlineSearchModule = new InlineSearchModule(_botClient, _projectService, _userService, webDomainName, cdnDomainName);
 
             _logger.WriteLog("Init bot service", LogType.Information);
@@ -277,7 +277,7 @@ namespace Vanilla.TelegramBot.Services
                 _userContextMenager.Remove(userContext.UpdateUser.TgId);
 
                 var chatId = userContext.UpdateUser.TgId;
-                var mainMenuKeyboard = Keyboards.MainMenu(userContext);
+                var mainMenuKeyboard = Keyboards.MainMenu(userContext, _botInitInfo.UsersProjectUrl);
 
                 //if (userContext.IsHasProfile is true) _botClient.SendMessage(chatId, "Lumi successfully rebooted", replyMarkup: mainMenuKeyboard);
                 //else _botClient.SendMessage(chatId, "Lumi successfully rebooted");
@@ -377,7 +377,7 @@ namespace Vanilla.TelegramBot.Services
             //if (userContext.IsHasProfile == false) return;
             //if(GuardHelper(userContext, RoleEmum.Anonim)) return;
 
-            var message_obj = _botClient.SendMessage(userContext.UpdateUser.TgId, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
+            var message_obj = _botClient.SendMessage(userContext.UpdateUser.TgId, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext, _botInitInfo.UsersProjectUrl));
             userContext.MessageMenager.Add(message_obj.MessageId);
             //userContext.SendMessages.Add(message_obj.MessageId);
         }
@@ -427,7 +427,7 @@ namespace Vanilla.TelegramBot.Services
                     return false;
                 }
 
-                var messageObj = _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext));
+                var messageObj = _botClient.SendMessage(update.Message.Chat.Id, userContext.ResourceManager.GetString("MainMenuSendMes"), replyMarkup: Keyboards.MainMenu(userContext, _botInitInfo.UsersProjectUrl));
                 //userContext.SendMessages.Add(messageObj.MessageId);
                 userContext.MessageMenager.Add(messageObj.MessageId);
 
@@ -446,10 +446,10 @@ namespace Vanilla.TelegramBot.Services
 
                 var username = update.Message.Chat.FirstName ?? update.Message.Chat.Username ?? "";
                 string welcomeMessage = HasProfile
-                    ? string.Format(userContext.ResourceManager.GetString("Welcome"), username, _botClient.GetMe().Username)
-                    : string.Format(userContext.ResourceManager.GetString("WelcomeNewUser"), username, _botClient.GetMe().Username);
+                    ? string.Format(userContext.ResourceManager.GetString("Welcome"), username, _botClient.GetMe().Username, _botInitInfo.SiteUrl)
+                    : string.Format(userContext.ResourceManager.GetString("WelcomeNewUser"), _botClient.GetMe().Username, _botInitInfo.SiteUrl);
 
-                var keyboard = HasProfile ? Keyboards.InlineStartMenuKeyboard(userContext) : Keyboards.GetCreateProfileKeypoardWithSearch(userContext);
+                var keyboard = HasProfile ? Keyboards.InlineStartMenuKeyboard(userContext, _botInitInfo.UsersProjectUrl) : Keyboards.GetCreateProfileKeypoardWithSearch(userContext, _botInitInfo.UsersProjectUrl);
                 var messageObj = _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: keyboard, parseMode: "HTML");
                 userContext.MessageMenager.Add(messageObj.MessageId);
 
@@ -468,7 +468,7 @@ namespace Vanilla.TelegramBot.Services
                 var username = update.Message.Chat.FirstName ?? update.Message.Chat.Username ?? "";
                 string welcomeMessage = string.Format(userContext.ResourceManager.GetString("WelcomeNewUser"), username, _botClient.GetMe().Username);
 
-                var keyboard = Keyboards.GetCreateProfileKeypoardWithSearch(userContext);
+                var keyboard = Keyboards.GetCreateProfileKeypoardWithSearch(userContext, _botInitInfo.UsersProjectUrl);
                 var messageObj = _botClient.SendMessage(update.Message.Chat.Id, welcomeMessage, replyMarkup: keyboard, parseMode: "HTML");
                 userContext.MessageMenager.Add(messageObj.MessageId);
 
@@ -500,8 +500,9 @@ namespace Vanilla.TelegramBot.Services
 
                 if (IsAdmin is true) ms += String.Format("\n<i>Environment: {0}</i>", _botInitInfo.Environment);
 
-                _logger.WriteLog(ms, LogType.Information);
+                //_logger.WriteLog(ms, LogType.Information);
                 SendMessageArgs inputMessage = new SendMessageArgs(update.Message.Chat.Id, ms);
+                inputMessage.ReplyMarkup = Keyboards.InfoKeypoard(userContext, _botInitInfo.SiteUrl);
                 inputMessage.ParseMode = "HTML";
 
                 var messageObj = _botClient.SendMessage(inputMessage);

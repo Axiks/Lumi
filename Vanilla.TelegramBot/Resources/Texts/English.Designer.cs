@@ -434,11 +434,29 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to My Profile Page.
+        /// </summary>
+        internal static string MyProfilePage {
+            get {
+                return ResourceManager.GetString("MyProfilePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update Profile.
         /// </summary>
         internal static string MyProfileUpdate {
             get {
                 return ResourceManager.GetString("MyProfileUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Projects.
+        /// </summary>
+        internal static string MyProjects {
+            get {
+                return ResourceManager.GetString("MyProjects", resourceCulture);
             }
         }
         
@@ -466,6 +484,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Participants&apos; projects.
+        /// </summary>
+        internal static string ParticipantsProjects {
+            get {
+                return ResourceManager.GetString("ParticipantsProjects", resourceCulture);
             }
         }
         
@@ -511,6 +538,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         internal static string ProjectHasBeenDeletedMes {
             get {
                 return ResourceManager.GetString("ProjectHasBeenDeletedMes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project site.
+        /// </summary>
+        internal static string ProjectSite {
+            get {
+                return ResourceManager.GetString("ProjectSite", resourceCulture);
             }
         }
         
@@ -697,6 +733,15 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Viewing projects.
+        /// </summary>
+        internal static string ViewingProjects {
+            get {
+                return ResourceManager.GetString("ViewingProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View own projects.
         /// </summary>
         internal static string ViewOwnProjects {
@@ -737,7 +782,7 @@ namespace Vanilla.TelegramBot.Resources.Texts {
         ///
         ///🌟 Before starting our journey, you need to create a profile!
         ///
-        ///🔎&lt;b&gt;To check people&apos;s projects, it is enough to type @{1} here, or in any other chat and channel&lt;/b&gt;
+        ///🔎&lt;b&gt;To check people&apos;s projects, it is enough to type @{0} here, or in any other chat and channel&lt;/b&gt;
         ///
         ///I hope you like it here ❤️.
         /// </summary>

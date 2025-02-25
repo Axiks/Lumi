@@ -5,22 +5,24 @@ namespace Vanilla.TelegramBot.Services.Bot_Service
     public class UserContextMenager
     {
         List<UserContextModel> _usersContext;
-        public UserContextMenager()
+        string SiteUrl { get; init; }
+        public UserContextMenager(string siteUrl)
         {
             _usersContext = new List<UserContextModel>();
+            SiteUrl = siteUrl;
         }
 
         public UserContextModel Get(long tgUserId) => _usersContext.FirstOrDefault(x => x.UpdateUser.TgId == tgUserId);
         public UserContextModel? Get(Guid userId) => _usersContext.FirstOrDefault(x => x.User.UserId == userId);
         public UserContextModel Add(UpdateUserData updateUser)
         {
-            var context = new UserContextModel(updateUser);
+            var context = new UserContextModel(updateUser, SiteUrl);
             _usersContext.Add(context);
             return context;
         }
         public UserContextModel Add(UpdateUserData updateUser, UserModel user)
         {
-            var context = new UserContextModel(updateUser, user);
+            var context = new UserContextModel(updateUser, user, SiteUrl);
             _usersContext.Add(context);
             return context;
         }

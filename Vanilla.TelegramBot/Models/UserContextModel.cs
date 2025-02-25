@@ -17,17 +17,21 @@ namespace Vanilla.TelegramBot.Models
 
         readonly ResourceManager _resourceManager;
         public ResourceManager ResourceManager { get { return _resourceManager; } }
+        string SiteUrl { get; init; }
+        public string? ProfileUrl { get => User is not null ? SiteUrl + "/users/" + User.UserId : null;  }
 
-        public UserContextModel(UpdateUserData updateUser)
+        public UserContextModel(UpdateUserData updateUser, string siteUrl)
         {
             updateUser.LanguageCode = "ua"; // temp fix
             _resourceManager = updateUser.LanguageCode == "ua" || updateUser.LanguageCode == "ru" ? new ResourceManager("Vanilla.TelegramBot.Resources.Texts.Ukrainian", typeof(Ukrainian).Assembly) : new ResourceManager("Vanilla.TelegramBot.Resources.Texts.English", typeof(English).Assembly);
 
             MessageMenager = new CoreMessageMenager();
             UpdateUser = updateUser;
+
+            SiteUrl = siteUrl;
         }
 
-        public UserContextModel(UpdateUserData updateUser, UserModel user)
+        public UserContextModel(UpdateUserData updateUser, UserModel user, string siteUrl)
         {
             user.LanguageCode = "ua"; // temp fix
             _resourceManager = user.LanguageCode == "ua" || user.LanguageCode == "ru" ? new ResourceManager("Vanilla.TelegramBot.Resources.Texts.Ukrainian", typeof(Ukrainian).Assembly) : new ResourceManager("Vanilla.TelegramBot.Resources.Texts.English", typeof(English).Assembly);
@@ -35,6 +39,8 @@ namespace Vanilla.TelegramBot.Models
             MessageMenager = new CoreMessageMenager();
             User = user;
             UpdateUser = updateUser;
+
+            SiteUrl = siteUrl;
         }
 
         //public bool IsHasProfile => User is not null;
